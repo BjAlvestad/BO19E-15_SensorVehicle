@@ -14,3 +14,20 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
+
+#begin Maps/SimpleTCorridor/SimpleTCorridor.tmx
+/importer:
+/processor:
+/build:Maps/SimpleTCorridor/SimpleTCorridor.tmx
+

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Graphics;
 
 namespace SimulatorUwpXaml
 {
@@ -10,6 +12,10 @@ namespace SimulatorUwpXaml
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+
+        private string _mapPath;
+        private TiledMap _map;   // The tile map   
+        private TiledMapRenderer _mapRenderer;  // The renderer for the map
 
         public SimulatorGame()
         {
@@ -25,7 +31,9 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            _mapPath = "Maps/SimpleTCorridor/SimpleTCorridor";
+            _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
+            _mapRenderer = new TiledMapRenderer(GraphicsDevice);
 
             base.Initialize();
         }
@@ -58,7 +66,7 @@ namespace SimulatorUwpXaml
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            _mapRenderer.Update(_map, gameTime);
 
             base.Update(gameTime);
         }
@@ -69,9 +77,11 @@ namespace SimulatorUwpXaml
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.DarkGray);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
+            _mapRenderer.Draw(_map); 
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
