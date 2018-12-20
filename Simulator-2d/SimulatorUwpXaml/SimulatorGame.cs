@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Windows.UI.ViewManagement;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Graphics;
@@ -41,6 +42,7 @@ namespace SimulatorUwpXaml
             _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
             _mapRenderer = new TiledMapRenderer(GraphicsDevice);
 
+            this.IsMouseVisible = true; 
             base.Initialize();
         }
 
