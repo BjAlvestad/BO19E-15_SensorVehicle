@@ -13,6 +13,8 @@ namespace SimulatorUwpXaml
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
+        private Screen _screen;
+
         private string _mapPath;
         private TiledMap _map;   // The tile map   
         private TiledMapRenderer _mapRenderer;  // The renderer for the map
@@ -31,6 +33,8 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void Initialize()
         {
+            _screen = new Screen();
+
             _mapPath = "Maps/SimpleTCorridor/SimpleTCorridor";
             _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
             _mapRenderer = new TiledMapRenderer(GraphicsDevice);
