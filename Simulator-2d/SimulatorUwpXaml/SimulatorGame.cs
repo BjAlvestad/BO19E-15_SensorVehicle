@@ -19,6 +19,8 @@ namespace SimulatorUwpXaml
         private TiledMap _map;   // The tile map   
         private TiledMapRenderer _mapRenderer;  // The renderer for the map
 
+        private SpriteClass _vehicle;
+
         public SimulatorGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -51,6 +53,10 @@ namespace SimulatorUwpXaml
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
+            _vehicle = new SpriteClass(GraphicsDevice, carTexture, _screen.ScaleToHighDPI(0.205f));
+            _vehicle.JumpToPosition(1500, 300);
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -71,6 +77,7 @@ namespace SimulatorUwpXaml
         protected override void Update(GameTime gameTime)
         {
             _mapRenderer.Update(_map, gameTime);
+            _vehicle.Update();
 
             base.Update(gameTime);
         }
@@ -85,6 +92,7 @@ namespace SimulatorUwpXaml
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
             _mapRenderer.Draw(_map); 
+            _vehicle.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
