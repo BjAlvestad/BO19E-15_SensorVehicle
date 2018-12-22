@@ -106,6 +106,8 @@
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screen and scaling\Hud.cs" />
+    <Compile Include="Screen and scaling\HudPosition.cs" />
     <Compile Include="Screen and scaling\Screen.cs" />
     <Compile Include="SimulatorGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

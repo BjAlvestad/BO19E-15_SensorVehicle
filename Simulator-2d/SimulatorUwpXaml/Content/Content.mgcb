@@ -14,6 +14,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin HUD/HudDistance.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:HUD/HudDistance.spritefont
+
 #begin Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
 /importer:TextureImporter
 /processor:TextureProcessor

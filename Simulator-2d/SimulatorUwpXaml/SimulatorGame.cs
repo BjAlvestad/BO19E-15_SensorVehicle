@@ -17,6 +17,7 @@ namespace SimulatorUwpXaml
         SpriteBatch _spriteBatch;
 
         private Screen _screen;
+        private Hud _hud;
 
         private string _mapPath;
         private TiledMap _map;   // The tile map   
@@ -61,6 +62,7 @@ namespace SimulatorUwpXaml
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, _screen.ScaleToHighDPI(0.205f));
             _vehicle.Position = new Vector2(1500, 300);
 
+            _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));
             // TODO: use this.Content to load your game content here
         }
 
@@ -98,6 +100,11 @@ namespace SimulatorUwpXaml
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
             _mapRenderer.Draw(_map); 
             _vehicle.Draw(_spriteBatch);
+
+            _hud.DrawVehicleData(_vehicle);
+            _hud.DrawDebugMessages($"X: {Mouse.GetState().X}  Y: {Mouse.GetState().Y}", $"{_vehicle.Position}");
+            _hud.DrawDebugMouseOverObject(_vehicle);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
