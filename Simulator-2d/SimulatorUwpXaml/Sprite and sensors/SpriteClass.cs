@@ -8,43 +8,31 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SimulatorUwpXaml
 {
-    class SpriteClass
+    public class SpriteClass
     {
-        public Texture2D texture
+        public SpriteClass (GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale)
         {
-            get;
+            this.Scale = scale;
+            if (Texture == null)
+            {
+                Texture = spriteTexture;
+            }
         }
 
+        public Texture2D Texture { get; }
 
+        public float Scale { get; set; }
 
-        public float Angle
-        {
-            get;
-            set;
-        }
         public Vector2 Position { get; set; }
 
         public Vector2 Speed { get; set; }
 
+        public virtual float Angle { get; set; }
 
-        public float RateOfTurn
-        {
-            get;
-            set;
-        }
+        public float RateOfTurn { get; set; }
 
-        public float Scale
         {
-            get;
-            set;
-        }
-
-        public SpriteClass (GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale)
-        {
-            this.Scale = scale;
-            if (texture == null)
             {
-                texture = spriteTexture;
             }
         }
 
