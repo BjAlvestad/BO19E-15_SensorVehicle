@@ -1,6 +1,8 @@
-﻿using Windows.UI.ViewManagement;
+﻿using Windows.Graphics.Display;
+using Windows.UI.ViewManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Graphics;
 
