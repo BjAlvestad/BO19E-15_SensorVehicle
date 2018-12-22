@@ -15,35 +15,17 @@ namespace SimulatorUwpXaml
             get;
         }
 
-        public float PosX
-        {
-            get;
-            set;
-        }
 
-        public float PosY
-        {
-            get;
-            set;
-        }
 
         public float Angle
         {
             get;
             set;
         }
+        public Vector2 Position { get; set; }
 
-        public float SpeedX
-        {
-            get;
-            set;
-        }
+        public Vector2 Speed { get; set; }
 
-        public float SpeedY
-        {
-            get;
-            set;
-        }
 
         public float RateOfTurn
         {
@@ -66,23 +48,15 @@ namespace SimulatorUwpXaml
             }
         }
 
-        public void JumpToPosition(float newX, float newY)
-        {
-            PosX = newX;
-            PosY = newY;
-        }
-
         public void Update ()
         {
-            this.PosX += this.SpeedX;
-            this.PosY += this.SpeedY;
-            this.Angle += this.RateOfTurn;
+            Position = Position + Speed * elapsedTimeSinceLastUpdate;
+            this.Angle += this.RateOfTurn * elapsedTimeSinceLastUpdate;
         }
 
         public void Draw (SpriteBatch spriteBatch)
         {
-            Vector2 spritePosition = new Vector2(this.PosX, this.PosY);
-            spriteBatch.Draw(texture, spritePosition, null, Color.White, this.Angle, new Vector2(texture.Width/2, texture.Height/2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, Position, null, Color.White, this.Angle, new Vector2(Texture.Width/2, Texture.Height/2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
         }
     }
 }
