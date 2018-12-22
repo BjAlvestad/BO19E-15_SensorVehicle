@@ -16,7 +16,6 @@ namespace SimulatorUwpXaml
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
-        private Screen _screen;
         private Hud _hud;
 
         private string _mapPath;
@@ -39,8 +38,6 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void Initialize()
         {
-            _screen = new Screen();
-
             _mapPath = "Maps/SimpleTCorridor/SimpleTCorridor";
             _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
             _mapRenderer = new TiledMapRenderer(GraphicsDevice);
@@ -59,7 +56,7 @@ namespace SimulatorUwpXaml
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
-            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, _screen.ScaleToHighDPI(0.205f));
+            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f));
             _vehicle.Position = new Vector2(1500, 300);
 
             _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));

@@ -8,21 +8,37 @@ using Windows.UI.ViewManagement;
 
 namespace SimulatorUwpXaml
 {
-    class Screen
+    static class Screen
     {
-        public Screen()
+        static Screen()
         {
-            ScreenHeight = ScaleToHighDPI((float)ApplicationView.GetForCurrentView().VisibleBounds.Height);
-            ScreenWidth = ScaleToHighDPI((float)ApplicationView.GetForCurrentView().VisibleBounds.Width);
+            RawPixelsPerViewPixel = (float)DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            Height = ScaleToHighDPI((float)ApplicationView.GetForCurrentView().VisibleBounds.Height);
+            Width = ScaleToHighDPI((float)ApplicationView.GetForCurrentView().VisibleBounds.Width);
+
+            DisplayInformation.GetForCurrentView().DpiChanged += Screen_DpiChanged;
+            ApplicationView.GetForCurrentView().VisibleBoundsChanged += Screen_VisibleBoundsChanged;
         }
 
-        public float ScreenHeight { get; set; }
-        public float ScreenWidth { get; set; }
-
-        public float ScaleToHighDPI(float f)
+        private static void Screen_DpiChanged(DisplayInformation sender, object args)
         {
-            DisplayInformation d = DisplayInformation.GetForCurrentView();
-            f *= (float)d.RawPixelsPerViewPixel;
+            RawPixelsPerViewPixel = (float) sender.RawPixelsPerViewPixel;
+        }
+
+        private static void Screen_VisibleBoundsChanged(ApplicationView sender, object args)
+        {
+            Height = ScaleToHighDPI((float)sender.VisibleBounds.Height);
+            Width = ScaleToHighDPI((float)sender.VisibleBounds.Width);
+        }
+
+        public static float Height { get; set; }
+        public static float Width { get; set; }
+
+        public static float RawPixelsPerViewPixel { get; private set; }
+
+        public static float ScaleToHighDPI(float f)
+        { 
+            f *= RawPixelsPerViewPixel;
             return f;
         }
     }
