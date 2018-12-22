@@ -40,13 +40,9 @@ namespace SimulatorUwpXaml
 
         public void DrawVehicleData(VehicleSprite vehicle)
         {
-            string angleText = $"Direction:\n {vehicle.AngleInDegrees}";
-            string leftSpeedText = $"Speed Left:\n {vehicle.SpeedLeftWheel}";
-            string rightSpeedText = $"Speed Right:\n {vehicle.SpeedRightWheel}";
-
-            _spriteBatch.DrawString(_font, angleText, VehicleDataPosition.Top, Color.Black);
-            _spriteBatch.DrawString(_font, leftSpeedText, VehicleDataPosition.Left, Color.Black);
-            _spriteBatch.DrawString(_font, rightSpeedText, VehicleDataPosition.Right, Color.Black);
+            _spriteBatch.DrawString(_font, $"Direction:\n {vehicle.AngleInDegrees}", VehicleDataPosition.Top, Color.Black);
+            _spriteBatch.DrawString(_font, $"Speed Left:\n {vehicle.SpeedLeftWheel}", VehicleDataPosition.Left, Color.Black);
+            _spriteBatch.DrawString(_font, $"Speed Right:\n {vehicle.SpeedRightWheel}", VehicleDataPosition.Right, Color.Black);
         }
 
         public void DrawDebugMessages(string mousePosition, string vehiclePosition)
