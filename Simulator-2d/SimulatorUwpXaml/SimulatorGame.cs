@@ -20,7 +20,7 @@ namespace SimulatorUwpXaml
         private TiledMap _map;   // The tile map   
         private TiledMapRenderer _mapRenderer;  // The renderer for the map
 
-        private SpriteClass _vehicle;
+        private VehicleSprite _vehicle;
 
         public SimulatorGame()
         {
@@ -56,8 +56,8 @@ namespace SimulatorUwpXaml
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
-            _vehicle = new SpriteClass(GraphicsDevice, carTexture, _screen.ScaleToHighDPI(0.205f));
-            _vehicle.JumpToPosition(1500, 300);
+            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, _screen.ScaleToHighDPI(0.205f));
+            _vehicle.Position = new Vector2(1500, 300);
 
             // TODO: use this.Content to load your game content here
         }
@@ -78,8 +78,9 @@ namespace SimulatorUwpXaml
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
             _mapRenderer.Update(_map, gameTime);
-            _vehicle.Update();
+            _vehicle.Update(elapsedTimeSinceLastUpdate);
 
             base.Update(gameTime);
         }
