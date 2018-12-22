@@ -31,12 +31,23 @@ namespace SimulatorUwpXaml
 
         public float RateOfTurn { get; set; }
 
+        public void Update (float elapsedTimeSinceLastUpdate)
         {
+            if (Picking2D.IsPickedUpForMove(this))
             {
+                Position = Picking2D.MouseLocation();
+            }
+            else if (Picking2D.IsPickedUpForRotate(this))
+            {
+                Angle = Picking2D.MouseDirection(this);
+            }
+            else
+            {
+                Move(elapsedTimeSinceLastUpdate);           
             }
         }
 
-        public void Update ()
+        protected virtual void Move(float elapsedTimeSinceLastUpdate)
         {
             Position = Position + Speed * elapsedTimeSinceLastUpdate;
             this.Angle += this.RateOfTurn * elapsedTimeSinceLastUpdate;
