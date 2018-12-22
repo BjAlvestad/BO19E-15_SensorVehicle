@@ -46,7 +46,7 @@ namespace SimulatorUwpXaml
             return _spritePickedUpForRotate;
         }
 
-        private static bool IsMouseIntersectingSprite(SpriteClass sprite)
+        public static bool IsMouseIntersectingSprite(SpriteClass sprite)   // TEMP: Public for debugging purposes. Can be set to private once program is complete.
         {
             return (MouseLocation() - sprite.Position).Length() < sprite.Texture.Height * sprite.Scale;
         }
