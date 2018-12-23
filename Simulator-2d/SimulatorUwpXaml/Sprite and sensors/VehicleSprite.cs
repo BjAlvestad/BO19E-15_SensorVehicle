@@ -129,12 +129,16 @@ namespace SimulatorUwpXaml
             //speedRight *= velocityFactor;
 
             float linearVelocity = (SpeedLeftWheel + SpeedRightWheel) / 2f;  // ??? vet ikke om det kan regnes ut slik
-            float turnRadius = (_wheelBase * linearVelocity) / (SpeedLeftWheel - SpeedRightWheel);  // d*SpeedInner / (SpeedOuter - SpeedInner)
+            float angularVelocity = 0;
 
-            float angularVelocity = linearVelocity / turnRadius;
-            if (angularVelocity > maxAngularVelocity || float.IsNaN(angularVelocity))
+            if (SpeedLeftWheel != SpeedRightWheel)
             {
-                angularVelocity = maxAngularVelocity;
+                float turnRadius = (_wheelBase * linearVelocity) / (SpeedLeftWheel - SpeedRightWheel);  // d*SpeedInner / (SpeedOuter - SpeedInner)
+                angularVelocity = linearVelocity / turnRadius;
+                if (angularVelocity > maxAngularVelocity || float.IsNaN(angularVelocity))
+                {
+                    angularVelocity = maxAngularVelocity;
+                }
             }
 
             // BUG: Denne if setningen er for å prøve å fikse når vi har turn-radius 0 (snur "on the spot)"
