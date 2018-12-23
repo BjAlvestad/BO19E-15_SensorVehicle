@@ -108,6 +108,52 @@ namespace SimulatorUwpXaml
     }
 
     /// <summary>
+    /// OnActivated event handler receives all activation events.
+    /// This is set up to handle Protocol activation events (i.e. simulator being launched from SensorVehicle application).
+    /// More information on: https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation
+    /// </summary>
+    /// <param name="args"></param>
+    protected override void OnActivated(IActivatedEventArgs args)
+    {
+        if (args.Kind == ActivationKind.Protocol)
+        {
+            ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+            // TODO: Handle URI activation
+            // The received URI is eventArgs.Uri.AbsoluteUri
+
+            //TODO: The code below is copied from OnLaunched(). If this is not significantly changed by the completion of the software, the common code should be extracted.
+            // By default we want to fill the entire core window.
+            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            // Do not repeat app initialization when the Window already has content, just ensure that the window is active
+            if (rootFrame == null)
+            {
+                // Create a Frame to act as the navigation context and navigate to the first page
+                rootFrame = new Frame();
+                rootFrame.NavigationFailed += OnNavigationFailed;
+                if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                {
+                    //TODO: Load state from previously suspended application
+                }
+                // Place the frame in the current Window
+                Window.Current.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null)
+            {
+                // When the navigation stack isn't restored navigate to the first page, configuring the new page by passing required information as a navigation parameter
+                rootFrame.Navigate(typeof(GamePage), eventArgs);
+            }
+
+            // Ensure the current window is active
+            Window.Current.Activate();
+
+            //TODO: For additional tips see reply on https://social.msdn.microsoft.com/Forums/sqlserver/en-US/a857bd53-abd9-40ad-9c89-b23d512abebe/uwpapp-hangscrashes-when-launched-by-uri?forum=wpdevelop
+        }
+    }
+
+    /// <summary>
     /// Invoked when Navigation to a certain page fails
     /// </summary>
     /// <param name="sender">The Frame which failed navigation</param>
