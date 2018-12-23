@@ -108,6 +108,24 @@ namespace SimulatorUwpXaml
     }
 
     /// <summary>
+    /// OnActivated event handler receives all activation events.
+    /// This is set up to handle Protocol activation events (i.e. simulator being launched from SensorVehicle application).
+    /// More information on: https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation
+    /// </summary>
+    /// <param name="args"></param>
+    protected override void OnActivated(IActivatedEventArgs args)
+    {
+        if (args.Kind == ActivationKind.Protocol)
+        {
+            ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+            // TODO: Handle URI activation
+            // The received URI is eventArgs.Uri.AbsoluteUri
+
+            //TODO: For additional tips see reply on https://social.msdn.microsoft.com/Forums/sqlserver/en-US/a857bd53-abd9-40ad-9c89-b23d512abebe/uwpapp-hangscrashes-when-launched-by-uri?forum=wpdevelop
+        }
+    }
+
+    /// <summary>
     /// Invoked when Navigation to a certain page fails
     /// </summary>
     /// <param name="sender">The Frame which failed navigation</param>
