@@ -1,47 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Package
-  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
-  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
-
-  <Identity
-    Name="c2522b25-2d26-45df-aa1d-e292ab25f4cf"
-    Publisher="CN=BjAlv"
-    Version="1.0.0.0" />
-
-  <mp:PhoneIdentity PhoneProductId="c2522b25-2d26-45df-aa1d-e292ab25f4cf" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
-
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
+  <Identity Name="c2522b25-2d26-45df-aa1d-e292ab25f4cf" Publisher="CN=BjAlv" Version="1.0.0.0" />
+  <mp:PhoneIdentity PhoneProductId="c2522b25-2d26-45df-aa1d-e292ab25f4cf" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SimulatorUwpXaml</DisplayName>
     <PublisherDisplayName>BjAlv</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
-
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
-
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="x-generate" />
   </Resources>
-
   <Applications>
-    <Application Id="App"
-      Executable="$targetnametoken$.exe"
-      EntryPoint="SimulatorUwpXaml.App">
-      <uap:VisualElements
-        DisplayName="SimulatorUwpXaml"
-        Square150x150Logo="Assets\Logo.png"
-        Square44x44Logo="Assets\SmallLogo.png"
-        Description="SimulatorUwpXaml"
-        BackgroundColor="#464646">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SimulatorUwpXaml.App">
+      <uap:VisualElements DisplayName="SimulatorUwpXaml" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="SimulatorUwpXaml" BackgroundColor="#464646">
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="hvl-sensorvehicle-simulator">
+            <uap:DisplayName>2D simulator for HVL sensor vehicle</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>
