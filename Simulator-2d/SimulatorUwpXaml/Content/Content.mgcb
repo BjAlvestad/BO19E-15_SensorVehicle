@@ -10,7 +10,6 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:C:\Users\BjAlv\.nuget\packages\monogame.extended.content.pipeline\1.1.0\tools\MonoGame.Extended.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -34,9 +33,7 @@
 /build:Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
 
 #begin Maps/SimpleTCorridor/SimpleTCorridor.tmx
-/importer:
-/processor:
-/build:Maps/SimpleTCorridor/SimpleTCorridor.tmx
+/copy:Maps/SimpleTCorridor/SimpleTCorridor.tmx
 
 #begin SpriteImages/car_red.png
 /importer:TextureImporter

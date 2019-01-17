@@ -3,8 +3,6 @@ using Windows.UI.ViewManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Graphics;
 
 namespace SimulatorUwpXaml
 {
@@ -18,9 +16,6 @@ namespace SimulatorUwpXaml
 
         private Hud _hud;
 
-        private string _mapPath;
-        private TiledMap _map;   // The tile map   
-        private TiledMapRenderer _mapRenderer;  // The renderer for the map
 
         private VehicleSprite _vehicle;
 
@@ -38,10 +33,6 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void Initialize()
         {
-            _mapPath = "Maps/SimpleTCorridor/SimpleTCorridor";
-            _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
-            _mapRenderer = new TiledMapRenderer(GraphicsDevice);
-
             this.IsMouseVisible = true; 
             base.Initialize();
         }
@@ -80,7 +71,6 @@ namespace SimulatorUwpXaml
         protected override void Update(GameTime gameTime)
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
-            _mapRenderer.Update(_map, gameTime);
             _vehicle.Update(elapsedTimeSinceLastUpdate);
 
             base.Update(gameTime);
@@ -95,7 +85,6 @@ namespace SimulatorUwpXaml
             GraphicsDevice.Clear(Color.DarkGray);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
-            _mapRenderer.Draw(_map); 
             _vehicle.Draw(_spriteBatch);
 
             _hud.DrawVehicleData(_vehicle);
