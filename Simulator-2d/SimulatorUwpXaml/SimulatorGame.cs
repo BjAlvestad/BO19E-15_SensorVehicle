@@ -16,6 +16,7 @@ namespace SimulatorUwpXaml
 
         private Hud _hud;
 
+        private Lidar _lidar;
         private SimulatorMap _simulatorMap;
 
         private VehicleSprite _vehicle;
@@ -58,6 +59,8 @@ namespace SimulatorUwpXaml
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f));
             _vehicle.Position = new Vector2(1500, 300);
 
+            _lidar = new Lidar(_vehicle);
+
             _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));
             // TODO: use this.Content to load your game content here
         }
@@ -80,6 +83,7 @@ namespace SimulatorUwpXaml
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
             _vehicle.Update(elapsedTimeSinceLastUpdate);
+            _lidar.Update360(_simulatorMap.Boundaries);
 
             base.Update(gameTime);
         }

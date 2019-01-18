@@ -112,6 +112,7 @@
     <Compile Include="SimulatorGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map and boundaries\SimulatorMap.cs" />
+    <Compile Include="Sprite and sensors\Lidar.cs" />
     <Compile Include="Sprite and sensors\Picking2D.cs" />
     <Compile Include="Sprite and sensors\SpriteClass.cs" />
     <Compile Include="Sprite and sensors\VehicleSprite.cs" />
