@@ -16,6 +16,7 @@ namespace SimulatorUwpXaml
 
         private Hud _hud;
 
+        private SimulatorMap _simulatorMap;
 
         private VehicleSprite _vehicle;
 
@@ -45,6 +46,13 @@ namespace SimulatorUwpXaml
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //BUG: Creates visible grid for certain scaling values (with 50x50 tiles). 
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.1 ok, 0.2 ok, 0.5 ok, 0.6 ok, 0.9 ok.
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.92 ok,
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving 100x100 grid:    0.91, 0.93
+            _simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: Screen.ScaleToHighDPI(1.0f));
+            //_simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: 0.92f);
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f));
@@ -85,6 +93,7 @@ namespace SimulatorUwpXaml
             GraphicsDevice.Clear(Color.DarkGray);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
+            _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
 
             _hud.DrawVehicleData(_vehicle);

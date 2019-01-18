@@ -111,9 +111,11 @@
     <Compile Include="Screen and scaling\Screen.cs" />
     <Compile Include="SimulatorGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Map and boundaries\SimulatorMap.cs" />
     <Compile Include="Sprite and sensors\Picking2D.cs" />
     <Compile Include="Sprite and sensors\SpriteClass.cs" />
     <Compile Include="Sprite and sensors\VehicleSprite.cs" />
+    <Compile Include="Map and boundaries\Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
