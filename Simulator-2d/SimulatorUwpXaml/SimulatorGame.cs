@@ -100,6 +100,7 @@ namespace SimulatorUwpXaml
             _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
 
+            _hud.DrawDistances(_lidar);
             _hud.DrawVehicleData(_vehicle);
             _hud.DrawDebugMessages($"X: {Mouse.GetState().X}  Y: {Mouse.GetState().Y}", $"{_vehicle.Position}");
             _hud.DrawDebugMouseOverObject(_vehicle);
