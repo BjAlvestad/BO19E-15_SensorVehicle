@@ -3,8 +3,6 @@ using Windows.UI.ViewManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Graphics;
 
 namespace SimulatorUwpXaml
 {
@@ -18,9 +16,8 @@ namespace SimulatorUwpXaml
 
         private Hud _hud;
 
-        private string _mapPath;
-        private TiledMap _map;   // The tile map   
-        private TiledMapRenderer _mapRenderer;  // The renderer for the map
+        private Lidar _lidar;
+        private SimulatorMap _simulatorMap;
 
         private VehicleSprite _vehicle;
 
@@ -38,10 +35,6 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void Initialize()
         {
-            _mapPath = "Maps/SimpleTCorridor/SimpleTCorridor";
-            _map = Content.Load<TiledMap>(_mapPath);  // Load the compiled map (created with TiledEditor)          
-            _mapRenderer = new TiledMapRenderer(GraphicsDevice);
-
             this.IsMouseVisible = true; 
             base.Initialize();
         }
@@ -55,9 +48,18 @@ namespace SimulatorUwpXaml
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //BUG: Creates visible grid for certain scaling values (with 50x50 tiles). 
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.1 ok, 0.2 ok, 0.5 ok, 0.6 ok, 0.9 ok.
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.92 ok,
+            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving 100x100 grid:    0.91, 0.93
+            _simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: Screen.ScaleToHighDPI(1.0f));
+            //_simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: 0.92f);
+
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f));
             _vehicle.Position = new Vector2(1500, 300);
+
+            _lidar = new Lidar(_vehicle);
 
             _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));
             // TODO: use this.Content to load your game content here
@@ -80,8 +82,8 @@ namespace SimulatorUwpXaml
         protected override void Update(GameTime gameTime)
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
-            _mapRenderer.Update(_map, gameTime);
             _vehicle.Update(elapsedTimeSinceLastUpdate);
+            _lidar.Update360(_simulatorMap.Boundaries);
 
             base.Update(gameTime);
         }
@@ -95,9 +97,10 @@ namespace SimulatorUwpXaml
             GraphicsDevice.Clear(Color.DarkGray);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
-            _mapRenderer.Draw(_map); 
+            _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
 
+            _hud.DrawDistances(_lidar);
             _hud.DrawVehicleData(_vehicle);
             _hud.DrawDebugMessages($"X: {Mouse.GetState().X}  Y: {Mouse.GetState().Y}", $"{_vehicle.Position}");
             _hud.DrawDebugMouseOverObject(_vehicle);

@@ -42,13 +42,13 @@ namespace SimulatorUwpXaml
         public static HudPosition VehicleDataPosition { get; set; }
         public static HudPosition DebugDataPosition { get; set; }
 
-        //private void DrawDistances(Distance distance) // Distance class not yet created
-        //{
-        //    spriteBatch.DrawString(font, $"^ {distance.Fwd}", DistanceDataPosition.Top, Color.Black);
-        //    spriteBatch.DrawString(font, $"{distance.Left} <", DistanceDataPosition.Left, Color.Black);
-        //    spriteBatch.DrawString(font, $"> {distance.Right}", DistanceDataPosition.Right, Color.Black);
-        //    spriteBatch.DrawString(font, $"V: {distance.Aft}", DistanceDataPosition.Bottom, Color.Black);
-        //}
+        public void DrawDistances(Lidar distance)
+        {
+            _spriteBatch.DrawString(_font, $"^ {distance.Fwd}", DistanceDataPosition.Top, Color.Black);
+            _spriteBatch.DrawString(_font, $"{distance.Left} <", DistanceDataPosition.Left, Color.Black);
+            _spriteBatch.DrawString(_font, $"> {distance.Right}", DistanceDataPosition.Right, Color.Black);
+            _spriteBatch.DrawString(_font, $"V: {distance.Aft}", DistanceDataPosition.Bottom, Color.Black);
+        }
 
         public void DrawVehicleData(VehicleSprite vehicle)
         {

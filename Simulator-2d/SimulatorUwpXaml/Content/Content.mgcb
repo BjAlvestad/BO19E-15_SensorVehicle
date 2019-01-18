@@ -10,7 +10,6 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:C:\Users\BjAlv\.nuget\packages\monogame.extended.content.pipeline\1.1.0\tools\MonoGame.Extended.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -21,7 +20,10 @@
 /processorParam:TextureFormat=Compressed
 /build:HUD/HudDistance.spritefont
 
-#begin Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
+#begin Maps/BruntKart.tmx
+/copy:Maps/BruntKart.tmx
+
+#begin Maps/CorridorTiles_50x50px_12tiles.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -31,12 +33,22 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Maps/SimpleTCorridor/CorridorTiles_50x50px_12tiles.png
+/build:Maps/CorridorTiles_50x50px_12tiles.png
 
-#begin Maps/SimpleTCorridor/SimpleTCorridor.tmx
-/importer:
-/processor:
-/build:Maps/SimpleTCorridor/SimpleTCorridor.tmx
+#begin Maps/SimpleTCorridor.tmx
+/copy:Maps/SimpleTCorridor.tmx
+
+#begin Maps/TestTileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/TestTileset.png
 
 #begin SpriteImages/car_red.png
 /importer:TextureImporter
