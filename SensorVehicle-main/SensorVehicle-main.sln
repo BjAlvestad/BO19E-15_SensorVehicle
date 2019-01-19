@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulatorInterface", "SimulatorInterface\SimulatorInterface.csproj", "{DA0083B6-4CD3-43BC-B6D4-F154854CCD52}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{9EAF6F40-D918-46D1-9FEC-8C70120BBA08}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9EAF6F40-D918-46D1-9FEC-8C70120BBA08}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Control Logic", "Control Logic", "{16CE78CB-5B4C-4DFC-AF8D-4531A69C1BED}"
 EndProject
