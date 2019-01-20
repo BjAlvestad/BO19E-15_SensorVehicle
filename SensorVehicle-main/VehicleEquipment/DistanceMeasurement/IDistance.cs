@@ -1,6 +1,6 @@
 ﻿namespace VehicleEquipment.DistanceMeasurement
 {
-    internal interface IDistance
+    public interface IDistance
     {
         float Fwd { get; }
         float Left { get; }
