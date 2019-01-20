@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarPacketReceiver
+    public static class LidarPacketReceiver
     {
         public const string DefaultLidarIp = "192.168.1.201";
         public const int DefaultDataPort = 2368;
