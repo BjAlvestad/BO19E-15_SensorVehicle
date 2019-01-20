@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarDistance
+    public class LidarDistance : IDistance
     {
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances
         {
@@ -38,6 +38,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             DefaultCalculationType = defaultCalculationType;
             LidarDistanceCollector.Run = true;
             LidarDistanceCollector.NewDistances += OnNewDistances;
+
+            MinRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
+            MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
+            Resolution = float.NaN;  // Don't know the distance resolution
         }
 
         public float Fwd
@@ -99,6 +103,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 return _aft;
             }
         }
+
+        public float MinRange { get; private set; }
+        public float MaxRange { get; private set; }
+        public float Resolution { get; private set; }
 
         public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle = VerticalAngle.Up3)
         {
