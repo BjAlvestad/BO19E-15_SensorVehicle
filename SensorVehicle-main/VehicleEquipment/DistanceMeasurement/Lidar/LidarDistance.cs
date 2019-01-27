@@ -178,7 +178,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (true)
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync(NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, new List<VerticalAngle>(_activeVerticalAngles));  //TODO: Change LidarPacketInterpreter to utilize HashSet instead of List
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, _activeVerticalAngles);  //TODO: Change LidarPacketInterpreter to utilize HashSet instead of List
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
