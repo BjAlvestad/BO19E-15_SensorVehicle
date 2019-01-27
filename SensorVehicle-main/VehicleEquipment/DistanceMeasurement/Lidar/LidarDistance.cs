@@ -44,67 +44,55 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         public DateTime LastUpdate { get; private set; }
         public bool IsCollectorRunning { get; private set; }
         public string CollectorMessage { get; private set; }
-        public float Fwd
         public byte NumberOfCycles { get; set; }
-        {
-            get
-            {
-                if (_fwdHasBeenCalculated)
-                {
-                    return _fwd;
-                }
 
-                _fwd = GetDistance(345, 15);
-                _fwdHasBeenCalculated = true;
+        public float GetFwd()
+        {
+            if (_fwdHasBeenCalculated)
+            {
                 return _fwd;
             }
+
+            _fwd = GetDistance(345, 15);
+            _fwdHasBeenCalculated = true;
+            return _fwd;
         }
 
-        public float Left
+        public float GetLeft()
         {
-            get
+            if (_leftHasBeenCalculated)
             {
-                if (_leftHasBeenCalculated)
-                {
-                    return _left;
-                }
-
-                _left = GetDistance(255, 285);
-                _leftHasBeenCalculated = true;
                 return _left;
             }
+
+            _left = GetDistance(255, 285);
+            _leftHasBeenCalculated = true;
+            return _left;
         }
 
-        public float Right
+        public float GetRight()
         {
-            get
+            if (_rightHasBeenCalculated)
             {
-                if (_rightHasBeenCalculated)
-                {
-                    return _right;
-                }
-
-                _right = GetDistance(75, 105);
-                _rightHasBeenCalculated = true;
                 return _right;
             }
+
+            _right = GetDistance(75, 105);
+            _rightHasBeenCalculated = true;
+            return _right;
         }
 
-        public float Aft
+        public float GetAft()
         {
-            get
+            if (_aftHasBeenCalculated)
             {
-                if (_aftHasBeenCalculated)
-                {
-                    return _aft;
-                }
-
-                _aft = GetDistance(165, 195);
-                _aftHasBeenCalculated = true;
                 return _aft;
             }
-        }
 
+            _aft = GetDistance(165, 195);
+            _aftHasBeenCalculated = true;
+            return _aft;
+        }
 
         public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle = VerticalAngle.Up3)
         {
