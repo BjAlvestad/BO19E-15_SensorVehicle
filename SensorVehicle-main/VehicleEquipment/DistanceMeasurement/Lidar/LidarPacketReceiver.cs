@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
@@ -47,11 +48,34 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             return receivedPackets;
         }
 
+        public async Task<Queue<byte[]>> GetQueueOfDataPacketsAsync(byte numberOfCycles = 3)
+        {     
+            Queue<byte[]> receivedPackets = new Queue<byte[]>();
+
+            for (int i = 0; i < numberOfCycles * NumberOfDatapacksPerCycle; i++)
+            {
+                byte[] dataPacket = await GetDataPacketAsync();
+                if (dataPacket != null)
+                {
+                    receivedPackets.Enqueue(dataPacket);
+                }
+            }
+
+            return receivedPackets;
+        }
+
         public byte[] GetDataPacket()
         {
             byte[] dataPacket = Udp.Receive(ref _lidarIpEp);  //TODO: Change to async
 
             return (dataPacket.Length == DataPayloadSize) ? dataPacket : null;
+        }
+        
+        public async Task<byte[]> GetDataPacketAsync()
+        {
+            var receiveResult = await Udp.ReceiveAsync();  //TODO: Change to async
+            
+            return (receiveResult.Buffer.Length == DataPayloadSize) ? receiveResult.Buffer : null;
         }
     }
 }
