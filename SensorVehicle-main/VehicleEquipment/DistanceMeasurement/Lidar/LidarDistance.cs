@@ -3,21 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
     public class LidarDistance : IDistance
     {
-        public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances
-        {
-            get
-            {
-                //eventWaitHandle.WaitOne();  // BUG: Can't use eventWaitHandle here due to it causing significant slowdown (maybe copy out list before enumerating it instead)
-                return _distances;
-            }
-            private set { _distances = value; }
-        }
-
         public CalculationType DefaultCalculationType { get; set; }
 
         private bool _fwdHasBeenCalculated;
@@ -28,23 +19,33 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private float _left;
         private float _right;
         private float _aft;
+        private ILidarPacketReceiver _packetReceiver;
+        private CancellationTokenSource _collectorCancelToken = new CancellationTokenSource();
+        private HashSet<VerticalAngle> _activeVerticalAngles; // HashSet will not contain any duplicate value
 
-        EventWaitHandle eventWaitHandle = new AutoResetEvent(false);
-        private ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> _distances;
-
-        public LidarDistance(CalculationType defaultCalculationType = CalculationType.Max)
+        public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
         {
-            Distances = new ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>>(new Dictionary<VerticalAngle, List<HorizontalPoint>>());
-            DefaultCalculationType = defaultCalculationType;
-            LidarDistanceCollector.Run = true;
-            LidarDistanceCollector.NewDistances += OnNewDistances;
+            _packetReceiver = packetReceiver;
+            DefaultCalculationType = CalculationType.Max; //TEMP
 
             MinRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
             MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
             Resolution = float.NaN;  // Don't know the distance resolution
+
+            NumberOfCycles = 3;
+            _activeVerticalAngles = new HashSet<VerticalAngle>(verticalAngles);
         }
 
+        public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
+
+        public float MinRange { get; private set; }
+        public float MaxRange { get; private set; }
+        public float Resolution { get; private set; }
+        public DateTime LastUpdate { get; private set; }
+        public bool IsCollectorRunning { get; private set; }
+        public string CollectorMessage { get; private set; }
         public float Fwd
+        public byte NumberOfCycles { get; set; }
         {
             get
             {
@@ -104,9 +105,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        public float MinRange { get; private set; }
-        public float MaxRange { get; private set; }
-        public float Resolution { get; private set; }
 
         public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle = VerticalAngle.Up3)
         {
@@ -164,16 +162,52 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        private void OnNewDistances(object sender, LidarDistanceEventArgs e)
+        public void StartCollector()
         {
-            //eventWaitHandle.Reset();
-            Distances = e.LidarCycles;
-            //eventWaitHandle.Set();
+            if (IsCollectorRunning)
+            {
+                return;
+            }
+            IsCollectorRunning = true;
+            PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
+        }
 
-            _fwdHasBeenCalculated = false;
-            _leftHasBeenCalculated = false;
-            _rightHasBeenCalculated = false;
-            _aftHasBeenCalculated = false;
+        public void StopCollector()
+        {
+            if (!IsCollectorRunning || _collectorCancelToken.IsCancellationRequested)
+            {
+                IsCollectorRunning = false;
+                return;
+            }
+            _collectorCancelToken.Cancel();
+            IsCollectorRunning = false;
+        }
+
+        public async Task PeriodicUpdateDistancesAsync(TimeSpan timeToWaitAfterUpdate, CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (true)
+                {
+                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync(NumberOfCycles);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, new List<VerticalAngle>(_activeVerticalAngles));  //TODO: Change LidarPacketInterpreter to utilize HashSet instead of List
+                    _fwdHasBeenCalculated = false;
+                    _leftHasBeenCalculated = false;
+                    _rightHasBeenCalculated = false;
+                    _aftHasBeenCalculated = false;
+                    LastUpdate = DateTime.Now;
+
+                    await Task.Delay(timeToWaitAfterUpdate, cancellationToken);
+                    //TODO: Verify if this is an ok way to do it. Fire-and-Forget seems to be discouraged. However this code has been suggested for situations like this.
+                    // https://stackoverflow.com/questions/30462079/run-async-method-regularly-with-specified-interval
+                    // https://blogs.msdn.microsoft.com/benwilli/2016/06/30/asynchronous-infinite-loops-instead-of-timers/
+                }
+            }
+            catch (Exception e)
+            {
+                CollectorMessage = $"A collector error occure:\n{e.Message}";
+                StopCollector();
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace VehicleEquipment.TestAppConsole.DistanceMeasurement.Lidar
 {
     static class LidarDistanceTest
     {
-        public static LidarDistance lidarDistance = new LidarDistance();
+        public static LidarDistance lidarDistance = new LidarDistance(new LidarPacketReceiver(), GetListOfAllVerticalAngles());
 
         public static void PrintDistanceFromIndex()
         {
@@ -61,11 +61,16 @@ namespace VehicleEquipment.TestAppConsole.DistanceMeasurement.Lidar
             Console.WriteLine($"\nFinnished prining {numberOfAnglesToPrint}");
         }
 
-        private static void PrintHorizontalAnglesToConsole(bool printAllAngles = false)
+        private static VerticalAngle[] GetListOfAllVerticalAngles()
         {
-            int numberOfAnglesToPrint = printAllAngles ? LidarDistanceCollector._distances[VerticalAngle.Up3].Count : 300;
+            List<VerticalAngle> activeAngles = new List<VerticalAngle>();
 
-           
+            foreach (VerticalAngle verticalAngle in Enum.GetValues(typeof(VerticalAngle)))
+            {
+                activeAngles.Add(verticalAngle);
+            }
+
+            return activeAngles.ToArray();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace VehicleEquipment.TestAppConsole
         {
             //LidarDistanceCollectorTest.TestOneCycleOfLidarDataCollector();
 
+            LidarDistanceTest.lidarDistance.StartCollector();
             LidarDistanceTest.PrintDirectionsContinously();
 
             //Console.WriteLine("Sleeping for 1 second");
