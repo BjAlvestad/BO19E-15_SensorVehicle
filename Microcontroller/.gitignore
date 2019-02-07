@@ -1,0 +1,7 @@
+# Se også https://www.visualmicro.com/forums/YaBB.pl?num=1464921586 og ekskluder binærfiler med unntak av de listet opp der
+
+# Custom git ignore
+__vm/
+Debug/
+*.filters
+*.user

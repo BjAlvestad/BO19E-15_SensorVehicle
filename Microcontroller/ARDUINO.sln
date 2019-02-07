@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ARD_Ultrasonic", "ARD_Ultrasonic\ARD_Ultrasonic.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ARD_Encoder", "ARD_Encoder\ARD_Encoder.vcxproj", "{F8DAE875-712E-4A95-A3CE-6D565E4B9CDC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ARD_Gyro", "ARD_Gyro\ARD_Gyro.vcxproj", "{6A45239C-FA40-44F3-92C6-C46B9941F4CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ARD_Wheels", "ARD_Wheels\ARD_Wheels.vcxproj", "{CE9846A6-2193-4859-8806-CB1A324372A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{F8DAE875-712E-4A95-A3CE-6D565E4B9CDC}.Debug|x86.ActiveCfg = Debug|Win32
+		{F8DAE875-712E-4A95-A3CE-6D565E4B9CDC}.Debug|x86.Build.0 = Debug|Win32
+		{F8DAE875-712E-4A95-A3CE-6D565E4B9CDC}.Release|x86.ActiveCfg = Release|Win32
+		{F8DAE875-712E-4A95-A3CE-6D565E4B9CDC}.Release|x86.Build.0 = Release|Win32
+		{6A45239C-FA40-44F3-92C6-C46B9941F4CE}.Debug|x86.ActiveCfg = Debug|Win32
+		{6A45239C-FA40-44F3-92C6-C46B9941F4CE}.Debug|x86.Build.0 = Debug|Win32
+		{6A45239C-FA40-44F3-92C6-C46B9941F4CE}.Release|x86.ActiveCfg = Release|Win32
+		{6A45239C-FA40-44F3-92C6-C46B9941F4CE}.Release|x86.Build.0 = Release|Win32
+		{CE9846A6-2193-4859-8806-CB1A324372A2}.Debug|x86.ActiveCfg = Debug|Win32
+		{CE9846A6-2193-4859-8806-CB1A324372A2}.Debug|x86.Build.0 = Debug|Win32
+		{CE9846A6-2193-4859-8806-CB1A324372A2}.Release|x86.ActiveCfg = Release|Win32
+		{CE9846A6-2193-4859-8806-CB1A324372A2}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3363D97D-C95D-4254-8197-6D7A592D81CB}
+	EndGlobalSection
+EndGlobal
