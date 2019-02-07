@@ -115,15 +115,32 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             List<float> distancesInRange = new List<float>();
             bool angleSpansZero = fromAngle > toAngle;
 
-            foreach (HorizontalPoint point in Distances[verticalAngle])
+            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
+            if (startIndex == -1) return new List<float>(){float.NaN};
+
+            //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
+            if (angleSpansZero)
             {
-                if (angleSpansZero && (point.Angle > fromAngle || point.Angle < toAngle))
+                for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
                 {
-                    distancesInRange.Add(point.Distance);
+                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
                 }
-                else if (point.Angle > fromAngle && point.Angle < toAngle)
+
+                int endIndex = Distances[verticalAngle].FindIndex(point2 => point2.Angle > toAngle);
+                for (int i = 0; i < endIndex; i++)
                 {
+                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
+                }
+            }
+            else
+            {
+                int i = startIndex;
+                HorizontalPoint point = Distances[verticalAngle][i];
+                while (point.Angle < toAngle && i < Distances[verticalAngle].Count)
+                {
+                    point = Distances[verticalAngle][i];
                     distancesInRange.Add(point.Distance);
+                    ++i;
                 }
             }
 
@@ -143,7 +160,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 case CalculationType.Mean:
                     return values.Average(); 
                 case CalculationType.Median:
-                    values.Sort();
+                    values.Sort();  // TEMP: Remove after list is sorted in LidarDistanceCollector
                     return values[values.Count / 2];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(calculationType), calculationType, null);

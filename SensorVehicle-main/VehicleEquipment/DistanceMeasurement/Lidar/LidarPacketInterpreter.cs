@@ -27,7 +27,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
             }
             
-            //SortLidarDistances(interpretedData);  //TODO: Check if list should be sortet before sending out, or iterated for each check in LidarDistance class
+            SortLidarDistances(interpretedData);  //TODO: Check if list should be sortet before sending out, or iterated for each check in LidarDistance class
 
             return new ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>>(interpretedData);
         }
