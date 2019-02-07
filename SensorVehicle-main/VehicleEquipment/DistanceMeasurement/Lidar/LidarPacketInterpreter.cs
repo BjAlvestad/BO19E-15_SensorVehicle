@@ -7,7 +7,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
     {
         private const float MinimumRange = 0.3f;
 
-        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, List<VerticalAngle> verticalAnglesToCalculate)
+        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, HashSet<VerticalAngle> verticalAnglesToCalculate)
         {
             IDictionary<VerticalAngle, List<HorizontalPoint>> interpretedData = InitializeCollection(verticalAnglesToCalculate);
 
@@ -27,12 +27,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
             }
             
-            //SortLidarDistances(interpretedData);  //TODO: Check if list should be sortet before sending out, or iterated for each check in LidarDistance class
+            SortLidarDistances(interpretedData);  //TODO: Check if list should be sortet before sending out, or iterated for each check in LidarDistance class
 
             return new ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>>(interpretedData);
         }
 
-        private static Dictionary<VerticalAngle, List<HorizontalPoint>> InitializeCollection(List<VerticalAngle> verticalAnglesToInclude)
+        private static Dictionary<VerticalAngle, List<HorizontalPoint>> InitializeCollection(IEnumerable<VerticalAngle> verticalAnglesToInclude)
         {
             Dictionary<VerticalAngle, List<HorizontalPoint>> collection = new Dictionary<VerticalAngle, List<HorizontalPoint>>();
             foreach (VerticalAngle verticalAngle in verticalAnglesToInclude)

@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public static class LidarPacketReceiver
+    public class LidarPacketReceiver : ILidarPacketReceiver
     {
         public const string DefaultLidarIp = "192.168.1.201";
         public const int DefaultDataPort = 2368;
@@ -12,10 +13,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         internal const int NumberOfDatapacksPerCycle = 300; // Note: This is only true at 300 RPM (it is 150 for 600RPM).
         internal const int DataPayloadSize = 1206;
 
-        private static readonly UdpClient Udp = new UdpClient(DefaultDataPort);
-        private static IPEndPoint _lidarIpEp = new IPEndPoint(IPAddress.Parse(DefaultLidarIp), DefaultDataPort);
+        private readonly UdpClient Udp = new UdpClient(DefaultDataPort);
+        private IPEndPoint _lidarIpEp = new IPEndPoint(IPAddress.Parse(DefaultLidarIp), DefaultDataPort);
 
-        static LidarPacketReceiver()
+        public LidarPacketReceiver()
         {
             // We set buffer size to zero (default is 8192 bytes) to prevent reading old packets from the buffer (we only want the latest distance readings).
             Udp.Client.ReceiveBufferSize = 0;  
@@ -31,7 +32,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         /// <para>The default of 3 cycles will give a resolution of approximately ??0.4 degrees??.</para>
         /// </param>
         /// <returns>Queue of datapackets collected from LIDAR</returns>
-        public static Queue<byte[]> GetQueueOfDataPackets(byte numberOfCycles = 3)
+        public Queue<byte[]> GetQueueOfDataPackets(byte numberOfCycles = 3)
         {     
             Queue<byte[]> receivedPackets = new Queue<byte[]>();
 
@@ -47,11 +48,34 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             return receivedPackets;
         }
 
-        private static byte[] GetDataPacket()
+        public async Task<Queue<byte[]>> GetQueueOfDataPacketsAsync(byte numberOfCycles = 3)
+        {     
+            Queue<byte[]> receivedPackets = new Queue<byte[]>();
+
+            for (int i = 0; i < numberOfCycles * NumberOfDatapacksPerCycle; i++)
+            {
+                byte[] dataPacket = await GetDataPacketAsync();
+                if (dataPacket != null)
+                {
+                    receivedPackets.Enqueue(dataPacket);
+                }
+            }
+
+            return receivedPackets;
+        }
+
+        public byte[] GetDataPacket()
         {
             byte[] dataPacket = Udp.Receive(ref _lidarIpEp);  //TODO: Change to async
 
             return (dataPacket.Length == DataPayloadSize) ? dataPacket : null;
+        }
+        
+        public async Task<byte[]> GetDataPacketAsync()
+        {
+            var receiveResult = await Udp.ReceiveAsync();  //TODO: Change to async
+            
+            return (receiveResult.Buffer.Length == DataPayloadSize) ? receiveResult.Buffer : null;
         }
     }
 }

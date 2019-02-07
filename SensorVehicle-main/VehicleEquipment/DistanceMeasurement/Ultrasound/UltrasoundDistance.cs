@@ -11,9 +11,25 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public class UltrasoundDistance : IDistance
     {
-        public float Fwd { get; private set; }
-        public float Left { get; private set; }
-        public float Right { get; private set; }
+        private readonly float _left;
+        private readonly float _right;
+        private readonly float _fwd;
+
+        public float GetFwd()
+        {
+            return _fwd;
+        }
+
+        public float GetLeft()
+        {
+            return _left;
+        }
+
+        public float GetRight()
+        {
+            return _right;
+        }
+
         public float MinRange { get; private set; }
         public float MaxRange { get; private set; }
         public float Resolution { get; private set; }

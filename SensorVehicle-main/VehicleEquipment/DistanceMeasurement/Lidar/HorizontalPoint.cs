@@ -34,7 +34,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         {
             HorizontalPoint other = (HorizontalPoint) obj;
 
-            return Math.Sign(other.Angle - Angle);
+            //return Math.Sign(other.Angle - Angle);
+            return Math.Sign(Angle - other.Angle);
         }
     }
 }
