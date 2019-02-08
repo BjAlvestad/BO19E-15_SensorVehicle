@@ -128,6 +128,12 @@
       <Version>6.2.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VehicleEquipment\VehicleEquipment.csproj">
+      <Project>{2af70898-0237-4b67-9ece-950e8ebd8d53}</Project>
+      <Name>VehicleEquipment</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
