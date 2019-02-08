@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
-    public class Wheel
+    public class Wheel : IWheel
     {
         private readonly IVehicleCommunication vehicleCommunication;
 

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarDistance : IDistance
+    public class LidarDistance : ILidarDistance, IDistance
     {
         public CalculationType DefaultCalculationType { get; set; }
+        public VerticalAngle DefaultVerticalAngle { get; set; }
+
 
         private bool _fwdHasBeenCalculated;
         private bool _leftHasBeenCalculated;
@@ -94,12 +96,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             return _aft;
         }
 
-        public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle = VerticalAngle.Up3)
+        public float GetDistance(float fromAngle, float toAngle)
         {
-            return GetDistance(fromAngle, toAngle, DefaultCalculationType, verticalAngle);
+            return GetDistance(fromAngle, toAngle, DefaultVerticalAngle, DefaultCalculationType);
         }    
         
-        public float GetDistance(float fromAngle, float toAngle, CalculationType calculationType, VerticalAngle verticalAngle = VerticalAngle.Up3)
+        public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType)
         {
             if (Distances == null || (!Distances.ContainsKey(verticalAngle))) return float.NaN;
 
@@ -160,7 +162,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 case CalculationType.Mean:
                     return values.Average(); 
                 case CalculationType.Median:
-                    values.Sort();  // TEMP: Remove after list is sorted in LidarDistanceCollector
+                    values.Sort();  //BUG: This returns the distance of the median angle (not the median distance). Change the sort to sort by distance.
                     return values[values.Count / 2];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(calculationType), calculationType, null);
