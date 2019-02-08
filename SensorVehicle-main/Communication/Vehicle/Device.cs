@@ -1,6 +1,6 @@
 ﻿namespace Communication.Vehicle
 {
-    internal enum Device
+    public enum Device
     {
         Wheel = 0x20,
         Ultrasonic = 0x25,

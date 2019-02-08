@@ -8,7 +8,7 @@ namespace Communication.Vehicle
     {
         private I2cDevice _device;
 
-        internal VehicleCommunication(Device address)
+        public VehicleCommunication(Device address)
         {
             SetUpCommunication(address);
         }
