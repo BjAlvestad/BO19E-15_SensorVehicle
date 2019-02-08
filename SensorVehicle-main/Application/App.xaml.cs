@@ -17,6 +17,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+using Communication.MockCommunication;
 using Communication.Vehicle;
 using VehicleEquipment;
 using VehicleEquipment.DistanceMeasurement.Lidar;
@@ -48,7 +49,7 @@ namespace Application
             IVehicleCommunication ultrasonicCommunication;
             IVehicleCommunication encoderCommunication;
             IVehicleCommunication wheelCommunication;
-            if (isRunningOnPhysicalCar || true)  //TODO: Remove '|| true' once lidarPacketReceiver and the communication interfaces are assigned in the else block
+            if (isRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
@@ -59,10 +60,13 @@ namespace Application
             //{
             //    // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
             //}
-            //else // Connect up against mock/random data instead of simulator
-            //{
-
-            //}
+            else // Connect up against mock/random data instead of simulator
+            {
+                lidarPacketReceiver = new MockLidarPacketReceiver();
+                ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
+                encoderCommunication = new MockVehicleCommunication(Device.Encoder);
+                wheelCommunication = new MockVehicleCommunication(Device.Wheel);
+            }
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
             Container.RegisterType<IEncoder, Encoder>(new ContainerControlledLifetimeManager(), new InjectionConstructor(encoderCommunication));
