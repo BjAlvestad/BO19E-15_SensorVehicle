@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
-    class Ultrasonic
+    public class Ultrasonic : IUltrasonic
     {
         private readonly IVehicleCommunication vehicleCommunication;
 
@@ -13,19 +13,19 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             vehicleCommunication = comWithUltrasonic;
 
         }
-        public string DistanceLeft()
+        public float DistanceLeft()
         {
-            return Distance()[0];
+            return Convert.ToSingle(Distance()[0]);
         }
 
-        public string DistanceForward()
+        public float DistanceForward()
         {
-            return Distance()[1];
+            return Convert.ToSingle(Distance()[1]);
         }
 
-        public string DistanceRight()
+        public float DistanceRight()
         {
-            return Distance()[2];
+            return Convert.ToSingle(Distance()[2]);
         }
 
         private string[] Distance()
