@@ -262,6 +262,22 @@
       <Project>{572219C9-994F-4552-B6F7-62C0E388EE08}</Project>
       <Name>Application.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Communication\Communication.csproj">
+      <Project>{67b06db5-3841-4368-b7fb-661062284411}</Project>
+      <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExampleLogic\ExampleLogic.csproj">
+      <Project>{1eaeb633-a71e-4bf2-b0cd-49ca30db936a}</Project>
+      <Name>ExampleLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StudentLogic\StudentLogic.csproj">
+      <Project>{8199e791-329e-4b10-91b0-1c10f3f9186c}</Project>
+      <Name>StudentLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VehicleEquipment\VehicleEquipment.csproj">
+      <Project>{2af70898-0237-4b67-9ece-950e8ebd8d53}</Project>
+      <Name>VehicleEquipment</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
