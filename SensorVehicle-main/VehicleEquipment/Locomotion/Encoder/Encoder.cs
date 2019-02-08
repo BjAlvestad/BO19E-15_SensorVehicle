@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
-    public class Encoder
+    public class Encoder : IEncoder
     {
         private readonly IVehicleCommunication vehicleCommunication ;
 
