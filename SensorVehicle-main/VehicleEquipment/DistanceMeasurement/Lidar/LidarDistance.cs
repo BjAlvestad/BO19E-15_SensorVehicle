@@ -162,7 +162,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 case CalculationType.Mean:
                     return values.Average(); 
                 case CalculationType.Median:
-                    values.Sort();  // TEMP: Remove after list is sorted in LidarDistanceCollector
+                    values.Sort();  //BUG: This returns the distance of the median angle (not the median distance). Change the sort to sort by distance.
                     return values[values.Count / 2];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(calculationType), calculationType, null);
