@@ -1,11 +1,17 @@
-﻿namespace VehicleEquipment.DistanceMeasurement.Ultrasound
+﻿using System;
+
+namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public interface IUltrasonic
     {
-        float DistanceLeft();
+        float Left { get; }
 
-        float DistanceForward();
+        float Fwd { get; }
 
-        float DistanceRight();
+        float Right { get; }
+
+        DateTime TimeStamp { get; }
+
+        TimeSpan PermissableDistanceAge { get; set; }
     }
 }
