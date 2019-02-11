@@ -20,7 +20,7 @@ namespace Communication.MockCommunication
 
         public void Write(byte[] data)
         {
-            Debug.WriteLine($"Mocked a write of byte array to '{_nameOfDevice}'. Array contained the following elements:\n\t{String.Join(',', data)}");
+            Debug.WriteLine($"Mocked a write of byte array to '{_nameOfDevice}'. Array contained the following elements:\n\t{String.Join(", ", data)}");
         }
 
         public byte[] Read()
