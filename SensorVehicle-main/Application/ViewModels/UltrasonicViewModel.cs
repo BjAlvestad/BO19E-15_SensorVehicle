@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Core;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -46,22 +46,12 @@ namespace Application.ViewModels
                     {
                         while (RefreshUltrasonicContinously)
                         {
-                            UpdateGuiFromBackgroundThread(nameof(Ultrasonic));
+                            DispatcherHelper.ExecuteOnUIThreadAsync(() => RaisePropertyChanged(nameof(Ultrasonic)));
                             Thread.Sleep(Ultrasonic.PermissableDistanceAge / 2);
                         }
                     });
                 }
             }
-        }
-
-        private async void UpdateGuiFromBackgroundThread(string propertyName)
-        {
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    RaisePropertyChanged(nameof(Ultrasonic));
-                }
-            );
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
