@@ -8,19 +8,19 @@ namespace Communication.MockCommunication
     public class MockVehicleCommunication : IVehicleCommunication
     {
         private readonly Device _mockedDevice;
-        private string nameOfDevice;
+        private readonly string _nameOfDevice;
         private static Random _random;
 
         public MockVehicleCommunication(Device deviceToMock)
         {
             _mockedDevice = deviceToMock;
-            nameOfDevice = Enum.GetName(typeof(Device), _mockedDevice);
+            _nameOfDevice = Enum.GetName(typeof(Device), _mockedDevice);
             _random = new Random();
         }
 
         public void Write(byte[] data)
         {
-            Debug.WriteLine($"Mocked a write of byte array to '{nameOfDevice}'. Array contained the following elements:\n\t{String.Join(',', data)}");
+            Debug.WriteLine($"Mocked a write of byte array to '{_nameOfDevice}'. Array contained the following elements:\n\t{String.Join(',', data)}");
         }
 
         public byte[] Read()
@@ -33,7 +33,7 @@ namespace Communication.MockCommunication
                 case Device.Encoder:
                     return EncoderMockRead();
                 default:
-                    Debug.WriteLine($"Attempted to read from '{nameOfDevice}', but this has not been implemented in '{nameof(MockVehicleCommunication)}'.");
+                    Debug.WriteLine($"Attempted to read from '{_nameOfDevice}', but this has not been implemented in '{nameof(MockVehicleCommunication)}'.");
                     break;
             }
 
