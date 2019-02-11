@@ -15,6 +15,29 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <StackPanel>
+                <RelativePanel>
+                    <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
+                    <TextBox x:Name="FwdValue" Text="{x:Bind ViewModel.Ultrasonic.Fwd, Mode=OneWay}" Description="Forward" IsReadOnly="True" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
+
+                    <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
+                    <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Ultrasonic.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
+
+                    <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
+                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
+
+                    <TextBlock x:Name="LastReadingTimeText" Text="Last reading from sensors:" RelativePanel.Below="LeftValue"/>
+                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.RightOf="LastReadingTimeText" RelativePanel.AlignTopWith="LastReadingTimeText"/>
+
+                    <TextBlock x:Name="PermissableAgeText" Text="Permissable distance age: " RelativePanel.Below="LastReadingTimeText"/>
+                    <TextBox Text="{x:Bind ViewModel.PermissableDistanceAge, Mode=TwoWay}" RelativePanel.RightOf="PermissableAgeText" RelativePanel.AlignTopWith="PermissableAgeText"  Description="milliseconds"/>
+                </RelativePanel>
+
+                <ToggleSwitch Header="Toggle continous distance update" OffContent="Distances won't refresh on the display (but will still work in code logic)" OnContent="Display updates to reflect measured distance values" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}" />
+
+            </StackPanel>
+
+
         </Grid>
     </Grid>
 </Page>
