@@ -15,6 +15,24 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <StackPanel Orientation="Horizontal">
+                <StackPanel >
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"/> 
+                    <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                </StackPanel>
+                <StackPanel >
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}"/>  
+                    <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                </StackPanel>
+                <StackPanel>
+                    <Button Content="Apply new wheelspeed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"></Button>
+                    <ToggleSwitch Header="Apply the wheel speed continously when moving slider" OffContent="Speed won't be changed untill you click apply button" OnContent="The wheel speed will automatically be set to the slider position" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Toggle continous update between view and actual values" OffContent="Speed won't refresh on the display (but will still work in code logic)" OnContent="Display updates to reflect speed setpoint" IsOn="{x:Bind ViewModel.TogglePeriodicRaisePropertyChanged, Mode=TwoWay}" />
+                    <TextBox Text="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" Description="Update interval" />
+                </StackPanel>
+
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Page>
