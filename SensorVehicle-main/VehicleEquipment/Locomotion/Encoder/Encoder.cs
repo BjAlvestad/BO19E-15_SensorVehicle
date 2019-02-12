@@ -6,84 +6,47 @@ namespace VehicleEquipment.Locomotion.Encoder
 {
     public class Encoder : IEncoder
     {
-        private readonly IVehicleCommunication vehicleCommunication ;
+        private readonly IVehicleCommunication _vehicleCommunication ;
 
-        private int secSinceLastMessage;
-        private double totalDistanceTraveled;
-        private double cmTravelled;
+        public DateTime LastRequestTimeStamp { get; set; }
+        public int TimeAccumulatedSinceLastRequest { get; set; }
+        public double DistanceSinceLastRequest { get; set; }
+        public double TotalDistanceTravelled { get; set; }
 
-        public int SecScinceLastMessage
-        {
-            get { return secSinceLastMessage; }
-            set { secSinceLastMessage = value; }
-        }
-        public double TotalDistanceTravelled
-        {
-            get { return this.totalDistanceTraveled; }
-            set { totalDistanceTraveled = value; }
-        }
-        public double CmTravelled
-        {
-            get { return this.cmTravelled; }
-            set { cmTravelled = value; }
-        }
-        public double AvgVel
-        {
-            get { return cmTravelled / secSinceLastMessage; }
-            set { AvgVel = value; }
-        }
+        public double AvgVel => DistanceSinceLastRequest / TimeAccumulatedSinceLastRequest;
 
         public Encoder(IVehicleCommunication comWithEncoder)
         {
-            vehicleCommunication = comWithEncoder;
+            _vehicleCommunication = comWithEncoder;
         }
 
-        public double[] GetEncoderData()
+        public void GetEncoderData()
         {
-            byte[] response = new byte[20];
-            double[] returnArray = new double[3];
-            bool positiveNum;
-            byte firstByte;
-            byte secondByte;
-
             try
             {
-                response = vehicleCommunication.Read(); // this funtion will request data from Arduino and read it
+                byte[] response = _vehicleCommunication.Read();
+                
+                // BUG: first element is always set to 0, and are for that reason not used here (bug in microcontroller code?)
+                bool positiveNum = response[4] == 0; //TODO: Transfere signed integer instead of separate sign
 
-                if (response[4] == 0)   //BUG: No one knows why, but the first element is always set to 0
-                {
-                    positiveNum = true;
-                }
-                else
-                {
-                    positiveNum = false;
-                }
-
-                firstByte = response[1];
-                secondByte = response[2];
-                secSinceLastMessage = response[3];
+                byte firstDistanceByte = response[1];
+                byte secondDistanceByte = response[2];
+                TimeAccumulatedSinceLastRequest = response[3];
                 if (positiveNum)
                 {
-                    CmTravelled = Convert.ToInt16((firstByte << 8) | secondByte);
+                    DistanceSinceLastRequest = Convert.ToInt16((firstDistanceByte << 8) | secondDistanceByte);
                 }
                 else
                 {
-                    cmTravelled = Convert.ToInt16((firstByte << 8) | secondByte);
-                    cmTravelled = -cmTravelled;
+                    DistanceSinceLastRequest = -Convert.ToInt16((firstDistanceByte << 8) | secondDistanceByte);
                 }
-                AvgVel = (cmTravelled / ((500.0) / (1000))); //Enhet: cm/s   Her er 500 hentet fra timer.intervall
             }
             catch (Exception p)
             {
-                cmTravelled = double.NaN;
-                AvgVel = double.NaN;
+                DistanceSinceLastRequest = double.NaN;
             }
 
-            totalDistanceTraveled += cmTravelled;
-            returnArray[0] = cmTravelled;
-            returnArray[1] = AvgVel;
-            returnArray[2] = response[3];
-            return returnArray;
+            TotalDistanceTravelled += DistanceSinceLastRequest;
         }
     }
 }

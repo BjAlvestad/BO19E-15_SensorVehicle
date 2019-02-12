@@ -2,8 +2,8 @@
 {
     public interface IEncoder
     {
-        int SecScinceLastMessage { get; }
-        double CmTravelled { get; }
+        int TimeAccumulatedSinceLastRequest { get; }
+        double DistanceSinceLastRequest { get; }
         double AvgVel { get; }
 
         //TODO: Change fields in this interface after the Encoder class has been fixed (fields in interface are just copied from Encoder now)
