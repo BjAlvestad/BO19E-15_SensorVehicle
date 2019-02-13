@@ -14,29 +14,38 @@ using Prism.Windows.Navigation;
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using ExampleLogic;
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Wheels;
 
 namespace Application.ViewModels
 {
     public class ExampleLogicViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ISampleDataService _sampleDataService;
+        private readonly ExampleLogicService _exampleLogicService;
+        private readonly IWheel _wheel;
+        private readonly ILidarDistance _lidarDistance;
+        private readonly IUltrasonic _ultrasonic;
 
-        public ExampleLogicViewModel(INavigationService navigationServiceInstance, ISampleDataService sampleDataServiceInstance)
+        public ExampleLogicViewModel(INavigationService navigationServiceInstance, ExampleLogicService exampleLogicService, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
             _navigationService = navigationServiceInstance;
-            _sampleDataService = sampleDataServiceInstance;
+            _exampleLogicService = exampleLogicService;
+            _wheel = wheel;
+            _lidarDistance = lidarDistance;
+            _ultrasonic = ultrasonic;
         }
 
-        private SampleOrder _selected;
-
-        public SampleOrder Selected
+        private IExampleLogic _selected;
+        public IExampleLogic Selected
         {
             get => _selected;
             set => SetProperty(ref _selected, value);
         }
 
-        public ObservableCollection<SampleOrder> SampleItems { get; } = new ObservableCollection<SampleOrder>();
+        public ObservableCollection<IExampleLogic> ExamleLogics { get; } = new ObservableCollection<IExampleLogic>();
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
@@ -46,19 +55,19 @@ namespace Application.ViewModels
 
         public async Task LoadDataAsync()
         {
-            SampleItems.Clear();
+            ExamleLogics.Clear();
 
-            var data = await _sampleDataService.GetSampleModelDataAsync();
+            var data = await _exampleLogicService.GetExampleLogicAsync(_wheel, _lidarDistance, _ultrasonic);
 
             foreach (var item in data)
             {
-                SampleItems.Add(item);
+                ExamleLogics.Add(item);
             }
         }
 
         public void SetDefaultSelection()
         {
-            Selected = SampleItems.FirstOrDefault();
+            Selected = ExamleLogics.FirstOrDefault();
         }
     }
 }
