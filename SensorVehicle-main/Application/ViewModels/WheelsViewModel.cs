@@ -30,20 +30,14 @@ namespace Application.ViewModels
         public int LeftWheel
         {
             get { return _leftWheel; }
-            set
-            {
-                SetProperty(ref _leftWheel, value);
-            }
+            set { SetProperty(ref _leftWheel, value); }
         }
 
         private int _rightWheel;
         public int RightWheel
         {
             get { return _rightWheel; }
-            set
-            {
-                SetProperty(ref _rightWheel, value);
-            }
+            set { SetProperty(ref _rightWheel, value); }
         }
 
         public void ApplyNewWheelSpeed()
