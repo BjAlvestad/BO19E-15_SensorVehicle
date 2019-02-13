@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace VehicleEquipment.Locomotion.Encoder
@@ -9,44 +10,66 @@ namespace VehicleEquipment.Locomotion.Encoder
         private readonly IVehicleCommunication _vehicleCommunication ;
 
         public DateTime LastRequestTimeStamp { get; set; }
-        public int TimeAccumulatedSinceLastRequest { get; set; }
-        public double DistanceSinceLastRequest { get; set; }
+        public int TimeAccumulatedForLastRequest { get; set; }
+        public double DistanceAtLastRequest { get; set; }
         public double TotalDistanceTravelled { get; set; }
 
-        public double AvgVel => DistanceSinceLastRequest / TimeAccumulatedSinceLastRequest;
+        public double AvgVel => (DistanceAtLastRequest) / (TimeAccumulatedForLastRequest / 1000f); //Cm per sekund
 
         public Encoder(IVehicleCommunication comWithEncoder)
         {
             _vehicleCommunication = comWithEncoder;
         }
 
-        public void GetEncoderData()
+        public void ResetTotalDistanceTraveled()
+        {
+            TotalDistanceTravelled = 0;
+        }
+
+        public double CollectAndResetDistanceFromEncoder()
+        {
+            GetEncoderData();
+            LastRequestTimeStamp = DateTime.Now;
+
+            return DistanceAtLastRequest;
+        }
+
+        private void GetEncoderData()
         {
             try
             {
                 byte[] response = _vehicleCommunication.Read();
-                
-                // BUG: first element is always set to 0, and are for that reason not used here (bug in microcontroller code?)
-                bool positiveNum = response[4] == 0; //TODO: Transfere signed integer instead of separate sign
 
-                byte firstDistanceByte = response[1];
-                byte secondDistanceByte = response[2];
-                TimeAccumulatedSinceLastRequest = response[3];
-                if (positiveNum)
-                {
-                    DistanceSinceLastRequest = Convert.ToInt16((firstDistanceByte << 8) | secondDistanceByte);
-                }
-                else
-                {
-                    DistanceSinceLastRequest = -Convert.ToInt16((firstDistanceByte << 8) | secondDistanceByte);
-                }
+                int fromAddress = response[0];
+
+                int[] reassembledValues = AssembleIntsFromByteArray(response, numberOfIntsToAssemble: 2);
+
+                DistanceAtLastRequest = reassembledValues[0];
+                TimeAccumulatedForLastRequest = reassembledValues[1];
+                TotalDistanceTravelled += DistanceAtLastRequest;
             }
             catch (Exception p)
             {
-                DistanceSinceLastRequest = double.NaN;
+                DistanceAtLastRequest = double.NaN;
+                TimeAccumulatedForLastRequest = 0;
+                Debug.WriteLine($"EXCEPTION IN ENCODER.cs: {p.Message}");
             }
 
-            TotalDistanceTravelled += DistanceSinceLastRequest;
+            TotalDistanceTravelled += DistanceAtLastRequest;
+        }
+
+        private int[] AssembleIntsFromByteArray(byte[] response, int numberOfIntsToAssemble)
+        {
+            int[] assembledData = new int[numberOfIntsToAssemble];
+
+            for (int i = 0; i < numberOfIntsToAssemble; i++)
+            {
+                assembledData[i] = (response[1 + 4 * i] << 24) | (response[2 + 4 * i] << 16) | (response[3 + 4 * i] << 8) | response[4 + 4 * i];
+            }
+            Debug.WriteLine($"Assemble {String.Join(", ", response)} into {String.Join(", ", assembledData)}");
+            Debug.WriteLine($"Properties are now: DistanceAtLastRequest {DistanceAtLastRequest},  TimeAccumulatedForLastRequest {TimeAccumulatedForLastRequest},  TotalDistanceTraveled {TotalDistanceTravelled}");
+
+            return assembledData;
         }
     }
 }
