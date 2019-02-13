@@ -32,6 +32,15 @@
                     <Button Content="Stop wheels" FontSize="50" Click="{x:Bind ViewModel.StopWheels}"/>
                 </StackPanel>
 
+                <StackPanel>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.DistanceAtLastRequest, Mode=OneWay}" Description="Distance since last request"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.TimeAccumulatedForLastRequest, Mode=OneWay}" Description="Time"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.AvgVel, Mode=OneWay}" Description="Average Velocity (cm/s)"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.TotalDistanceTravelled, Mode=OneWay}" Description="Total Distance traveled (cm)"/>
+                    <ToggleSwitch Header="Toggle collect encoder distance continously" OffContent="Encoder distance won't update automatically" OnContent="Encoder speed is collectet at intervall" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
+                    <Button Content="Reset total distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
+                </StackPanel>
+
             </StackPanel>
 
         </Grid>

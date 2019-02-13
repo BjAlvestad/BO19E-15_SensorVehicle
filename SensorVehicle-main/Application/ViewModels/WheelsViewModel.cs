@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
+using VehicleEquipment.Locomotion.Encoder;
 using VehicleEquipment.Locomotion.Wheels;
 
 namespace Application.ViewModels
@@ -12,12 +13,15 @@ namespace Application.ViewModels
     {
         private CancellationTokenSource _periodicRaisePropertyChangedToken;
 
-        public WheelsViewModel(IWheel wheel)
+        public WheelsViewModel(IWheel wheel, IEncoder encoder)
         {
             Wheel = wheel;
+            Encoder = encoder;
         }
 
         public IWheel Wheel { get; set; }
+
+        public IEncoder Encoder { get; private set; }
 
         private TimeSpan _updateInterval;
         public TimeSpan UpdateInterval
@@ -64,6 +68,17 @@ namespace Application.ViewModels
             }
         }
 
+        private bool _collectEncoderDistanceContinously;
+        public bool CollectEncoderDistanceContinously
+        {
+            get { return _collectEncoderDistanceContinously; }
+            set
+            {
+                SetProperty(ref _collectEncoderDistanceContinously, value);
+                if (TogglePeriodicRaisePropertyChanged == false) TogglePeriodicRaisePropertyChanged = true;
+            }
+        }
+
         private bool _togglePeriodicRaisePropertyChanged;
         public bool TogglePeriodicRaisePropertyChanged
         {
@@ -92,7 +107,13 @@ namespace Application.ViewModels
                     Wheel.SetSpeed(LeftWheel, RightWheel);
                 }
 
+                if (CollectEncoderDistanceContinously)
+                {
+                    Encoder.CollectAndResetDistanceFromEncoder();
+                }
+
                 RaisePropertyChanged(nameof(Wheel));
+                RaisePropertyChanged(nameof(Encoder));
                 await Task.Delay(UpdateInterval, cancellationToken);
             }
         }
