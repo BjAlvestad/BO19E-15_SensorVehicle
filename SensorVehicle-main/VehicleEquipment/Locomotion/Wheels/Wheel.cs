@@ -16,6 +16,31 @@ namespace VehicleEquipment.Locomotion.Wheels
         public int CurrentSpeedLeft { get; private set; }
         public int CurrentSpeedRight { get; private set; }
 
+        public void Fwd(int speed = 50)
+        {
+            SetSpeed(speed, speed);
+        }
+
+        public void TurnLeft(int speed = 50)
+        {
+            SetSpeed(-speed, speed);
+        }
+
+        public void TurnRight(int speed = 50)
+        {
+            SetSpeed(speed, -speed);
+        }
+
+        public void Reverse(int speed = 50)
+        {
+            SetSpeed(-speed, -speed);
+        }
+
+        public void Stop()
+        {
+            SetSpeed(0, 0);
+        }
+
         /// <summary>
         /// Desired speed - Input range [-100, 100]
         /// </summary>
