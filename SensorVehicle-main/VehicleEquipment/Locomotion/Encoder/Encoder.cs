@@ -1,89 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
     public class Encoder : IEncoder
     {
-        private readonly IVehicleCommunication vehicleCommunication ;
+        private readonly IVehicleCommunication _vehicleCommunication ;
 
-        private int secSinceLastMessage;
-        private double totalDistanceTraveled;
-        private double cmTravelled;
+        public DateTime LastRequestTimeStamp { get; set; }
+        public int TimeAccumulatedForLastRequest { get; set; }
+        public double DistanceAtLastRequest { get; set; }
+        public double TotalDistanceTravelled { get; set; }
 
-        public int SecScinceLastMessage
-        {
-            get { return secSinceLastMessage; }
-            set { secSinceLastMessage = value; }
-        }
-        public double TotalDistanceTravelled
-        {
-            get { return this.totalDistanceTraveled; }
-            set { totalDistanceTraveled = value; }
-        }
-        public double CmTravelled
-        {
-            get { return this.cmTravelled; }
-            set { cmTravelled = value; }
-        }
-        public double AvgVel
-        {
-            get { return cmTravelled / secSinceLastMessage; }
-            set { AvgVel = value; }
-        }
+        public double AvgVel => (DistanceAtLastRequest) / (TimeAccumulatedForLastRequest / 1000f); //Cm per sekund
 
         public Encoder(IVehicleCommunication comWithEncoder)
         {
-            vehicleCommunication = comWithEncoder;
+            _vehicleCommunication = comWithEncoder;
         }
 
-        public double[] GetEncoderData()
+        public void ResetTotalDistanceTraveled()
         {
-            byte[] response = new byte[20];
-            double[] returnArray = new double[3];
-            bool positiveNum;
-            byte firstByte;
-            byte secondByte;
+            TotalDistanceTravelled = 0;
+        }
 
+        public double CollectAndResetDistanceFromEncoder()
+        {
+            GetEncoderData();
+            LastRequestTimeStamp = DateTime.Now;
+
+            return DistanceAtLastRequest;
+        }
+
+        private void GetEncoderData()
+        {
             try
             {
-                response = vehicleCommunication.Read(); // this funtion will request data from Arduino and read it
+                byte[] response = _vehicleCommunication.Read();
 
-                if (response[4] == 0)   //BUG: No one knows why, but the first element is always set to 0
-                {
-                    positiveNum = true;
-                }
-                else
-                {
-                    positiveNum = false;
-                }
+                int fromAddress = response[0];
 
-                firstByte = response[1];
-                secondByte = response[2];
-                secSinceLastMessage = response[3];
-                if (positiveNum)
-                {
-                    CmTravelled = Convert.ToInt16((firstByte << 8) | secondByte);
-                }
-                else
-                {
-                    cmTravelled = Convert.ToInt16((firstByte << 8) | secondByte);
-                    cmTravelled = -cmTravelled;
-                }
-                AvgVel = (cmTravelled / ((500.0) / (1000))); //Enhet: cm/s   Her er 500 hentet fra timer.intervall
+                int[] reassembledValues = AssembleIntsFromByteArray(response, numberOfIntsToAssemble: 2);
+
+                DistanceAtLastRequest = reassembledValues[0];
+                TimeAccumulatedForLastRequest = reassembledValues[1];
+                TotalDistanceTravelled += DistanceAtLastRequest;
             }
             catch (Exception p)
             {
-                cmTravelled = double.NaN;
-                AvgVel = double.NaN;
+                DistanceAtLastRequest = double.NaN;
+                TimeAccumulatedForLastRequest = 0;
+                Debug.WriteLine($"EXCEPTION IN ENCODER.cs: {p.Message}");
             }
 
-            totalDistanceTraveled += cmTravelled;
-            returnArray[0] = cmTravelled;
-            returnArray[1] = AvgVel;
-            returnArray[2] = response[3];
-            return returnArray;
+            TotalDistanceTravelled += DistanceAtLastRequest;
+        }
+
+        private int[] AssembleIntsFromByteArray(byte[] response, int numberOfIntsToAssemble)
+        {
+            int[] assembledData = new int[numberOfIntsToAssemble];
+
+            for (int i = 0; i < numberOfIntsToAssemble; i++)
+            {
+                assembledData[i] = (response[1 + 4 * i] << 24) | (response[2 + 4 * i] << 16) | (response[3 + 4 * i] << 8) | response[4 + 4 * i];
+            }
+            Debug.WriteLine($"Assemble {String.Join(", ", response)} into {String.Join(", ", assembledData)}");
+            Debug.WriteLine($"Properties are now: DistanceAtLastRequest {DistanceAtLastRequest},  TimeAccumulatedForLastRequest {TimeAccumulatedForLastRequest},  TotalDistanceTraveled {TotalDistanceTravelled}");
+
+            return assembledData;
         }
     }
 }

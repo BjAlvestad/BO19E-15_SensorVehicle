@@ -15,6 +15,34 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <StackPanel Orientation="Horizontal">
+                <StackPanel >
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"/> 
+                    <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                </StackPanel>
+                <StackPanel >
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}"/>  
+                    <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                </StackPanel>
+                <StackPanel>
+                    <Button Content="Apply new wheelspeed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"></Button>
+                    <ToggleSwitch Header="Apply the wheel speed continously when moving slider" OffContent="Speed won't be changed untill you click apply button" OnContent="The wheel speed will automatically be set to the slider position" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Toggle continous update between view and actual values" OffContent="Speed won't refresh on the display (but will still work in code logic)" OnContent="Display updates to reflect speed setpoint" IsOn="{x:Bind ViewModel.TogglePeriodicRaisePropertyChanged, Mode=TwoWay}" />
+                    <TextBox Text="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" Description="Update interval" />
+                    <Button Content="Stop wheels" FontSize="50" Click="{x:Bind ViewModel.StopWheels}"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.DistanceAtLastRequest, Mode=OneWay}" Description="Distance since last request"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.TimeAccumulatedForLastRequest, Mode=OneWay}" Description="Time"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.AvgVel, Mode=OneWay}" Description="Average Velocity (cm/s)"/>
+                    <TextBox Text="{x:Bind ViewModel.Encoder.TotalDistanceTravelled, Mode=OneWay}" Description="Total Distance traveled (cm)"/>
+                    <ToggleSwitch Header="Toggle collect encoder distance continously" OffContent="Encoder distance won't update automatically" OnContent="Encoder speed is collectet at intervall" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
+                    <Button Content="Reset total distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
+                </StackPanel>
+
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Page>

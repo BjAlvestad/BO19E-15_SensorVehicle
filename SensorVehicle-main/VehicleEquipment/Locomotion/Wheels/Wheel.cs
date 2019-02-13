@@ -8,12 +8,37 @@ namespace VehicleEquipment.Locomotion.Wheels
     {
         private readonly IVehicleCommunication vehicleCommunication;
 
-        public static int speedLeft = 0;
-        public static int speedRight = 0;
-
         public Wheel(IVehicleCommunication comWithWheel)
         {
             vehicleCommunication = comWithWheel;
+        }
+
+        public int CurrentSpeedLeft { get; private set; }
+        public int CurrentSpeedRight { get; private set; }
+
+        public void Fwd(int speed = 50)
+        {
+            SetSpeed(speed, speed);
+        }
+
+        public void TurnLeft(int speed = 50)
+        {
+            SetSpeed(-speed, speed);
+        }
+
+        public void TurnRight(int speed = 50)
+        {
+            SetSpeed(speed, -speed);
+        }
+
+        public void Reverse(int speed = 50)
+        {
+            SetSpeed(-speed, -speed);
+        }
+
+        public void Stop()
+        {
+            SetSpeed(0, 0);
         }
 
         /// <summary>
@@ -23,12 +48,17 @@ namespace VehicleEquipment.Locomotion.Wheels
         /// <param name="RightValue"></param>
         public void SetSpeed(int LeftValue, int RightValue)
         {
+            if (LeftValue == CurrentSpeedLeft && RightValue == CurrentSpeedRight) return;
+
             byte[] bytes = new byte[3];
             bytes[0] = 0x50;
             bytes[1] = (byte)Convert(LeftValue);
             bytes[2] = (byte)Convert(RightValue);
 
             vehicleCommunication.Write(bytes);  // 
+
+            CurrentSpeedLeft = bytes[1] - 128;
+            CurrentSpeedRight = bytes[2] - 128;
         }
 
         /// <summary>
