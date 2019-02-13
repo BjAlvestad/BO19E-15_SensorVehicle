@@ -46,6 +46,13 @@ namespace Application.ViewModels
             RaisePropertyChanged(nameof(Wheel));
         }
 
+        public void StopWheels()
+        {
+            LeftWheel = 0;
+            RightWheel = 0;
+            Wheel.SetSpeed(LeftWheel, RightWheel);
+        }
+
         private bool _applyWheelSpeedContinously;
         public bool ApplyWheelSpeedContinously
         {
