@@ -61,10 +61,10 @@ namespace Communication.MockCommunication
         {
             byte[] response = new byte[20];
 
-            response[0] = 1;
-            response[1] = 34;
-            response[2] = 67;
-            response[3] = 90;
+            int distance = _random.Next(-500, 500);
+            int time = _random.Next(500, 5000);
+
+            response = BreakIntsIntoByteArray(0x30, distance, time);
 
             return response;
         }
