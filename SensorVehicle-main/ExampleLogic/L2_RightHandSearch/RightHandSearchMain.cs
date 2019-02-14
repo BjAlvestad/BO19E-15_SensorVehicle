@@ -6,12 +6,12 @@ using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic.L2_RightHandSearch
 {
-    public class RightHandSearchMain : IExampleLogic
+    public class RightHandSearchMain : ExampleLogicBase
     {
         private readonly IWheel _wheels;
         private readonly IUltrasonic _ultrasonic;
 
-        public ExampleLogicDetails Details { get; }
+        public override ExampleLogicDetails Details { get; }
 
         public RightHandSearchMain(IWheel wheels, IUltrasonic ultrasonic)
         {
@@ -31,12 +31,12 @@ namespace ExampleLogic.L2_RightHandSearch
         }
 
         private int i = 0;
-        public void Initialize()
+        public override void Initialize()
         {
             Debug.WriteLine($"Ran Initialize() method in {Details.Title}");
         }
 
-        public void Run()
+        public override void Run()
         {
             ++i;
             Debug.WriteLine($"Run() method in {Details.Title} is on iteration no. {i}. Sleeping for {i} milli seconds");

@@ -38,14 +38,14 @@ namespace Application.ViewModels
             _ultrasonic = ultrasonic;
         }
 
-        private IExampleLogic _selected;
-        public IExampleLogic Selected
+        private ExampleLogicBase _selected;
+        public ExampleLogicBase Selected
         {
             get => _selected;
             set => SetProperty(ref _selected, value);
         }
 
-        public ObservableCollection<IExampleLogic> ExamleLogics { get; } = new ObservableCollection<IExampleLogic>();
+        public ObservableCollection<ExampleLogicBase> ExampleLogics { get; } = new ObservableCollection<ExampleLogicBase>();
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
@@ -55,19 +55,19 @@ namespace Application.ViewModels
 
         public async Task LoadDataAsync()
         {
-            ExamleLogics.Clear();
+            ExampleLogics.Clear();
 
-            var data = await _exampleLogicService.GetExampleLogicAsync(_wheel, _lidarDistance, _ultrasonic);
+            var data = await _exampleLogicService.GetExampleLogicAsync(_wheel, _lidarDistance, _ultrasonic); //TODO: Look into storing data after the first time it is loaded.
 
             foreach (var item in data)
             {
-                ExamleLogics.Add(item);
+                ExampleLogics.Add(item);
             }
         }
 
         public void SetDefaultSelection()
         {
-            Selected = ExamleLogics.FirstOrDefault();
+            Selected = ExampleLogics.FirstOrDefault();
         }
     }
 }

@@ -10,13 +10,13 @@ namespace Application.Views
 {
     public sealed partial class ExampleLogicDetailControl : UserControl
     {
-        public IExampleLogic MasterMenuItem
+        public ExampleLogicBase MasterMenuItem
         {
-            get { return GetValue(MasterMenuItemProperty) as IExampleLogic; }
+            get { return GetValue(MasterMenuItemProperty) as ExampleLogicBase; }
             set { SetValue(MasterMenuItemProperty, value); }
         }
 
-        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(IExampleLogic), typeof(ExampleLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
+        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(ExampleLogicBase), typeof(ExampleLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
 
         public ExampleLogicDetailControl()
         {

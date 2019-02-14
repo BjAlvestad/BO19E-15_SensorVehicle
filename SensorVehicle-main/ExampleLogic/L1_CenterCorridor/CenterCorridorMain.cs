@@ -4,12 +4,12 @@ using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic.L1_CenterCorridor
 {
-    public class CenterCorridorMain : IExampleLogic
+    public class CenterCorridorMain : ExampleLogicBase
     {
         private readonly IWheel _wheels;
         private readonly IUltrasonic _ultrasonic;
 
-        public ExampleLogicDetails Details { get; }
+        public override ExampleLogicDetails Details { get; }
 
         public CenterCorridorMain(IWheel wheels, IUltrasonic ultrasonic)
         {
@@ -29,12 +29,12 @@ namespace ExampleLogic.L1_CenterCorridor
         }
 
 
-        public void Initialize()
+        public override void Initialize()
         {
             throw new NotImplementedException();
         }
 
-        public void Run()
+        public override void Run()
         {
             throw new NotImplementedException();
         }

@@ -20,7 +20,7 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <DataTemplate x:Key="ItemTemplate" x:DataType="exampleLogic:IExampleLogic">
+        <DataTemplate x:Key="ItemTemplate" x:DataType="exampleLogic:ExampleLogicBase">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -88,7 +88,7 @@
             </VisualStateManager.VisualStateGroups>
         <controls:MasterDetailsView
             x:Name="MasterDetailsViewControl"
-            ItemsSource="{x:Bind ViewModel.ExamleLogics}"
+            ItemsSource="{x:Bind ViewModel.ExampleLogics}"
             SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
             ItemTemplate="{StaticResource ItemTemplate}"
             DetailsTemplate="{StaticResource DetailsTemplate}"

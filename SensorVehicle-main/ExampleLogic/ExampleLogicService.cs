@@ -11,9 +11,9 @@ namespace ExampleLogic
 {
     public class ExampleLogicService
     {
-        private static IEnumerable<IExampleLogic> AllExamples(IWheel wheels, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
+        private static IEnumerable<ExampleLogicBase> AllExamples(IWheel wheels, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
-            var examples = new ObservableCollection<IExampleLogic>
+            var examples = new ObservableCollection<ExampleLogicBase>
             {
                 new CenterCorridorMain(wheels, ultrasonic),
                 new RightHandSearchMain(wheels, ultrasonic)
@@ -22,7 +22,7 @@ namespace ExampleLogic
             return examples;
         }
 
-        public async Task<IEnumerable<IExampleLogic>> GetExampleLogicAsync(IWheel wheels, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
+        public async Task<IEnumerable<ExampleLogicBase>> GetExampleLogicAsync(IWheel wheels, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
             return await Task.FromResult(AllExamples(wheels, lidarDistance, ultrasonic));
         }
