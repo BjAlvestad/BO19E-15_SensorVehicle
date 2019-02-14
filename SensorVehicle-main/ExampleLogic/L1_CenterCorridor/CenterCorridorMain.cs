@@ -46,7 +46,7 @@ namespace ExampleLogic.L1_CenterCorridor
             int leftSpeed = (int)(distanceRight * speedScaler);
             int rightSpeed = (int)(distanceLeft * speedScaler);
 
-            _wheels.SetSpeed(leftSpeed, rightSpeed);
+            _wheels.SetSpeed(leftSpeed / 2, rightSpeed / 2);
 
             Debug.WriteLine($"DISTANCE:  Left={distanceLeft} Right={distanceRight},  SPEED: Left={leftSpeed} Right={rightSpeed}");
             Thread.Sleep(50);
@@ -54,7 +54,8 @@ namespace ExampleLogic.L1_CenterCorridor
             float distanceFwd = _ultrasonic.Fwd;
             if (distanceFwd < 0.5 && !float.IsNaN(distanceFwd))
             {
-                int sleepTime = 20000;
+                _wheels.SetSpeed(0, 0);
+                int sleepTime = 5000;
                 Debug.WriteLine($"Distance fwd is <0.5m ({distanceFwd}m), sleeping for {sleepTime} milliseconds.");
                 Thread.Sleep(sleepTime);
             }
