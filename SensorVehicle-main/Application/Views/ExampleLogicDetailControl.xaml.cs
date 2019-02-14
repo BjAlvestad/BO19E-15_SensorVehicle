@@ -4,18 +4,19 @@ using Application.Core.Models;
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using ExampleLogic;
 
 namespace Application.Views
 {
     public sealed partial class ExampleLogicDetailControl : UserControl
     {
-        public SampleOrder MasterMenuItem
+        public ExampleLogicBase MasterMenuItem
         {
-            get { return GetValue(MasterMenuItemProperty) as SampleOrder; }
+            get { return GetValue(MasterMenuItemProperty) as ExampleLogicBase; }
             set { SetValue(MasterMenuItemProperty, value); }
         }
 
-        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(SampleOrder), typeof(ExampleLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
+        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(ExampleLogicBase), typeof(ExampleLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
 
         public ExampleLogicDetailControl()
         {

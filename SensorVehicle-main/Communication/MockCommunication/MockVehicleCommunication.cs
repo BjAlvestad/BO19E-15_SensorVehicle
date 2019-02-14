@@ -44,15 +44,17 @@ namespace Communication.MockCommunication
         {
             byte[] bytes = new byte[20];
 
-            bytes[0] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[1] = Convert.ToByte('1');
-            bytes[2] = Convert.ToByte('2');
+            bytes[0] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[1] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[2] = Convert.ToByte('1');
             bytes[3] = Convert.ToByte('-');
-            bytes[4] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[5] = Convert.ToByte('5');
-            bytes[6] = Convert.ToByte('-');
-            bytes[7] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[8] = Convert.ToByte('8');
+            bytes[4] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[5] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[6] = Convert.ToByte('2');
+            bytes[7] = Convert.ToByte('-');
+            bytes[8] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[9] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[10] = Convert.ToByte('3');
 
             return bytes;
         }
@@ -61,12 +63,28 @@ namespace Communication.MockCommunication
         {
             byte[] response = new byte[20];
 
-            response[0] = 1;
-            response[1] = 34;
-            response[2] = 67;
-            response[3] = 90;
+            int distance = _random.Next(-500, 500);
+            int time = _random.Next(500, 5000);
+
+            response = BreakIntsIntoByteArray(0x30, distance, time);
 
             return response;
+        }
+
+        private byte[] BreakIntsIntoByteArray(byte addressByte, params int[] integersToBreakDown)
+        {
+            byte[] bytes = new byte[integersToBreakDown.Length*sizeof(Int32) + 1];
+
+            bytes[0] = addressByte;
+            for (int i = 0; i < integersToBreakDown.Length; i++)
+            {
+                bytes[4 * i + 1] = (byte) (integersToBreakDown[i] >> 24);
+                bytes[4 * i + 2] = (byte) (integersToBreakDown[i] >> 16);
+                bytes[4 * i + 3] = (byte) (integersToBreakDown[i] >> 8);
+                bytes[4 * i + 4] = (byte) (integersToBreakDown[i]);
+            }
+
+            return bytes;
         }
     }
 }

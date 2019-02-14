@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls;
 
 using Communication.MockCommunication;
 using Communication.Vehicle;
+using ExampleLogic;
 using VehicleEquipment;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -41,6 +42,7 @@ namespace Application
             base.ConfigureContainer();
             Container.RegisterInstance<IResourceLoader>(new ResourceLoaderAdapter(new ResourceLoader()));
             Container.RegisterType<ISampleDataService, SampleDataService>();  //TEMP: Remove after StudentLogic and ExampleLogic pages has been changed
+            Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
 
             bool isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
             bool runAgainstSimulator = false;
