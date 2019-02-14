@@ -44,15 +44,17 @@ namespace Communication.MockCommunication
         {
             byte[] bytes = new byte[20];
 
-            bytes[0] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[1] = Convert.ToByte('1');
-            bytes[2] = Convert.ToByte('2');
+            bytes[0] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[1] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[2] = Convert.ToByte('1');
             bytes[3] = Convert.ToByte('-');
-            bytes[4] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[5] = Convert.ToByte('5');
-            bytes[6] = Convert.ToByte('-');
-            bytes[7] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[8] = Convert.ToByte('8');
+            bytes[4] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[5] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[6] = Convert.ToByte('2');
+            bytes[7] = Convert.ToByte('-');
+            bytes[8] = Convert.ToByte('0' + _random.Next(0, 4));
+            bytes[9] = Convert.ToByte('0' + _random.Next(0, 10));
+            bytes[10] = Convert.ToByte('3');
 
             return bytes;
         }
