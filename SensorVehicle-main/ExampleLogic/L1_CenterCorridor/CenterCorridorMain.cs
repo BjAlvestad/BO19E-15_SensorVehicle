@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Wheels;
 
@@ -31,12 +33,31 @@ namespace ExampleLogic.L1_CenterCorridor
 
         public override void Initialize()
         {
-            throw new NotImplementedException();
+            Debug.WriteLine($"Ran Initialize() method in {Details.Title}");
         }
 
         public override void Run()
         {
-            throw new NotImplementedException();
+            float distanceLeft = _ultrasonic.Left;
+            float distanceRight = _ultrasonic.Right;
+
+            float speedScaler = 100 / Math.Max(distanceLeft, distanceRight);
+
+            int leftSpeed = (int)(distanceRight * speedScaler);
+            int rightSpeed = (int)(distanceLeft * speedScaler);
+
+            _wheels.SetSpeed(leftSpeed, rightSpeed);
+
+            Debug.WriteLine($"DISTANCE:  Left={distanceLeft} Right={distanceRight},  SPEED: Left={leftSpeed} Right={rightSpeed}");
+            Thread.Sleep(50);
+
+            float distanceFwd = _ultrasonic.Fwd;
+            if (distanceFwd < 0.5 && !float.IsNaN(distanceFwd))
+            {
+                int sleepTime = 20000;
+                Debug.WriteLine($"Distance fwd is <0.5m ({distanceFwd}m), sleeping for {sleepTime} milliseconds.");
+                Thread.Sleep(sleepTime);
+            }
         }
     }
 }
