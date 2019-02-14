@@ -29,6 +29,9 @@
                 <TextBlock Text="Description" Style="{StaticResource DetailSubTitleStyle}" Margin="{StaticResource SmallTopMargin}"/>
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Description, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
             </StackPanel>
+            <StackPanel>
+                <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunExampleLogic, Mode=TwoWay}" />
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
