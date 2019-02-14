@@ -68,5 +68,21 @@ namespace Communication.MockCommunication
 
             return response;
         }
+
+        private byte[] BreakIntsIntoByteArray(byte addressByte, params int[] integersToBreakDown)
+        {
+            byte[] bytes = new byte[integersToBreakDown.Length*sizeof(Int32) + 1];
+
+            bytes[0] = addressByte;
+            for (int i = 0; i < integersToBreakDown.Length; i++)
+            {
+                bytes[4 * i + 1] = (byte) (integersToBreakDown[i] >> 24);
+                bytes[4 * i + 2] = (byte) (integersToBreakDown[i] >> 16);
+                bytes[4 * i + 3] = (byte) (integersToBreakDown[i] >> 8);
+                bytes[4 * i + 4] = (byte) (integersToBreakDown[i]);
+            }
+
+            return bytes;
+        }
     }
 }
