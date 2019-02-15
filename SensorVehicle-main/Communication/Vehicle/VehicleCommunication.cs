@@ -1,16 +1,21 @@
 ﻿using System;
+using System.IO;
 using Windows.Devices.I2c;
+using Helpers;
 using VehicleEquipment;
 
 namespace Communication.Vehicle
 {
     public class VehicleCommunication : IVehicleCommunication
     {
+        public const int DataRequestSize = 23;  // 3bytes + 5ints == 23bytes, i.e. possible to receive up to 5 ints without increasing this number.
         private I2cDevice _device;
+        private Device _address;
 
         public VehicleCommunication(Device address)
         {
             SetUpCommunication(address);
+            _address = address;
         }
 
         private async void SetUpCommunication(Device address)
@@ -24,17 +29,22 @@ namespace Communication.Vehicle
             _device = await I2cDevice.FromIdAsync(deviceInformationCollection[0].Id, settings);
         }
 
-        public void Write(byte[] data)
+        public void Write(MessageCode message, params int[] data)
         {
-            _device.Write(data);
+            byte[] byteArray = ArrayConverter.ToByteArray(_address, message, data);
+
+            _device.Write(byteArray);
         }
 
-        public byte[] Read()
+        public VehicleDataPacket Read()
         {
-            byte[] data = new byte[20];
-            _device.Read(data);
+            byte[] receivedData = new byte[DataRequestSize];
+            _device.Read(receivedData);
 
-            return data;
+            VehicleDataPacket decodedData = ArrayConverter.AssembleDataFromVehicle(receivedData);
+            if(decodedData.DeviceAddress != _address) throw new InvalidDataException($"Expected data from {_address}. Addess stamp on datapacket was {decodedData.DeviceAddress}.");
+
+            return decodedData;
         }
     }
 }
