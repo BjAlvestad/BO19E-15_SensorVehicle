@@ -15,6 +15,50 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Lidar:" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Lidar, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Ultrasound" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Ultrasound, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Wheels" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Wheels, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Encoder" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Encoder, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Spare1" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare1, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Spare2" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare2, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0, 10">
+                    <TextBlock Text="Spare3" FontSize="24" Width="150"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare3, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"  Margin="0, 10">
+                    <Button Content="Power down all equipment" Click="{x:Bind ViewModel.PowerDownAllPins}" />
+                    <Button Content="Exit application" Margin="50, 0" Click="{x:Bind ViewModel.ExitApplication}" Visibility="{x:Bind ViewModel.VisibleIfRunningOnIoT}" />
+                    <Button Content="Restart system" Click="{x:Bind ViewModel.RestartSystem}" Visibility="{x:Bind ViewModel.VisibleIfRunningOnIoT}" />
+                    <Button Content="Shut down system" Margin="50, 0" Click="{x:Bind ViewModel.ShutDownSystem}" Visibility="{x:Bind ViewModel.VisibleIfRunningOnIoT}" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>
