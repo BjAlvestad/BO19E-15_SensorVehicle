@@ -16,7 +16,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using Communication;
 using Communication.MockCommunication;
 using Communication.Vehicle;
 using ExampleLogic;
@@ -57,6 +57,7 @@ namespace Application
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
                 encoderCommunication = new VehicleCommunication(Device.Encoder);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
+                Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
             //else if (runAgainstSimulator)
             //{
@@ -68,6 +69,7 @@ namespace Application
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
                 encoderCommunication = new MockVehicleCommunication(Device.Encoder);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
+                Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
