@@ -8,6 +8,7 @@
 #include <TimerOne.h>
 #include <Wire.h>
 const double TICKS_PER_CM = 10.6;
+const int ADDRESS = 0x30;
 int val;
 int encoder0PinA = 3;
 int encoder0PinB = 4;
@@ -27,8 +28,8 @@ void setup() {
 	pinMode(encoder0PinB, INPUT);
 }
 
-void loop() {
-  Serial.println("Topp av loop()");
+void loop() 
+{
 	n = digitalRead(encoder0PinA);
 	if ((encoder0PinALast == LOW) && (n == HIGH))
 	{
@@ -46,37 +47,27 @@ void loop() {
 
 void onRequestEvent()
 {
-	//Timer1.stop();
-	byte myArray[4];
-	cmTravelled = encoder0Pos/TICKS_PER_CM;
-	if (cmTravelled >= 0)
-	{
-		myArray[0] = 0;
-		myArray[1] = (cmTravelled << 8) && 0xFF;
-		myArray[2] = cmTravelled & 0xFF;
-	}
-	else
-	{
-		myArray[0] = 1;
-		myArray[1] = (abs(cmTravelled) << 8) && 0xFF;
-		myArray[2] = abs(cmTravelled) & 0xFF;
-	}
-	myArray[3] = millisecond / 1000.0;
-	Wire.write(myArray, 4);
-	Serial.print("Encoder: ");
-	Serial.println(encoder0Pos);
-	Serial.print("Cm: ");
-	Serial.println(cmTravelled);
+	byte myArray[9];
+	cmTravelled = encoder0Pos / TICKS_PER_CM;
+
+	myArray[0] = ADDRESS;
+	myArray[1] = (cmTravelled >> 24);
+	myArray[2] = (cmTravelled >> 16);
+	myArray[3] = (cmTravelled >> 8);
+	myArray[4] = (cmTravelled);
+
+	myArray[5] = (millisecond >> 24); //Most significant byte
+	myArray[6] = (millisecond >> 16);
+	myArray[7] = (millisecond >> 8);
+	myArray[8] = (millisecond);		  //Least significant byte
+
+	Wire.write(myArray, 9);
+
 	encoder0Pos = 0;
-	cmTravelled = 0;
 	millisecond = 0;
-	
-	//Timer1.restart();
 }
 
 void increaseCounter()
 {
 	millisecond++;
-	//Serial.print("Verdi: ");
-	//Serial.println(millisecond);
 }
