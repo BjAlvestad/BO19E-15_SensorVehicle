@@ -19,7 +19,7 @@ int millisecond = 0;
 int cmTravelled = 0;
 
 void setup() {
-	Wire.begin(0x30);
+	Wire.begin(ADDRESS);
 	Wire.onRequest(onRequestEvent);
 	Serial.begin(9600);
 	Timer1.initialize(1000);
@@ -47,21 +47,23 @@ void loop()
 
 void onRequestEvent()
 {
-	byte myArray[9];
+	byte myArray[10];
 	cmTravelled = encoder0Pos / TICKS_PER_CM;
 
 	myArray[0] = ADDRESS;
-	myArray[1] = (cmTravelled >> 24);
-	myArray[2] = (cmTravelled >> 16);
-	myArray[3] = (cmTravelled >> 8);
-	myArray[4] = (cmTravelled);
+	myArray[1] = 22; //TODO: Change this to valid message code
+	myArray[2] = 2;
+	myArray[3] = (cmTravelled >> 24);
+	myArray[4] = (cmTravelled >> 16);
+	myArray[5] = (cmTravelled >> 8);
+	myArray[6] = (cmTravelled);
 
-	myArray[5] = (millisecond >> 24); //Most significant byte
-	myArray[6] = (millisecond >> 16);
-	myArray[7] = (millisecond >> 8);
-	myArray[8] = (millisecond);		  //Least significant byte
+	myArray[7] = (millisecond >> 24); //Most significant byte
+	myArray[8] = (millisecond >> 16);
+	myArray[9] = (millisecond >> 8);
+	myArray[10] = (millisecond);		  //Least significant byte
 
-	Wire.write(myArray, 9);
+	Wire.write(myArray, 11);
 
 	encoder0Pos = 0;
 	millisecond = 0;
