@@ -7,7 +7,8 @@ namespace Communication.Vehicle
         private readonly GpioPin _gpioPin;
 
         /// <summary>
-        /// Instantiates a GPIO pin which can be switched on or off
+        /// Instantiates a GPIO pin which can be switched on or off.
+        /// See <a href="https://docs.microsoft.com/en-us/windows/iot-core/learn-about-hardware/pinmappings/pinmappingsrpi#gpio-pin-overview"> see Raspberry Pi3 pin-mappings</a> for list of pins and their default pull-direction (0-8 up, 9-27 down).
         /// </summary>
         /// <param name="gpioNumber">This is GPIO number (not physical pin number)</param>
         public PowerPin(int gpioNumber)
