@@ -34,13 +34,28 @@ namespace Communication.Vehicle
             //_controller.TryOpenPin(29, GpioSharingMode.Exclusive, out _lidarPin, out LidarPinStatus);
 
             _lidarPin = _controller.OpenPin(5);  // NOTE: PinNumber is the GPIO number. E.g. 5 for GPIO5 (which resides on physical pin number 29)
+            _lidarPin.SetDriveMode(GpioPinDriveMode.Output);
+            _lidarPin.Write(GpioPinValue.Low);
+
             _ultrasoundPin = _controller.OpenPin(6);
+            _ultrasoundPin.SetDriveMode(GpioPinDriveMode.Output);
+            _ultrasoundPin.Write(GpioPinValue.Low);
+
+
             _wheelsPin = _controller.OpenPin(13);
+            _wheelsPin.SetDriveMode(GpioPinDriveMode.Output);
+            _wheelsPin.Write(GpioPinValue.Low);
+
             _encoderPin = _controller.OpenPin(26);
+            _encoderPin.SetDriveMode(GpioPinDriveMode.Output);
+            _encoderPin.Write(GpioPinValue.Low);
 
             _spare1Pin = _controller.OpenPin(23);
+            _spare1Pin.SetDriveMode(GpioPinDriveMode.Output);
             _spare2Pin = _controller.OpenPin(24);
+            _spare2Pin.SetDriveMode(GpioPinDriveMode.Output);
             _spare3Pin = _controller.OpenPin(25);
+            _spare3Pin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         private bool _lidar;
