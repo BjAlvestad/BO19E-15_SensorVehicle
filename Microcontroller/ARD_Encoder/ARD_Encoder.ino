@@ -7,9 +7,9 @@
 */
 #include <TimerOne.h>
 #include <Wire.h>
-const double TICKS_PER_CM = 10.6;
-const int ADDRESS = 0x30;
-const int SIZE_OF_BYTE_ARRAY = 23;
+const double ticks_per_cm = 10.6;
+const int address = 0x30;
+const int size_of_byte_array = 23;
 int val;
 int encoder0PinA = 3;
 int encoder0PinB = 4;
@@ -22,7 +22,7 @@ long longsToBeSent[] = { cmTravelled, millisecond };
 int arrayLength = sizeof(longsToBeSent) / sizeof(long);
 
 void setup() {
-	Wire.begin(ADDRESS);
+	Wire.begin(address);
 	Wire.onRequest(onRequestEvent);
 	Serial.begin(9600);
 	Timer1.initialize(1000);
@@ -54,15 +54,15 @@ void increaseCounter()
 
 void onRequestEvent()
 {
-	cmTravelled = encoder0Pos / TICKS_PER_CM;
+	cmTravelled = encoder0Pos / ticks_per_cm;
 	long longsToBeSent[] = { cmTravelled, millisecond };
 	int arrayLength = sizeof(longsToBeSent) / sizeof(long);
 	SendByteArray(0, arrayLength, longsToBeSent);
 }
 void SendByteArray(int message, int arrayLength, long longsToBeSent[])
 {
-	byte byteArray[SIZE_OF_BYTE_ARRAY];
-	byteArray[0] = (byte)ADDRESS;
+	byte byteArray[size_of_byte_array];
+	byteArray[0] = (byte)address;
 	byteArray[1] = (byte)message;
 	byteArray[2] = (byte)(arrayLength);
 	int elementsBeforeLong = 3;
@@ -78,7 +78,7 @@ void SendByteArray(int message, int arrayLength, long longsToBeSent[])
 			byteArray[(elementsBeforeLong - 1) + shiftByLong + j] = (byte)(longsToBeSent[i] >> (bitSizeOfLong - 8 * j));
 		}
 	}
-	Wire.write(byteArray, SIZE_OF_BYTE_ARRAY);
+	Wire.write(byteArray, size_of_byte_array);
 	encoder0Pos = 0;
 	millisecond = 0;
 }
