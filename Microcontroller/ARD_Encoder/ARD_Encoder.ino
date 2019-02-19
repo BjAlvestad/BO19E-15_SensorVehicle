@@ -69,7 +69,7 @@ void SendByteArray(int message, int arrayLength, long longsToBeSent[])
 
 	const int bitSizeOfLong = sizeof(long) * 8;
 
-	for (int i = 0; i < sizeof(longsToBeSent); i++)
+	for (int i = 0; i < arrayLength; i++)
 	{
 
 		int shiftByLong = sizeof(long) * i;
