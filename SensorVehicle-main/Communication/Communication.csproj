@@ -128,6 +128,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vehicle\Device.cs" />
     <Compile Include="Vehicle\Power.cs" />
+    <Compile Include="Vehicle\PowerPin.cs" />
     <Compile Include="Vehicle\VehicleCommunication.cs" />
     <EmbeddedResource Include="Properties\Communication.rd.xml" />
   </ItemGroup>

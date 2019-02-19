@@ -1,13 +1,6 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using Windows.Devices.Gpio;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Communication.Annotations;
@@ -17,45 +10,26 @@ namespace Communication.Vehicle
     public class Power : INotifyPropertyChanged, IPower
     {
         //TODO: Extract pin out to separate class
-        private readonly GpioController _controller;
-        private readonly GpioPin _lidarPin;
-        private readonly GpioPin _ultrasoundPin;
-        private readonly GpioPin _wheelsPin;
-        private readonly GpioPin _encoderPin;
-        private readonly GpioPin _spare1Pin;
-        private readonly GpioPin _spare2Pin;
-        private readonly GpioPin _spare3Pin;
+        private readonly PowerPin _lidarPin;
+        private readonly PowerPin _ultrasoundPin;
+        private readonly PowerPin _wheelsPin;
+        private readonly PowerPin _encoderPin;
+        private readonly PowerPin _spare1Pin;
+        private readonly PowerPin _spare2Pin;
+        private readonly PowerPin _spare3Pin;
 
         public Power()
         {
-            _controller = GpioController.GetDefault();
+            // For Raspberry Pi 3b, the GPIO 0-8 have pull high as default (on), while GPIO 9-27 have pull low (off)
+            // Note: This was checked in the datasheet for broadcom BCM2835, and not BCM2837 which is what is actually mounted on the 3b unit we have.
+            _lidarPin = new PowerPin(12);
+            _ultrasoundPin = new PowerPin(16);
+            _wheelsPin = new PowerPin(20);
+            _encoderPin = new PowerPin(21);
 
-            // TODO: Set pin numbers according to physical connections
-            //_controller.TryOpenPin(29, GpioSharingMode.Exclusive, out _lidarPin, out LidarPinStatus);
-
-            _lidarPin = _controller.OpenPin(5);  // NOTE: PinNumber is the GPIO number. E.g. 5 for GPIO5 (which resides on physical pin number 29)
-            _lidarPin.SetDriveMode(GpioPinDriveMode.Output);
-            _lidarPin.Write(GpioPinValue.Low);
-
-            _ultrasoundPin = _controller.OpenPin(6);
-            _ultrasoundPin.SetDriveMode(GpioPinDriveMode.Output);
-            _ultrasoundPin.Write(GpioPinValue.Low);
-
-
-            _wheelsPin = _controller.OpenPin(13);
-            _wheelsPin.SetDriveMode(GpioPinDriveMode.Output);
-            _wheelsPin.Write(GpioPinValue.Low);
-
-            _encoderPin = _controller.OpenPin(26);
-            _encoderPin.SetDriveMode(GpioPinDriveMode.Output);
-            _encoderPin.Write(GpioPinValue.Low);
-
-            _spare1Pin = _controller.OpenPin(23);
-            _spare1Pin.SetDriveMode(GpioPinDriveMode.Output);
-            _spare2Pin = _controller.OpenPin(24);
-            _spare2Pin.SetDriveMode(GpioPinDriveMode.Output);
-            _spare3Pin = _controller.OpenPin(25);
-            _spare3Pin.SetDriveMode(GpioPinDriveMode.Output);
+            _spare1Pin = new PowerPin(13);
+            _spare2Pin = new PowerPin(19);
+            _spare3Pin = new PowerPin(26);
         }
 
         private bool _lidar;
@@ -64,8 +38,8 @@ namespace Communication.Vehicle
             get { return _lidar; }
             set
             {
-                _lidar = value; 
-                SetPin(_lidarPin, value);
+                _lidar = value;
+                _lidarPin.Power = value;
                 OnPropertyChanged(nameof(Lidar));
             }
         }
@@ -78,8 +52,8 @@ namespace Communication.Vehicle
             get { return _ultrasound; }
             set
             {
-                _ultrasound = value; 
-                SetPin(_ultrasoundPin, value);
+                _ultrasound = value;
+                _ultrasoundPin.Power = value;
                 OnPropertyChanged(nameof(Ultrasound));
             }
         }
@@ -90,8 +64,8 @@ namespace Communication.Vehicle
             get { return _wheels; }
             set
             {
-                _wheels = value; 
-                SetPin(_wheelsPin, value);
+                _wheels = value;
+                _wheelsPin.Power = value;
                 OnPropertyChanged(nameof(Wheels));
             }
         }
@@ -102,8 +76,8 @@ namespace Communication.Vehicle
             get { return _encoder; }
             set
             {
-                _encoder = value; 
-                SetPin(_encoderPin, value);
+                _encoder = value;
+                _encoderPin.Power = value;
                 OnPropertyChanged(nameof(Encoder));
             }
         }
@@ -114,8 +88,8 @@ namespace Communication.Vehicle
             get { return _spare1; }
             set
             {
-                _spare1 = value; 
-                SetPin(_spare1Pin, value);
+                _spare1 = value;
+                _spare1Pin.Power = value;
                 OnPropertyChanged(nameof(Spare1));
             }
         }
@@ -127,7 +101,7 @@ namespace Communication.Vehicle
             set
             {
                 _spare2 = value; 
-                SetPin(_spare2Pin, value);
+                _spare2Pin.Power = value;
                 OnPropertyChanged(nameof(Spare2));
             }
         }
@@ -139,14 +113,9 @@ namespace Communication.Vehicle
             set
             {
                 _spare3 = value; 
-                SetPin(_spare3Pin, value);
+                _spare3Pin.Power = value;
                 OnPropertyChanged(nameof(Spare3));
             }
-        }
-
-        private void SetPin(GpioPin pin, bool pinState)
-        {
-            pin.Write(pinState ? GpioPinValue.High : GpioPinValue.Low);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
