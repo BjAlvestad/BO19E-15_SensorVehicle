@@ -9,14 +9,17 @@
 #include <Wire.h>
 const double TICKS_PER_CM = 10.6;
 const int ADDRESS = 0x30;
+const int SIZE_OF_BYTE_ARRAY = 23;
 int val;
 int encoder0PinA = 3;
 int encoder0PinB = 4;
 int encoder0Pos = 0;
 int encoder0PinALast = LOW;
 int n = LOW;
-int millisecond = 0;
-int cmTravelled = 0;
+long cmTravelled = 0;
+long millisecond = 0;
+long longsToBeSent[] = { cmTravelled, millisecond };
+int arrayLength = sizeof(longsToBeSent) / sizeof(long);
 
 void setup() {
 	Wire.begin(ADDRESS);
@@ -44,32 +47,38 @@ void loop()
 	}
 	encoder0PinALast = n;
 }
+void increaseCounter()
+{
+	millisecond++;	
+}
 
 void onRequestEvent()
 {
-	byte myArray[10];
 	cmTravelled = encoder0Pos / TICKS_PER_CM;
+	long longsToBeSent[] = { cmTravelled, millisecond };
+	int arrayLength = sizeof(longsToBeSent) / sizeof(long);
+	SendByteArray(0, arrayLength, longsToBeSent);
+}
+void SendByteArray(int message, int arrayLength, long longsToBeSent[])
+{
+	byte byteArray[SIZE_OF_BYTE_ARRAY];
+	byteArray[0] = (byte)ADDRESS;
+	byteArray[1] = (byte)message;
+	byteArray[2] = (byte)(arrayLength);
+	int elementsBeforeLong = 3;
 
-	myArray[0] = ADDRESS;
-	myArray[1] = 22; //TODO: Change this to valid message code
-	myArray[2] = 2;
-	myArray[3] = (cmTravelled >> 24);
-	myArray[4] = (cmTravelled >> 16);
-	myArray[5] = (cmTravelled >> 8);
-	myArray[6] = (cmTravelled);
+	const int bitSizeOfLong = sizeof(long) * 8;
 
-	myArray[7] = (millisecond >> 24); //Most significant byte
-	myArray[8] = (millisecond >> 16);
-	myArray[9] = (millisecond >> 8);
-	myArray[10] = (millisecond);		  //Least significant byte
+	for (int i = 0; i < sizeof(longsToBeSent); i++)
+	{
 
-	Wire.write(myArray, 11);
-
+		int shiftByLong = sizeof(long) * i;
+		for (int j = 1; j <= sizeof(long); j++)
+		{
+			byteArray[(elementsBeforeLong - 1) + shiftByLong + j] = (byte)(longsToBeSent[i] >> (bitSizeOfLong - 8 * j));
+		}
+	}
+	Wire.write(byteArray, SIZE_OF_BYTE_ARRAY);
 	encoder0Pos = 0;
 	millisecond = 0;
-}
-
-void increaseCounter()
-{
-	millisecond++;
 }
