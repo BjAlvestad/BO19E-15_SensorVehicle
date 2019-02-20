@@ -1,14 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace VehicleEquipment
+﻿namespace VehicleEquipment
 {
     public interface IVehicleCommunication
     {
-        void Write(byte[] data);
+        void Write(MessageCode message, params int[] data);
 
-        byte[] Read();
+        VehicleDataPacket Read();
     }
 }
-

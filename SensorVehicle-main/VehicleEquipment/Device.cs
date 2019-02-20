@@ -1,4 +1,4 @@
-﻿namespace Communication.Vehicle
+﻿namespace VehicleEquipment
 {
     public enum Device
     {

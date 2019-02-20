@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Communication.Vehicle;
 using VehicleEquipment;
@@ -18,14 +19,13 @@ namespace Communication.MockCommunication
             _random = new Random();
         }
 
-        public void Write(byte[] data)
+        public void Write(MessageCode message, params int[] data)
         {
-            Debug.WriteLine($"Mocked a write of byte array to '{_nameOfDevice}'. Array contained the following elements:\n\t{String.Join(", ", data)}");
+            Debug.WriteLine($"Mocked a write to '{_nameOfDevice}'. Message: {message}. Data (integers): {string.Join(", ", data)}");
         }
 
-        public byte[] Read()
+        public VehicleDataPacket Read()
         {
-            byte[] mockData = new byte[20];
             switch (_mockedDevice)
             {
                 case Device.Ultrasonic:
@@ -37,54 +37,40 @@ namespace Communication.MockCommunication
                     break;
             }
 
-            return mockData;
+            return new VehicleDataPacket();
         }
 
-        private byte[] UltrasonicMockRead()
+        private VehicleDataPacket UltrasonicMockRead()
         {
-            byte[] bytes = new byte[20];
+            VehicleDataPacket data = new VehicleDataPacket
+            {
+                DeviceAddress = _mockedDevice,
+                Code = MessageCode.NoMessage,
+                Integers = new List<int>
+                {
+                    _random.Next(0, 400),  // Left distance
+                    _random.Next(0, 400),  // Fwd distance
+                    _random.Next(0, 400)  // Right distance
+                }
+            };
 
-            bytes[0] = Convert.ToByte('0' + _random.Next(0, 4));
-            bytes[1] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[2] = Convert.ToByte('1');
-            bytes[3] = Convert.ToByte('-');
-            bytes[4] = Convert.ToByte('0' + _random.Next(0, 4));
-            bytes[5] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[6] = Convert.ToByte('2');
-            bytes[7] = Convert.ToByte('-');
-            bytes[8] = Convert.ToByte('0' + _random.Next(0, 4));
-            bytes[9] = Convert.ToByte('0' + _random.Next(0, 10));
-            bytes[10] = Convert.ToByte('3');
-
-            return bytes;
+            return data;
         }
 
-        private byte[] EncoderMockRead()
+        private VehicleDataPacket EncoderMockRead()
         {
-            byte[] response = new byte[20];
-
-            int distance = _random.Next(-500, 500);
-            int time = _random.Next(500, 5000);
-
-            response = BreakIntsIntoByteArray(0x30, distance, time);
+            VehicleDataPacket response = new VehicleDataPacket
+            {
+                DeviceAddress = _mockedDevice,
+                Code = MessageCode.NoMessage,
+                Integers = new List<int>
+                {
+                    _random.Next(-500, 500),  // Distance in centimeters
+                    _random.Next(500, 5000),  // Time in milliseconds
+                }
+            };
 
             return response;
-        }
-
-        private byte[] BreakIntsIntoByteArray(byte addressByte, params int[] integersToBreakDown)
-        {
-            byte[] bytes = new byte[integersToBreakDown.Length*sizeof(Int32) + 1];
-
-            bytes[0] = addressByte;
-            for (int i = 0; i < integersToBreakDown.Length; i++)
-            {
-                bytes[4 * i + 1] = (byte) (integersToBreakDown[i] >> 24);
-                bytes[4 * i + 2] = (byte) (integersToBreakDown[i] >> 16);
-                bytes[4 * i + 3] = (byte) (integersToBreakDown[i] >> 8);
-                bytes[4 * i + 4] = (byte) (integersToBreakDown[i]);
-            }
-
-            return bytes;
         }
     }
 }

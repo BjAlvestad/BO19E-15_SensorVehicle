@@ -7,18 +7,22 @@
 */
 #include <TimerOne.h>
 #include <Wire.h>
-const double TICKS_PER_CM = 10.6;
+const double ticks_per_cm = 10.6;
+const int address = 0x30;
+const int size_of_byte_array = 23;
 int val;
 int encoder0PinA = 3;
 int encoder0PinB = 4;
 int encoder0Pos = 0;
 int encoder0PinALast = LOW;
 int n = LOW;
-int millisecond = 0;
-int cmTravelled = 0;
+long cmTravelled = 0;
+long millisecond = 0;
+long longsToBeSent[] = { cmTravelled, millisecond };
+int arrayLength = sizeof(longsToBeSent) / sizeof(long);
 
 void setup() {
-	Wire.begin(0x30);
+	Wire.begin(address);
 	Wire.onRequest(onRequestEvent);
 	Serial.begin(9600);
 	Timer1.initialize(1000);
@@ -27,8 +31,8 @@ void setup() {
 	pinMode(encoder0PinB, INPUT);
 }
 
-void loop() {
-  Serial.println("Topp av loop()");
+void loop() 
+{
 	n = digitalRead(encoder0PinA);
 	if ((encoder0PinALast == LOW) && (n == HIGH))
 	{
@@ -43,40 +47,38 @@ void loop() {
 	}
 	encoder0PinALast = n;
 }
+void increaseCounter()
+{
+	millisecond++;	
+}
 
 void onRequestEvent()
 {
-	//Timer1.stop();
-	byte myArray[4];
-	cmTravelled = encoder0Pos/TICKS_PER_CM;
-	if (cmTravelled >= 0)
-	{
-		myArray[0] = 0;
-		myArray[1] = (cmTravelled << 8) && 0xFF;
-		myArray[2] = cmTravelled & 0xFF;
-	}
-	else
-	{
-		myArray[0] = 1;
-		myArray[1] = (abs(cmTravelled) << 8) && 0xFF;
-		myArray[2] = abs(cmTravelled) & 0xFF;
-	}
-	myArray[3] = millisecond / 1000.0;
-	Wire.write(myArray, 4);
-	Serial.print("Encoder: ");
-	Serial.println(encoder0Pos);
-	Serial.print("Cm: ");
-	Serial.println(cmTravelled);
-	encoder0Pos = 0;
-	cmTravelled = 0;
-	millisecond = 0;
-	
-	//Timer1.restart();
+	cmTravelled = encoder0Pos / ticks_per_cm;
+	long longsToBeSent[] = { cmTravelled, millisecond };
+	int arrayLength = sizeof(longsToBeSent) / sizeof(long);
+	SendByteArray(0, arrayLength, longsToBeSent);
 }
-
-void increaseCounter()
+void SendByteArray(int message, int arrayLength, long longsToBeSent[])
 {
-	millisecond++;
-	//Serial.print("Verdi: ");
-	//Serial.println(millisecond);
+	byte byteArray[size_of_byte_array];
+	byteArray[0] = (byte)address;
+	byteArray[1] = (byte)message;
+	byteArray[2] = (byte)(arrayLength);
+	int elementsBeforeLong = 3;
+
+	const int bitSizeOfLong = sizeof(long) * 8;
+
+	for (int i = 0; i < arrayLength; i++)
+	{
+
+		int shiftByLong = sizeof(long) * i;
+		for (int j = 1; j <= sizeof(long); j++)
+		{
+			byteArray[(elementsBeforeLong - 1) + shiftByLong + j] = (byte)(longsToBeSent[i] >> (bitSizeOfLong - 8 * j));
+		}
+	}
+	Wire.write(byteArray, size_of_byte_array);
+	encoder0Pos = 0;
+	millisecond = 0;
 }

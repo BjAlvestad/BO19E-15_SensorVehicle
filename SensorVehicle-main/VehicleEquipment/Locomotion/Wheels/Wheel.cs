@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
@@ -42,44 +41,35 @@ namespace VehicleEquipment.Locomotion.Wheels
         }
 
         /// <summary>
-        /// Desired speed - Input range [-100, 100]
+        /// Sends desired speed to wheel encoder - Input range [-100, 100]
         /// </summary>
-        /// <param name="LeftValue"></param>
-        /// <param name="RightValue"></param>
+        /// <param name="LeftValue">Left wheel speed (valid value is between -100 and +100)</param>
+        /// <param name="RightValue">Right wheel speed (valid value is between -100 and +100)</param>
         public void SetSpeed(int LeftValue, int RightValue)
         {
             if (LeftValue == CurrentSpeedLeft && RightValue == CurrentSpeedRight) return;
 
-            byte[] bytes = new byte[3];
-            bytes[0] = 0x50;
-            bytes[1] = (byte)Convert(LeftValue);
-            bytes[2] = (byte)Convert(RightValue);
+            try
+            {
+                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(LeftValue), ValidatedSpeed(RightValue));
 
-            vehicleCommunication.Write(bytes);  // 
-
-            CurrentSpeedLeft = bytes[1] - 128;
-            CurrentSpeedRight = bytes[2] - 128;
+                CurrentSpeedLeft = LeftValue;
+                CurrentSpeedRight = RightValue;
+            }
+            catch (Exception e)
+            {
+                CurrentSpeedLeft = 999;
+                CurrentSpeedRight = 999;
+                Debug.WriteLine($"ERROR when writing to wheel: {e.Message}");
+            }
         }
 
-        /// <summary>
-        /// Converts input value from range [-100, 100] to [28, 228]
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private int Convert(int value)
+        private static int ValidatedSpeed(int value)
         {
-            if (value > 100)
-            {
-                return 228;
-            }
-            else if (value < -100)
-            {
-                return 28;
-            }
-            else
-            {
-                return value + 128;
-            }
+            if (value > 100) return 100;
+            if (value < -100) return -100;
+
+            return value;
         }
     }
 }

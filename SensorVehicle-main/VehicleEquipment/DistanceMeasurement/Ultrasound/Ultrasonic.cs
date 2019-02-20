@@ -63,24 +63,14 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             {
                 if (DateTime.Now - TimeStamp <= PermissableDistanceAge) return;
 
-                string[] distances = GetNewDistances();
-                Left = Single.TryParse(distances[0], out float parsedLeft) ? parsedLeft / 100f : Single.NaN;
-                Fwd = Single.TryParse(distances[1], out float parsedFwd) ? parsedFwd / 100f : Single.NaN;
-                Right = Single.TryParse(distances[2], out float parsedRight) ? parsedRight / 100f : Single.NaN;
+                VehicleDataPacket data = _vehicleCommunication.Read();
+
+                Left = data.Integers[0] / 100f;
+                Fwd = data.Integers[1] / 100f;
+                Right = data.Integers[2] / 100f;
+
                 TimeStamp = DateTime.Now;        
             }
-        }
-
-        private string[] GetNewDistances()
-        {
-            string text = "";
-            byte[] bytes = _vehicleCommunication.Read();
-            foreach (byte b in bytes)
-            {
-                text = text + (char)b;
-            }
-
-            return text.Split('-');
         }
     }
 }
