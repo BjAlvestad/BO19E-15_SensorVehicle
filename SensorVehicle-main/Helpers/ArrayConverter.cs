@@ -6,9 +6,9 @@ namespace Helpers
 {
     public static class ArrayConverter
     {
-        public static byte[] ToByteArray(Device deviceAddress, MessageCode message, params int[] integers)
+        public static byte[] ToByteArray(int byteArraySize, Device deviceAddress, MessageCode message, params int[] integers)
         {
-            byte[] byteArray = DisassembleIntsToByteArray(3, integers);
+            byte[] byteArray = DisassembleIntsToByteArray(byteArraySize, 3, integers);
             byteArray[0] = (byte) deviceAddress;
             byteArray[1] = (byte) message;
             byteArray[2] = (byte) integers.Length;
@@ -16,10 +16,10 @@ namespace Helpers
             return byteArray;
         }
 
-        private static byte[] DisassembleIntsToByteArray(int emptyElements, params int[] intsToDisassemble)
+        private static byte[] DisassembleIntsToByteArray( int byteArraySize, int emptyElements, params int[] intsToDisassemble)
         {
             const int bitSizeOfInt = sizeof(int) * 8;
-            byte[] byteArray = new byte[emptyElements + intsToDisassemble.Length * bitSizeOfInt];
+            byte[] byteArray = new byte[byteArraySize];
 
             for (int i = 0; i < intsToDisassemble.Length; i++)
             {

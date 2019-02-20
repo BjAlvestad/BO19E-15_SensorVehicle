@@ -9,6 +9,7 @@ namespace Communication.Vehicle
     public class VehicleCommunication : IVehicleCommunication
     {
         public const int DataRequestSize = 23;  // 3bytes + 5ints == 23bytes, i.e. possible to receive up to 5 ints without increasing this number.
+        public const int DataTransmitSize = 23;
         private I2cDevice _device;
         private Device _address;
 
@@ -31,7 +32,7 @@ namespace Communication.Vehicle
 
         public void Write(MessageCode message, params int[] data)
         {
-            byte[] byteArray = ArrayConverter.ToByteArray(_address, message, data);
+            byte[] byteArray = ArrayConverter.ToByteArray(DataTransmitSize, _address, message, data);
 
             _device.Write(byteArray);
         }

@@ -1,4 +1,7 @@
-﻿namespace VehicleEquipment.Locomotion.Wheels
+﻿using System;
+using System.Diagnostics;
+
+namespace VehicleEquipment.Locomotion.Wheels
 {
     public class Wheel : IWheel
     {
@@ -46,10 +49,19 @@
         {
             if (LeftValue == CurrentSpeedLeft && RightValue == CurrentSpeedRight) return;
 
-            vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(LeftValue), ValidatedSpeed(RightValue));
+            try
+            {
+                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(LeftValue), ValidatedSpeed(RightValue));
 
-            CurrentSpeedLeft = LeftValue;
-            CurrentSpeedRight = RightValue;
+                CurrentSpeedLeft = LeftValue;
+                CurrentSpeedRight = RightValue;
+            }
+            catch (Exception e)
+            {
+                CurrentSpeedLeft = 999;
+                CurrentSpeedRight = 999;
+                Debug.WriteLine($"ERROR when writing to wheel: {e.Message}");
+            }
         }
 
         private static int ValidatedSpeed(int value)
