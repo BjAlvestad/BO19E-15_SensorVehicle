@@ -24,6 +24,7 @@ namespace Application.ViewModels
     public class ExampleLogicViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
+        private readonly ExampleLogicService _exampleLogicService;
         private readonly IWheel _wheel;
         private readonly ILidarDistance _lidarDistance;
         private readonly IUltrasonic _ultrasonic;
@@ -31,6 +32,7 @@ namespace Application.ViewModels
         public ExampleLogicViewModel(INavigationService navigationServiceInstance, ExampleLogicService exampleLogicService, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
             _navigationService = navigationServiceInstance;
+            _exampleLogicService = exampleLogicService;
             ExampleLogics = exampleLogicService.ExampleLogics;
             _wheel = wheel;
             _lidarDistance = lidarDistance;
@@ -46,6 +48,7 @@ namespace Application.ViewModels
                 if (Selected == null || Selected.RunExampleLogic == false)
                 {
                     SetProperty(ref _selected, value);
+                    _exampleLogicService.ActiveExampleLogic = value;
                 }
                 else
                 {
@@ -69,7 +72,7 @@ namespace Application.ViewModels
 
         public void SetDefaultSelection()
         {
-            Selected = ExampleLogics.FirstOrDefault();
+            Selected = _exampleLogicService.ActiveExampleLogic ?? ExampleLogics.FirstOrDefault();
         }
     }
 }

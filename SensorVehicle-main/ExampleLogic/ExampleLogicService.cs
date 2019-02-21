@@ -12,6 +12,7 @@ namespace ExampleLogic
     public class ExampleLogicService
     {
         public ObservableCollection<ExampleLogicBase> ExampleLogics { get; set; }
+        public ExampleLogicBase ActiveExampleLogic { get; set; }
 
         public ExampleLogicService(IWheel wheels, IUltrasonic ultrasonic)
         {
