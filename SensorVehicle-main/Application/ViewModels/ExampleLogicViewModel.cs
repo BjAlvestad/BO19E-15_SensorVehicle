@@ -24,7 +24,6 @@ namespace Application.ViewModels
     public class ExampleLogicViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ExampleLogicService _exampleLogicService;
         private readonly IWheel _wheel;
         private readonly ILidarDistance _lidarDistance;
         private readonly IUltrasonic _ultrasonic;
@@ -32,7 +31,7 @@ namespace Application.ViewModels
         public ExampleLogicViewModel(INavigationService navigationServiceInstance, ExampleLogicService exampleLogicService, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
             _navigationService = navigationServiceInstance;
-            _exampleLogicService = exampleLogicService;
+            ExampleLogics = exampleLogicService.ExampleLogics;
             _wheel = wheel;
             _lidarDistance = lidarDistance;
             _ultrasonic = ultrasonic;
@@ -45,7 +44,7 @@ namespace Application.ViewModels
             set => SetProperty(ref _selected, value);
         }
 
-        public ObservableCollection<ExampleLogicBase> ExampleLogics { get; } = new ObservableCollection<ExampleLogicBase>();
+        public ObservableCollection<ExampleLogicBase> ExampleLogics { get; }
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
@@ -55,14 +54,7 @@ namespace Application.ViewModels
 
         public async Task LoadDataAsync()
         {
-            ExampleLogics.Clear();
 
-            var data = await _exampleLogicService.GetExampleLogicAsync(_wheel, _lidarDistance, _ultrasonic); //TODO: Look into storing data after the first time it is loaded.
-
-            foreach (var item in data)
-            {
-                ExampleLogics.Add(item);
-            }
         }
 
         public void SetDefaultSelection()
