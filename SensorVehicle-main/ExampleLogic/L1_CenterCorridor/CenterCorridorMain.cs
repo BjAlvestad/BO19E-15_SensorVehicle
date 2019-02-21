@@ -13,7 +13,7 @@ namespace ExampleLogic.L1_CenterCorridor
 
         public override ExampleLogicDetails Details { get; }
 
-        public CenterCorridorMain(IWheel wheels, IUltrasonic ultrasonic)
+        public CenterCorridorMain(IWheel wheels, IUltrasonic ultrasonic) : base(wheels)
         {
             Details = new ExampleLogicDetails
             {

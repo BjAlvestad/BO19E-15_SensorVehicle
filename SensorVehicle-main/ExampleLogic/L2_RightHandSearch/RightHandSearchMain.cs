@@ -13,7 +13,7 @@ namespace ExampleLogic.L2_RightHandSearch
 
         public override ExampleLogicDetails Details { get; }
 
-        public RightHandSearchMain(IWheel wheels, IUltrasonic ultrasonic)
+        public RightHandSearchMain(IWheel wheels, IUltrasonic ultrasonic) : base(wheels)
         {
             Details = new ExampleLogicDetails
             {

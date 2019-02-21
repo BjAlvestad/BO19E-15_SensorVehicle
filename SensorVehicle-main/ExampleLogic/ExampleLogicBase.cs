@@ -1,10 +1,18 @@
 ﻿using System.Threading.Tasks;
+using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic
 {
     public abstract class ExampleLogicBase
     {
+        private IWheel _wheel;
+
         public abstract ExampleLogicDetails Details { get; }
+
+        protected ExampleLogicBase(IWheel wheel)
+        {
+            _wheel = wheel;
+        }
 
         public abstract void Initialize();
         public abstract void Run();
@@ -28,6 +36,7 @@ namespace ExampleLogic
                         {
                             Run();
                         }
+                        _wheel.SetSpeed(0, 0);
                     });
                 }
             }
