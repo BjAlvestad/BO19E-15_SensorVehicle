@@ -41,7 +41,17 @@ namespace Application.ViewModels
         public ExampleLogicBase Selected
         {
             get => _selected;
-            set => SetProperty(ref _selected, value);
+            set
+            {
+                if (Selected == null || Selected.RunExampleLogic == false)
+                {
+                    SetProperty(ref _selected, value);
+                }
+                else
+                {
+                    RaisePropertyChanged(nameof(Selected));
+                }
+            }
         }
 
         public ObservableCollection<ExampleLogicBase> ExampleLogics { get; }
