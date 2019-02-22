@@ -1,14 +1,22 @@
-﻿using System.Threading.Tasks;
 ﻿using System;
+using System.Threading.Tasks;
+using Helpers;
 using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic
 {
-    public abstract class ExampleLogicBase
+    public abstract class ExampleLogicBase : ThreadSafeNotifyPropertyChanged
     {
         private IWheel _wheel;
 
         public abstract ExampleLogicDetails Details { get; }
+
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            private set { SetProperty(ref _errorMessage, value); }
+        }
 
         protected ExampleLogicBase(IWheel wheel)
         {
@@ -50,6 +58,7 @@ namespace ExampleLogic
                 catch (Exception e)
                 {
                     _runExampleLogic = false;
+                    ErrorMessage = $"CONTROL LOGIC ERROR - '{Details.Title}' generated the following exception:\n{e.Message}";
                     _wheel.SetSpeed(0, 0);
                 }
             });
