@@ -17,13 +17,14 @@ namespace ExampleLogic.L1_CenterCorridor
         {
             Details = new ExampleLogicDetails
             {
-                Title = "L1 - Keep Center of Coridor",
+                Title = "L1a - Keep Center of Coridor \n\t(stop on block)",
                 Author = "BO19-E15",
                 SuitableForSubjects = "Control systems",
 
                 Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to keep to the center of the corridor.\n" +
                               "The left wheel speed is controlled by the distance from the right ultrasound sensor.\n" +
-                              "The right wheel speed is controlled by the distance from the left ultrasound sensor."
+                              "The right wheel speed is controlled by the distance from the left ultrasound sensor.\n" +
+                              "If obstruction is detected in front, vehicle will stop for 5 seconds."
             };
 
             _wheels = wheels;
