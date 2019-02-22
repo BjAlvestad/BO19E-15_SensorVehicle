@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+﻿using System;
 using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic
@@ -28,18 +29,30 @@ namespace ExampleLogic
                 _runExampleLogic = value;
                 if (value)
                 {
-                    Task.Run(() =>
-                    {
-                        Initialize();
-                        while (RunExampleLogic)
-                        {
-                            Run();
-                        }
-                        _wheel.SetSpeed(0, 0);
-                    });
+                    StartControlLogicTask();
                 }
             }
         }
 
+        private void StartControlLogicTask()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    Initialize();
+                    while (RunExampleLogic)
+                    {
+                        Run();
+                    }
+                    _wheel.SetSpeed(0, 0);
+                }
+                catch (Exception e)
+                {
+                    _runExampleLogic = false;
+                    _wheel.SetSpeed(0, 0);
+                }
+            });
+        }
     }
 }
