@@ -33,6 +33,7 @@ namespace Application.ViewModels
         {
             _navigationService = navigationServiceInstance;
             _exampleLogicService = exampleLogicService;
+            ExampleLogics = exampleLogicService.ExampleLogics;
             _wheel = wheel;
             _lidarDistance = lidarDistance;
             _ultrasonic = ultrasonic;
@@ -42,10 +43,21 @@ namespace Application.ViewModels
         public ExampleLogicBase Selected
         {
             get => _selected;
-            set => SetProperty(ref _selected, value);
+            set
+            {
+                if (Selected == null || Selected.RunExampleLogic == false)
+                {
+                    SetProperty(ref _selected, value);
+                    _exampleLogicService.ActiveExampleLogic = value;
+                }
+                else
+                {
+                    RaisePropertyChanged(nameof(Selected));
+                }
+            }
         }
 
-        public ObservableCollection<ExampleLogicBase> ExampleLogics { get; } = new ObservableCollection<ExampleLogicBase>();
+        public ObservableCollection<ExampleLogicBase> ExampleLogics { get; }
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
@@ -55,19 +67,12 @@ namespace Application.ViewModels
 
         public async Task LoadDataAsync()
         {
-            ExampleLogics.Clear();
 
-            var data = await _exampleLogicService.GetExampleLogicAsync(_wheel, _lidarDistance, _ultrasonic); //TODO: Look into storing data after the first time it is loaded.
-
-            foreach (var item in data)
-            {
-                ExampleLogics.Add(item);
-            }
         }
 
         public void SetDefaultSelection()
         {
-            Selected = ExampleLogics.FirstOrDefault();
+            Selected = _exampleLogicService.ActiveExampleLogic ?? ExampleLogics.FirstOrDefault();
         }
     }
 }

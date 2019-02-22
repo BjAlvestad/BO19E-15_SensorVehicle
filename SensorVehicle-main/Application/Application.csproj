@@ -270,6 +270,10 @@
       <Project>{1eaeb633-a71e-4bf2-b0cd-49ca30db936a}</Project>
       <Name>ExampleLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{133c3616-686a-4a33-ae6b-66f38d31221b}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StudentLogic\StudentLogic.csproj">
       <Project>{8199e791-329e-4b10-91b0-1c10f3f9186c}</Project>
       <Name>StudentLogic</Name>
