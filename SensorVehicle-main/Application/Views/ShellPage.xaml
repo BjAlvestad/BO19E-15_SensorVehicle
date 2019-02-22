@@ -64,7 +64,7 @@
             </winui:NavigationViewItem>
             <winui:NavigationViewItem x:Uid="Shell_Power" helpers:NavHelper.NavigateTo="Power">
                 <winui:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE781;"/>
+                    <FontIcon Glyph="&#xE7E8;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
         </winui:NavigationView.MenuItems>
