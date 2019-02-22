@@ -19,6 +19,7 @@ namespace ExampleLogic
             ExampleLogics = new ObservableCollection<ExampleLogicBase>
             {
                 new CenterCorridorMain(wheels, ultrasonic),
+                new CenterCorridorNoStopMain(wheels, ultrasonic),
                 new RightHandSearchMain(wheels, ultrasonic)
             };
         }
