@@ -9,6 +9,10 @@ namespace ExampleLogic
     {
         private IWheel _wheel;
 
+        /// <summary>
+        /// Contains the information that will be displayed in the GUI. 
+        /// It should be initialized, and all its fields set to your desired values in the constructor of the child-class.
+        /// </summary>
         public abstract ExampleLogicDetails Details { get; }
 
         private string _errorMessage;
