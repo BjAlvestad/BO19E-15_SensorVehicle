@@ -27,14 +27,46 @@
             Or to use an IconElement instead of a Symbol see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/projectTypes/navigationpane.md
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
-            <winui:NavigationViewItem x:Uid="Shell_Info" Icon="Document" helpers:NavHelper.NavigateTo="Info" />
-            <winui:NavigationViewItem x:Uid="Shell_StudentLogic" Icon="Document" helpers:NavHelper.NavigateTo="StudentLogic" />
-            <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" Icon="Document" helpers:NavHelper.NavigateTo="ExampleLogic" />
-            <winui:NavigationViewItem x:Uid="Shell_EquipmentOverview" Icon="Document" helpers:NavHelper.NavigateTo="EquipmentOverview" />
-            <winui:NavigationViewItem x:Uid="Shell_Wheels" Icon="Document" helpers:NavHelper.NavigateTo="Wheels" />
-            <winui:NavigationViewItem x:Uid="Shell_Lidar" Icon="Document" helpers:NavHelper.NavigateTo="Lidar" />
-            <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" Icon="Document" helpers:NavHelper.NavigateTo="Ultrasonic" />
-            <winui:NavigationViewItem x:Uid="Shell_Power" Icon="Document" helpers:NavHelper.NavigateTo="Power" />
+            <winui:NavigationViewItem x:Uid="Shell_Info" helpers:NavHelper.NavigateTo="Info">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE946;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7BE;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE71D;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_EquipmentOverview" helpers:NavHelper.NavigateTo="EquipmentOverview">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE772;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_Wheels" helpers:NavHelper.NavigateTo="Wheels">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEA3A;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_Lidar" helpers:NavHelper.NavigateTo="Lidar">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7C0;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" helpers:NavHelper.NavigateTo="Ultrasonic">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE957;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Uid="Shell_Power" helpers:NavHelper.NavigateTo="Power">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE781;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
         </winui:NavigationView.MenuItems>
         <i:Interaction.Behaviors>
             <behaviors:NavigationViewHeaderBehavior
