@@ -23,6 +23,8 @@ namespace ExampleLogic
             get { return _runExampleLogic; }
             set
             {
+                if (value == _runExampleLogic) return;
+
                 _runExampleLogic = value;
                 if (value)
                 {
