@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
-    public class Ultrasonic : IUltrasonic
+    public class Ultrasonic : ThreadSafeNotifyPropertyChanged, IUltrasonic
     {
         public readonly TimeSpan MinimumSensorRequestsInterval = TimeSpan.FromMilliseconds(30);
         private static readonly object DistanceUpdateSyncLock = new object();
@@ -15,13 +17,22 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             TimeStamp = DateTime.Now;
         }
 
-        public DateTime TimeStamp { get; private set; }
-
         private TimeSpan _permissableDistanceAge;
         public TimeSpan PermissableDistanceAge // Consider namechange. Suggestions:  DistanceExpirationLimit  SensorDataExpirationLimit  PermissableSensorDataAge    SensorDataRequestInterval  RequestNewSensorDataLimit
         {
             get => _permissableDistanceAge;
-            set => _permissableDistanceAge = (value > MinimumSensorRequestsInterval) ? value : MinimumSensorRequestsInterval;
+            set
+            {
+                _permissableDistanceAge = (value > MinimumSensorRequestsInterval) ? value : MinimumSensorRequestsInterval;
+                RaiseSyncedPropertyChanged();
+            }
+        }
+
+        private DateTime _timeStamp;
+        public DateTime TimeStamp
+        {
+            get { return _timeStamp; }
+            private set { SetPropertyRaiseSelectively(ref _timeStamp, value); }
         }
 
         private float _fwd;
@@ -32,7 +43,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                 UpdateDistanceProperties();
                 return _fwd;
             }
-            private set { _fwd = value; }
+            private set { SetPropertyRaiseSelectively(ref _fwd, value); }
         }
 
         private float _left;
@@ -43,7 +54,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                 UpdateDistanceProperties();
                 return _left;
             }
-            private set { _left = value; }
+            private set { SetPropertyRaiseSelectively(ref _left, value); }
         }
 
         private float _right;
@@ -54,7 +65,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                 UpdateDistanceProperties();
                 return _right;
             }
-            private set { _right = value; }
+            private set { SetPropertyRaiseSelectively(ref _right, value); }
         }
 
         private void UpdateDistanceProperties()

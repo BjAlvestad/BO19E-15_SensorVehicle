@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
-    public interface IUltrasonic
+    public interface IUltrasonic : INotifyPropertyChanged
     {
         float Left { get; }
 
@@ -13,5 +14,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         DateTime TimeStamp { get; }
 
         TimeSpan PermissableDistanceAge { get; set; }
+
+        bool RaiseNotificationForSelective { get; set; }
     }
 }
