@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Toolkit.Uwp.Helpers;
+using Communication;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -11,12 +12,14 @@ namespace Application.ViewModels
 {
     public class UltrasonicViewModel : ViewModelBase
     {
-        public UltrasonicViewModel(IUltrasonic ultrasonic)
+        public UltrasonicViewModel(IUltrasonic ultrasonic, IPower power)
         {
             Ultrasonic = ultrasonic;
+            Power = power;
         }
 
         public IUltrasonic Ultrasonic { get; set; }
+        public IPower Power { get; set; }
 
         public string PermissableDistanceAge
         {
@@ -33,6 +36,7 @@ namespace Application.ViewModels
             }
         }
 
+        //TEMP: This property should be removed once the Microcontroller transmitts data after new measurements are taken (instead of the current method where new distance data must be requested before it will send new data)
         private bool _refreshUltrasonicContinously;
         public bool RefreshUltrasonicContinously
         {
@@ -46,7 +50,7 @@ namespace Application.ViewModels
                     {
                         while (RefreshUltrasonicContinously)
                         {
-                            DispatcherHelper.ExecuteOnUIThreadAsync(() => RaisePropertyChanged(nameof(Ultrasonic)));
+                            float fwdValue = Ultrasonic.Fwd;  // Reading a value causes new data to be collected and all distance measurements updated
                             Thread.Sleep(Ultrasonic.PermissableDistanceAge / 2);
                         }
                     });
@@ -57,12 +61,13 @@ namespace Application.ViewModels
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             base.OnNavigatedTo(e, viewModelState);
-            RefreshUltrasonicContinously = true;
+            if (Power.Ultrasound) Ultrasonic.RaiseNotificationForSelective = true;
         }
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
             RefreshUltrasonicContinously = false;
+            Ultrasonic.RaiseNotificationForSelective = false;
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }

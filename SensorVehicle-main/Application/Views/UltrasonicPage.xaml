@@ -33,7 +33,8 @@
                     <TextBox Text="{x:Bind ViewModel.PermissableDistanceAge, Mode=TwoWay}" RelativePanel.RightOf="PermissableAgeText" RelativePanel.AlignTopWith="PermissableAgeText"  Description="milliseconds"/>
                 </RelativePanel>
 
-                <ToggleSwitch Header="Toggle continous distance update" OffContent="Distances won't refresh on the display (but will still work in code logic)" OnContent="Display updates to reflect measured distance values" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}" />
+                <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}" />
+                <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}" />
 
             </StackPanel>
 
