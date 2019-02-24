@@ -2,14 +2,14 @@ using System;
 using VehicleEquipment;
 using Xunit;
 
-namespace Helpers.UnitTests
+namespace VehicleEquipment.UnitTests
 {
     public class ArrayConverterTests
     {
         [Fact]
         public void ToByteArray_ValidImputData_ValidOutput()
         {
-            byte[] result = ArrayConverter.ToByteArray(Device.Encoder, MessageCode.NoMessage, int.MaxValue, int.MinValue, 0, +100, -100);
+            byte[] result = ArrayConverter.ToByteArray(23, Device.Encoder, MessageCode.NoMessage, int.MaxValue, int.MinValue, 0, +100, -100);
 
             Assert.Equal((byte)Device.Encoder, result[0]);
             Assert.Equal((byte)MessageCode.NoMessage, result[1]);
