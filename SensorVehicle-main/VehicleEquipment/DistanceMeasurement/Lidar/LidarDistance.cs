@@ -56,6 +56,19 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             set { SetProperty(ref _hasUnacknowledgedError, value); }
         }
 
+        private bool _runCollector;
+        public bool RunCollector
+        {
+            get { return _runCollector; }
+            set
+            {
+                SetProperty(ref _runCollector, value);
+                //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
+                if(value) StartCollector();
+                else StopCollector();
+            }
+        }
+
         public float GetFwd()
         {
             if (_fwdHasBeenCalculated)

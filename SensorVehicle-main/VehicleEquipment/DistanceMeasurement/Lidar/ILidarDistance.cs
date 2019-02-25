@@ -9,6 +9,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         bool HasUnacknowledgedError { get; }
         string Message { get; }
 
+        bool RunCollector { get; set; }
+
         void ClearMessage();
 
         void StartCollector();
