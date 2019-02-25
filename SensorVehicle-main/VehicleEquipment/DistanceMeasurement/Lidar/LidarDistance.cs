@@ -23,7 +23,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private float _right;
         private float _aft;
         private ILidarPacketReceiver _packetReceiver;
-        private CancellationTokenSource _collectorCancelToken = new CancellationTokenSource();
+        private CancellationTokenSource _collectorCancelToken;
         private HashSet<VerticalAngle> _activeVerticalAngles; // HashSet will not contain any duplicate value
 
         public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
@@ -203,6 +203,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 return;
             }
             IsCollectorRunning = true;
+            _collectorCancelToken = new CancellationTokenSource();
             PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
         }
 
