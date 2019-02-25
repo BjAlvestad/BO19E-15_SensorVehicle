@@ -4,10 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarDistance : ILidarDistance, IDistance
+    public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance, IDistance
     {
         public CalculationType DefaultCalculationType { get; set; }
         public VerticalAngle DefaultVerticalAngle { get; set; }
