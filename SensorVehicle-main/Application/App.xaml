@@ -21,6 +21,7 @@
             <!--Converters-->
             <svconverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <svconverters:BooleanNegationToVisibilityConverter x:Key="BooleanNegationToVisibilityConverter" />
+            <svconverters:BooleanToColorConverter x:Key="BooleanToColorConverter" />
 
         </ResourceDictionary>
     </prismUnity:PrismUnityApplication.Resources>
