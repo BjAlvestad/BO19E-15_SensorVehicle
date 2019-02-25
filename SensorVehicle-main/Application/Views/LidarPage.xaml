@@ -15,6 +15,49 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
+            <RelativePanel Grid.Row="0" Grid.Column="0" >
+                <!-- TODO -->
+                <TextBlock Text="TODO: &#x0a;Settings and options etc. will come here"></TextBlock>
+            </RelativePanel>
+
+            <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
+            <RelativePanel Grid.Row="0" Grid.Column="2"
+                           Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!-- TODO -->
+                <TextBlock Text="TODO: &#x0a;Lidar distances etc. will come here" />
+            </RelativePanel>
+            <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"
+                       Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"
+                       Text="'Run Collector' must be on to be able to use any distance data from the Lidar. &#x0a; &#x0a;Distance data will not update on the display unless the 'Display Data' is on (but can still be used in code).&#x0a;This is done to make control logic more efficient.&#x0a;Note: The 'Display Data' slider is only visible if 'Power' is switched on." />                
+
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+            <StackPanel Grid.Row="0" Grid.Column="4">
+                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Lidar, Mode=TwoWay}" />
+                <ToggleSwitch Header="Run Collector" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Lidar.RunCollector, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Collect' can remain on (but hidden) when 'Power' is switched off -->
+                <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+
+            <!--ERROR MESSAGE box (displays error messages from )-->
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
+                       Text="{x:Bind ViewModel.Lidar.Message, Mode=OneWay}" TextWrapping="Wrap"
+                       Tapped="{x:Bind ViewModel.Lidar.ClearMessage, Mode=OneWay}" />
+
         </Grid>
     </Grid>
 </Page>
