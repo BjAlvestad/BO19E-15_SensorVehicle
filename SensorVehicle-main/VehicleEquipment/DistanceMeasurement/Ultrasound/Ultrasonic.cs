@@ -15,6 +15,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             _vehicleCommunication = comWithUltrasonic;
             PermissableDistanceAge = TimeSpan.FromMilliseconds(300);
             TimeStamp = DateTime.Now;
+            Message = "";
         }
 
         private TimeSpan _permissableDistanceAge;
@@ -68,19 +69,56 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             private set { SetPropertyRaiseSelectively(ref _right, value); }
         }
 
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+
         private void UpdateDistanceProperties()
         {
             lock (DistanceUpdateSyncLock)
             {
                 if (DateTime.Now - TimeStamp <= PermissableDistanceAge) return;
 
-                VehicleDataPacket data = _vehicleCommunication.Read();
+                if (HasUnacknowledgedError)
+                {
+                    Left = float.NaN;
+                    Fwd = float.NaN;
+                    Right = float.NaN;
+                    return;
+                }
 
-                Left = data.Integers[0] / 100f;
-                Fwd = data.Integers[1] / 100f;
-                Right = data.Integers[2] / 100f;
+                try
+                {
+                    VehicleDataPacket data = _vehicleCommunication.Read();
 
-                TimeStamp = DateTime.Now;        
+                    Left = data.Integers[0] / 100f;
+                    Fwd = data.Integers[1] / 100f;
+                    Right = data.Integers[2] / 100f;
+
+                    TimeStamp = DateTime.Now;
+                }
+                catch (Exception e)
+                {
+                    Message += $"ERROR OCCURED WHEN UPDAING DISTANCES: \n{e.Message}\n" +
+                                    "*************************************\n";
+                    HasUnacknowledgedError = true;
+                }
             }
         }
     }

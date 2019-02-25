@@ -63,7 +63,9 @@
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->
-            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Text="TODO: Bind against Message property in model (for displaying exceptions etc) &#x0a;Test of newline. &#x0a;Newline number 2.&#x0a;Long long long long long long long long long long long long long long long long long long long long long long line" TextWrapping="Wrap"></TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
+                       Text="{x:Bind ViewModel.Ultrasonic.Message, Mode=OneWay}" TextWrapping="Wrap"
+                       Tapped="{x:Bind ViewModel.Ultrasonic.ClearMessage, Mode=OneWay}" />
         </Grid>
     </Grid>
 </Page>

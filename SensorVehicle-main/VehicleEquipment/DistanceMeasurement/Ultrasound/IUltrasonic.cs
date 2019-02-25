@@ -16,5 +16,11 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         TimeSpan PermissableDistanceAge { get; set; }
 
         bool RaiseNotificationForSelective { get; set; }
+
+        bool HasUnacknowledgedError { get; }
+
+        string Message { get; }
+
+        void ClearMessage();
     }
 }
