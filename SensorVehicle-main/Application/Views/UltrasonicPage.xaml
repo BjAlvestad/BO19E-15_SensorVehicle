@@ -15,30 +15,55 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
-            <StackPanel>
-                <RelativePanel>
-                    <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
-                    <TextBox x:Name="FwdValue" Text="{x:Bind ViewModel.Ultrasonic.Fwd, Mode=OneWay}" Description="Forward" IsReadOnly="True" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
+            <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="20" />
+               <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+               <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
-                    <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Ultrasonic.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
+            <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
+            <RelativePanel Grid.Row="0" Grid.Column="0" >
+                <TextBlock x:Name="PermissableAgeText" Text="Permissable distance age: "/>
+                <TextBox Text="{x:Bind ViewModel.PermissableDistanceAge, Mode=TwoWay}" RelativePanel.Below="PermissableAgeText" RelativePanel.AlignRightWith="PermissableAgeText"  Description="milliseconds"/>
+            </RelativePanel>
 
-                    <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
-                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
+            <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
+            <RelativePanel Grid.Row="0" Grid.Column="2"
+                           Visibility="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
+                <TextBlock x:Name="FwdValue" Text="{x:Bind ViewModel.Ultrasonic.Fwd, Mode=OneWay}" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
 
-                    <TextBlock x:Name="LastReadingTimeText" Text="Last reading from sensors:" RelativePanel.Below="LeftValue"/>
-                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.RightOf="LastReadingTimeText" RelativePanel.AlignTopWith="LastReadingTimeText"/>
+                <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
+                <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Ultrasonic.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
 
-                    <TextBlock x:Name="PermissableAgeText" Text="Permissable distance age: " RelativePanel.Below="LastReadingTimeText"/>
-                    <TextBox Text="{x:Bind ViewModel.PermissableDistanceAge, Mode=TwoWay}" RelativePanel.RightOf="PermissableAgeText" RelativePanel.AlignTopWith="PermissableAgeText"  Description="milliseconds"/>
-                </RelativePanel>
+                <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
+                <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
 
-                <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}" />
-                <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}" />
+                <TextBlock x:Name="LastReadingTimeText" Text="Last reading from sensors:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
+                <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>              
+            </RelativePanel>
+            <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"
+                       Visibility="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"
+                       Text="Distance data will not update unless the 'Display Data' is on.&#x0a;This is done to make control logic more efficient.&#x0a;Note: The 'Display Data' slider is only visible if 'Power' is switched on." />                
 
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+            <StackPanel Grid.Row="0" Grid.Column="4">
+                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Ultrasound, Mode=TwoWay}" />
+                <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Autocollect' (and ) can remain on (but hidden) when 'Power' is switched off -->
             </StackPanel>
 
-
+            <!--ERROR MESSAGE box (displays error messages from )-->
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Text="TODO: Bind against Message property in model (for displaying exceptions etc) &#x0a;Test of newline. &#x0a;Newline number 2.&#x0a;Long long long long long long long long long long long long long long long long long long long long long long line" TextWrapping="Wrap"></TextBlock>
         </Grid>
     </Grid>
 </Page>
