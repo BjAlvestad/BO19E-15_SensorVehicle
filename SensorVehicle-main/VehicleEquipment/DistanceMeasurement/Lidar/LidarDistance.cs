@@ -46,8 +46,15 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         public float Resolution { get; private set; }
         public DateTime LastUpdate { get; private set; }
         public bool IsCollectorRunning { get; private set; }
-        public string CollectorMessage { get; private set; }
+        public string Message { get; private set; }
         public byte NumberOfCycles { get; set; }
+
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
 
         public float GetFwd()
         {
@@ -170,6 +177,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+
         public void StartCollector()
         {
             if (IsCollectorRunning)
@@ -213,7 +226,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
             catch (Exception e)
             {
-                CollectorMessage = $"A collector error occure:\n{e.Message}";
+                Message = $"A collector error occured:\n{e.Message}";
+                HasUnacknowledgedError = true;
                 StopCollector();
             }
         }
