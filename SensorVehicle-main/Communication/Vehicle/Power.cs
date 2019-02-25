@@ -1,13 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Communication.Annotations;
+﻿using Helpers;
 
 namespace Communication.Vehicle
 {
-    public class Power : INotifyPropertyChanged, IPower
+    public class Power : ThreadSafeNotifyPropertyChanged, IPower
     {
         //TODO: Extract pin out to separate class
         private readonly PowerPin _lidarPin;
@@ -38,13 +33,10 @@ namespace Communication.Vehicle
             get { return _lidar; }
             set
             {
-                _lidar = value;
                 _lidarPin.Power = value;
-                OnPropertyChanged(nameof(Lidar));
+                SetProperty(ref _lidar, value);
             }
         }
-
-        public bool LidarPinStatus { get; set; }
 
         private bool _ultrasound;
         public bool Ultrasound
@@ -52,9 +44,8 @@ namespace Communication.Vehicle
             get { return _ultrasound; }
             set
             {
-                _ultrasound = value;
                 _ultrasoundPin.Power = value;
-                OnPropertyChanged(nameof(Ultrasound));
+                SetProperty(ref _ultrasound, value);
             }
         }
 
@@ -64,9 +55,8 @@ namespace Communication.Vehicle
             get { return _wheels; }
             set
             {
-                _wheels = value;
                 _wheelsPin.Power = value;
-                OnPropertyChanged(nameof(Wheels));
+                SetProperty(ref _wheels, value);
             }
         }
 
@@ -76,9 +66,8 @@ namespace Communication.Vehicle
             get { return _encoder; }
             set
             {
-                _encoder = value;
                 _encoderPin.Power = value;
-                OnPropertyChanged(nameof(Encoder));
+                SetProperty(ref _encoder, value);
             }
         }
 
@@ -88,9 +77,8 @@ namespace Communication.Vehicle
             get { return _spare1; }
             set
             {
-                _spare1 = value;
                 _spare1Pin.Power = value;
-                OnPropertyChanged(nameof(Spare1));
+                SetProperty(ref _spare1, value);
             }
         }
 
@@ -100,9 +88,8 @@ namespace Communication.Vehicle
             get { return _spare2; }
             set
             {
-                _spare2 = value; 
                 _spare2Pin.Power = value;
-                OnPropertyChanged(nameof(Spare2));
+                SetProperty(ref _spare2, value);
             }
         }
 
@@ -112,19 +99,9 @@ namespace Communication.Vehicle
             get { return _spare3; }
             set
             {
-                _spare3 = value; 
                 _spare3Pin.Power = value;
-                OnPropertyChanged(nameof(Spare3));
+                SetProperty(ref _spare3, value);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual async void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.High,
-                () => { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); });
         }
     }
 }
