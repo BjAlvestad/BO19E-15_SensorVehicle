@@ -16,10 +16,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         void StartCollector();
         void StopCollector();
 
-        float GetFwd();
-        float GetLeft();
-        float GetRight();
-        float GetAft();
+        float Fwd { get; }
+        float Left { get; }
+        float Right { get; }
+        float Aft { get; }
 
         float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType);
         List<float> GetDistancesInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);

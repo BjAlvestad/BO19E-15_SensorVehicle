@@ -18,10 +18,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _leftHasBeenCalculated;
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
-        private float _fwd;
-        private float _left;
-        private float _right;
-        private float _aft;
         private ILidarPacketReceiver _packetReceiver;
         private CancellationTokenSource _collectorCancelToken;
         private HashSet<VerticalAngle> _activeVerticalAngles; // HashSet will not contain any duplicate value
@@ -69,52 +65,68 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        public float GetFwd()
+        private float _fwd;
+        public float Fwd
         {
-            if (_fwdHasBeenCalculated)
+            get
             {
+                if (_fwdHasBeenCalculated)
+                {
+                    return _fwd;
+                }
+
+                _fwd = GetDistance(345, 15);
+                _fwdHasBeenCalculated = true;
                 return _fwd;
             }
-
-            _fwd = GetDistance(345, 15);
-            _fwdHasBeenCalculated = true;
-            return _fwd;
         }
 
-        public float GetLeft()
+        private float _left;
+        public float Left
         {
-            if (_leftHasBeenCalculated)
+            get
             {
+                if (_leftHasBeenCalculated)
+                {
+                    return _left;
+                }
+
+                _left = GetDistance(255, 285);
+                _leftHasBeenCalculated = true;
                 return _left;
             }
-
-            _left = GetDistance(255, 285);
-            _leftHasBeenCalculated = true;
-            return _left;
         }
 
-        public float GetRight()
+        private float _right;
+        public float Right
         {
-            if (_rightHasBeenCalculated)
+            get
             {
+                if (_rightHasBeenCalculated)
+                {
+                    return _right;
+                }
+
+                _right = GetDistance(75, 105);
+                _rightHasBeenCalculated = true;
                 return _right;
             }
-
-            _right = GetDistance(75, 105);
-            _rightHasBeenCalculated = true;
-            return _right;
         }
 
-        public float GetAft()
+        private float _aft;
+        public float Aft
         {
-            if (_aftHasBeenCalculated)
+            get
             {
+                if (_aftHasBeenCalculated)
+                {
+                    return _aft;
+                }
+
+                _aft = GetDistance(165, 195);
+                _aftHasBeenCalculated = true;
                 return _aft;
             }
-
-            _aft = GetDistance(165, 195);
-            _aftHasBeenCalculated = true;
-            return _aft;
         }
 
         public float GetDistance(float fromAngle, float toAngle)

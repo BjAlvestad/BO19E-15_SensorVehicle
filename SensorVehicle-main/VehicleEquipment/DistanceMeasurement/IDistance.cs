@@ -6,8 +6,8 @@
         float MaxRange { get; }        
         float Resolution { get; }        
 
-        float GetFwd();
-        float GetLeft();
-        float GetRight();
+        float Fwd { get; }
+        float Left { get; }
+        float Right { get; }
     }
 }
