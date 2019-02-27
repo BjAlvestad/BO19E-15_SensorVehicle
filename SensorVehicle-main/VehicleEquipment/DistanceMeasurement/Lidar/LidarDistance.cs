@@ -292,9 +292,13 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     // https://blogs.msdn.microsoft.com/benwilli/2016/06/30/asynchronous-infinite-loops-instead-of-timers/
                 }
             }
+            catch (OperationCanceledException oce)
+            {
+                if(string.IsNullOrEmpty(Message)) Message = "Lidar collectors operation has been cancelled";
+            }
             catch (Exception e)
             {
-                Message = $"A collector error occured:\n{e.Message}";
+                Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
                 HasUnacknowledgedError = true;
                 StopCollector();
             }
