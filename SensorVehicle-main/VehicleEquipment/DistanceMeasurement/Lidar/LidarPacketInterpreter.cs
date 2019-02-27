@@ -7,7 +7,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
     {
         private const float MinimumRange = 0.3f;
 
-        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, HashSet<VerticalAngle> verticalAnglesToCalculate)
+        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, IEnumerable<VerticalAngle> verticalAnglesToCalculate)
         {
             IDictionary<VerticalAngle, List<HorizontalPoint>> interpretedData = InitializeCollection(verticalAnglesToCalculate);
 
