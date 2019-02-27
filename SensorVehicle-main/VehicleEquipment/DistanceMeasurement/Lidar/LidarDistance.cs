@@ -22,6 +22,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
+
+            DefaultHalfBeamOpening = 15;
             DefaultCalculationType = CalculationType.Max; //TEMP
             DefaultVerticalAngle = verticalAngles[0];
 
@@ -73,6 +75,13 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             set { SetProperty(ref _defaultVerticalAngle, value); }
         }
 
+        private int _defaultHalfBeamOpening;
+        public int DefaultHalfBeamOpening
+        {
+            get { return _defaultHalfBeamOpening; }
+            set { SetProperty(ref _defaultHalfBeamOpening, value); }
+        }
+
         private string _message;
         public string Message
         {
@@ -118,7 +127,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _fwdHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _fwd, GetDistance(345, 15));
+                SetPropertyRaiseSelectively(ref _fwd, GetDistance((360 - DefaultHalfBeamOpening), (0 + DefaultHalfBeamOpening)));
                 return _fwd;
             }
         }
@@ -134,7 +143,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _leftHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _left, GetDistance(255, 285));
+                SetPropertyRaiseSelectively(ref _left, GetDistance(270 - DefaultHalfBeamOpening, 270 + DefaultHalfBeamOpening));
                 return _left;
             }
         }
@@ -150,7 +159,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _rightHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _right, GetDistance(75, 105));
+                SetPropertyRaiseSelectively(ref _right, GetDistance(90 - DefaultHalfBeamOpening, 90 + DefaultHalfBeamOpening));
                 return _right;
             }
         }
@@ -165,7 +174,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     return _aft;
                 }
 
-                _aft = GetDistance(165, 195);
+                _aft = GetDistance(180 - DefaultHalfBeamOpening, 180 + DefaultHalfBeamOpening);
                 _aftHasBeenCalculated = true;
                 return _aft;
             }

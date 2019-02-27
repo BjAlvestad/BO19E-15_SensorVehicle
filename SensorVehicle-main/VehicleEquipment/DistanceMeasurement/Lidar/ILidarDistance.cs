@@ -24,6 +24,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         float Right { get; }
         float Aft { get; }
 
+        int DefaultHalfBeamOpening { get; set; }
         CalculationType DefaultCalculationType { get; set; }
         VerticalAngle DefaultVerticalAngle { get; set; }
         ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
