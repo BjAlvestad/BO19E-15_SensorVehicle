@@ -28,6 +28,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         CalculationType DefaultCalculationType { get; set; }
         VerticalAngle DefaultVerticalAngle { get; set; }
         ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
+        int NumberOfCycles { get; set; }
 
         ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; }
         DateTime LastUpdate { get; }

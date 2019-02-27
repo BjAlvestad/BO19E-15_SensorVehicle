@@ -89,11 +89,15 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             private set { SetProperty(ref _message, value); }
         }
 
-        private byte _numberOfCycles;
-        public byte NumberOfCycles
+        private int _numberOfCycles;
+        public int NumberOfCycles
         {
             get { return _numberOfCycles; }
-            set { SetProperty(ref _numberOfCycles, value); }
+            set
+            {
+                int valueToSet = value > 0 ? value : 1;
+                SetProperty(ref _numberOfCycles, valueToSet);
+            }
         }
 
         private bool _hasUnacknowledgedError;
@@ -287,7 +291,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             {
                 while (true)
                 {
-                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync(NumberOfCycles);
+                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
                     Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles);
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
