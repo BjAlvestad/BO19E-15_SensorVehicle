@@ -192,7 +192,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             List<float> distancesInRange = new List<float>();
             bool angleSpansZero = fromAngle > toAngle;
 
-            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
+            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);  //BUG: Will return if no values in left sector when (measurement spanns zero)
             if (startIndex == -1) return new List<float>(){float.NaN};
 
             //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
