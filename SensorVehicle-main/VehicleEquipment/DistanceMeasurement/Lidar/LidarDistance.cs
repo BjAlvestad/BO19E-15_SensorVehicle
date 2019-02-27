@@ -20,7 +20,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _aftHasBeenCalculated;
         private ILidarPacketReceiver _packetReceiver;
         private CancellationTokenSource _collectorCancelToken;
-        private HashSet<VerticalAngle> _activeVerticalAngles; // HashSet will not contain any duplicate value
+
+        public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
         public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
         {
@@ -32,7 +33,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             Resolution = float.NaN;  // Don't know the distance resolution
 
             NumberOfCycles = 3;
-            _activeVerticalAngles = new HashSet<VerticalAngle>(verticalAngles);
+
+            ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
+            ActiveVerticalAngles.AddFromArray(verticalAngles);
         }
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
@@ -237,7 +240,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (true)
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync(NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, _activeVerticalAngles);  //TODO: Change LidarPacketInterpreter to utilize HashSet instead of List
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles);
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;

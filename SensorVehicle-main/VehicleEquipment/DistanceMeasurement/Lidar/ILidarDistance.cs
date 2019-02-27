@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
@@ -20,6 +21,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         float Left { get; }
         float Right { get; }
         float Aft { get; }
+
+        ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
         float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType);
         List<float> GetDistancesInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
