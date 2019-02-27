@@ -27,7 +27,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             DefaultCalculationType = CalculationType.Max; //TEMP
             DefaultVerticalAngle = verticalAngles[0];
 
-            _minRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
+            MinRange = 0.3f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
             MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
 
             NumberOfCycles = 3;
@@ -45,6 +45,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             set { SetProperty(ref _minRange, value);  }
         }
 
+        //TODO: MaxRange is currently not in use. To be put in use or removed.
         private float _maxRange;
         public float MaxRange
         {
@@ -292,7 +293,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (true)
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, MinRange);
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
