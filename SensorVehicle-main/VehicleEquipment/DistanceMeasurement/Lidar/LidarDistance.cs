@@ -8,17 +8,13 @@ using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance, IDistance
+    public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance
     {
-        public CalculationType DefaultCalculationType { get; set; }
-        public VerticalAngle DefaultVerticalAngle { get; set; }
-
-
         private bool _fwdHasBeenCalculated;
         private bool _leftHasBeenCalculated;
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
-        private ILidarPacketReceiver _packetReceiver;
+        private readonly ILidarPacketReceiver _packetReceiver;
         private CancellationTokenSource _collectorCancelToken;
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
@@ -27,10 +23,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         {
             _packetReceiver = packetReceiver;
             DefaultCalculationType = CalculationType.Max; //TEMP
+            DefaultVerticalAngle = verticalAngles[0];
 
-            MinRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
+            _minRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
             MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
-            Resolution = float.NaN;  // Don't know the distance resolution
 
             NumberOfCycles = 3;
 
@@ -40,13 +36,56 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
-        public float MinRange { get; private set; }
-        public float MaxRange { get; private set; }
-        public float Resolution { get; private set; }
-        public DateTime LastUpdate { get; private set; }
+        private float _minRange;
+        public float MinRange
+        {
+            get { return _minRange; }
+            set { SetProperty(ref _minRange, value);  }
+        }
+
+        private float _maxRange;
+        public float MaxRange
+        {
+            get { return _maxRange; }
+            set { SetProperty(ref _maxRange, value); }
+        }
+
+        private DateTime _lastUpdate;
+        public DateTime LastUpdate
+        {
+            get { return _lastUpdate; }
+            private set { SetProperty(ref _lastUpdate, value); }
+        }
+
         public bool IsCollectorRunning { get; private set; }
-        public string Message { get; private set; }
-        public byte NumberOfCycles { get; set; }
+        
+        private CalculationType _defaultCalculationType;
+        public CalculationType DefaultCalculationType
+        {
+            get { return _defaultCalculationType; }
+            set { SetProperty(ref _defaultCalculationType, value); }
+        }
+
+        private VerticalAngle _defaultVerticalAngle;
+        public VerticalAngle DefaultVerticalAngle
+        {
+            get { return _defaultVerticalAngle; }
+            set { SetProperty(ref _defaultVerticalAngle, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        private byte _numberOfCycles;
+        public byte NumberOfCycles
+        {
+            get { return _numberOfCycles; }
+            set { SetProperty(ref _numberOfCycles, value); }
+        }
 
         private bool _hasUnacknowledgedError;
         public bool HasUnacknowledgedError
@@ -78,8 +117,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     return _fwd;
                 }
 
-                _fwd = GetDistance(345, 15);
                 _fwdHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _fwd, GetDistance(345, 15));
                 return _fwd;
             }
         }
@@ -94,8 +133,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     return _left;
                 }
 
-                _left = GetDistance(255, 285);
                 _leftHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _left, GetDistance(255, 285));
                 return _left;
             }
         }
@@ -110,8 +149,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     return _right;
                 }
 
-                _right = GetDistance(75, 105);
                 _rightHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _right, GetDistance(75, 105));
                 return _right;
             }
         }
