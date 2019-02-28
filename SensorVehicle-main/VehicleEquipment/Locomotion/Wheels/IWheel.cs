@@ -9,7 +9,7 @@ namespace VehicleEquipment.Locomotion.Wheels
         int CurrentSpeedLeft { get; }
         int CurrentSpeedRight { get; }
 
-        void SetSpeed(int leftValue, int rightValue);
+        void SetSpeed(int leftValue, int rightValue, bool onlySendIfValuesChanged = true);
 
         void Fwd(int speed);
         void TurnLeft(int speed);

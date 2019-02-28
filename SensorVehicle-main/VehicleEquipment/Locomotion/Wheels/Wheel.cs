@@ -55,18 +55,19 @@ namespace VehicleEquipment.Locomotion.Wheels
         /// <summary>
         /// Sends desired speed to wheel encoder - Input range [-100, 100]
         /// </summary>
-        /// <param name="LeftValue">Left wheel speed (valid value is between -100 and +100)</param>
-        /// <param name="RightValue">Right wheel speed (valid value is between -100 and +100)</param>
-        public void SetSpeed(int LeftValue, int RightValue)
+        /// <param name="leftValue">Left wheel speed (valid value is between -100 and +100)</param>
+        /// <param name="rightValue">Right wheel speed (valid value is between -100 and +100)</param>
+        /// <param name="onlySendIfValuesChanged">If set to false, new command will be sent to wheels, even if command is the same as old.</param>
+        public void SetSpeed(int leftValue, int rightValue, bool onlySendIfValuesChanged = true)
         {
-            if (LeftValue == CurrentSpeedLeft && RightValue == CurrentSpeedRight) return;
+            if (onlySendIfValuesChanged && leftValue == CurrentSpeedLeft && rightValue == CurrentSpeedRight) return;
 
             try
             {
-                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(LeftValue), ValidatedSpeed(RightValue));
+                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(leftValue), ValidatedSpeed(rightValue));
 
-                CurrentSpeedLeft = LeftValue;
-                CurrentSpeedRight = RightValue;
+                CurrentSpeedLeft = leftValue;
+                CurrentSpeedRight = rightValue;
             }
             catch (Exception e)
             {

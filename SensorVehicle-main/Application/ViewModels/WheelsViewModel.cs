@@ -54,7 +54,7 @@ namespace Application.ViewModels
         {
             LeftWheel = 0;
             RightWheel = 0;
-            Wheel.SetSpeed(LeftWheel, RightWheel);
+            Wheel.SetSpeed(LeftWheel, RightWheel, onlySendIfValuesChanged: false);
         }
 
         private bool _applyWheelSpeedContinously;

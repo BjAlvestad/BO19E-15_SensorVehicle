@@ -41,7 +41,7 @@ namespace Application.ViewModels
         {
             if (ExampleLogic.ActiveExampleLogic != null) ExampleLogic.ActiveExampleLogic.RunExampleLogic = false;
 
-            Wheel.SetSpeed(0, 0);
+            Wheel.SetSpeed(leftValue: 0, rightValue: 0, onlySendIfValuesChanged: false);
         }
 
         private void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
