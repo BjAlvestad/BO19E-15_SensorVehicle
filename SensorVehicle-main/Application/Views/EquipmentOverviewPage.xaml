@@ -46,6 +46,7 @@
                     <TextBlock x:Name="LastReadingTimeUlText" Text="Last reading from sensors:" RelativePanel.AlignHorizontalCenterWith="FwdUlText" RelativePanel.Below="LeftUlValue" Margin="0, 10, 0, 0"/>
                     <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeUlText" RelativePanel.AlignRightWith="LastReadingTimeUlText"/>              
                 </RelativePanel>
+
                 <!--LIDAR sensor data box (contains properties that only raises NotifyPropertyChanged selectively)-->
                 <RelativePanel Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock x:Name="LidarTitle" Text="Lidar" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
@@ -72,14 +73,24 @@
                 </RelativePanel>
             </StackPanel>
 
+            <!--LOCOMOTION-->
             <StackPanel Grid.Row="0" Grid.Column="2">
+                <!--WHEELS-->
                 <RelativePanel Visibility="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock x:Name="WheelTitle" Text="Wheel" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
-                    <TextBlock Text="ToBeDone" RelativePanel.Below="WheelTitle"/>
+                    <TextBlock Text="Wheel" FontSize="24" FontWeight="Bold" x:Name="WheelTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+                    <TextBlock Text="Speed left:" x:Name="WheelSpeedLeftText" RelativePanel.Below="WheelTitle" RelativePanel.LeftOf="WheelTitle" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" x:Name="WheelSpeedLeftValue" RelativePanel.Below="WheelSpeedLeftText" RelativePanel.AlignLeftWith="WheelSpeedLeftText" />
+                    <TextBlock Text="Speed Right:" x:Name="WheelSpeedRightText" RelativePanel.Below="WheelTitle" RelativePanel.RightOf="WheelTitle"/>
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" RelativePanel.Below="WheelSpeedRightText" RelativePanel.AlignLeftWith="WheelSpeedRightText" />
+
+                    <Button Content="STOP" FontSize="50" Click="{x:Bind ViewModel.StopWheels}" RelativePanel.Below="WheelSpeedLeftValue" RelativePanel.AlignHorizontalCenterWithPanel="True" />
                 </RelativePanel>
+
+                <!--ENCODER-->
                 <RelativePanel Visibility="{x:Bind ViewModel.Encoder.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock x:Name="EncoderTitle" Text="Encoder" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
-                    <TextBlock Text="ToBeDone" RelativePanel.Below="EncoderTitle"/>
+                    <TextBlock x:Name="EncoderTitle" Text="Encoder" FontSize="24" FontWeight="Bold" Margin="0, 10, 0, 0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+                    <TextBlock Text="ToBeDone" RelativePanel.Below="EncoderTitle" RelativePanel.AlignHorizontalCenterWith="EncoderTitle"/>
                 </RelativePanel>
             </StackPanel>
             
