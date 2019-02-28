@@ -13,8 +13,19 @@ namespace VehicleEquipment.Locomotion.Wheels
             vehicleCommunication = comWithWheel;
         }
 
-        public int CurrentSpeedLeft { get; private set; }
-        public int CurrentSpeedRight { get; private set; }
+        private int _currentSpeedLeft;
+        public int CurrentSpeedLeft
+        {
+            get { return _currentSpeedLeft; }
+            private set { SetPropertyRaiseSelectively(ref _currentSpeedLeft, value); }
+        }
+
+        private int _currentSpeedRight;
+        public int CurrentSpeedRight
+        {
+            get { return _currentSpeedRight; }
+            private set { SetPropertyRaiseSelectively(ref _currentSpeedRight, value); }
+        }
 
         public void Fwd(int speed = 50)
         {
