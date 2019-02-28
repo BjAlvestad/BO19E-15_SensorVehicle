@@ -47,7 +47,6 @@ namespace Application.ViewModels
         public void ApplyNewWheelSpeed()
         {
             Wheel.SetSpeed(LeftWheel, RightWheel);
-            RaisePropertyChanged(nameof(Wheel));
         }
 
         public void StopWheels()
