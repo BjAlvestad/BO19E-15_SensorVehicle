@@ -6,6 +6,8 @@ namespace VehicleEquipment.Locomotion.Wheels
 {
     public class Wheel : ThreadSafeNotifyPropertyChanged, IWheel
     {
+        private const int MaximumValidSpeed = 60; //TEMP speed reduction from 100 to 60 until microcontroller code is fixed (to keep motors below 12V)
+
         private readonly IVehicleCommunication vehicleCommunication;
 
         public Wheel(IVehicleCommunication comWithWheel)
@@ -64,10 +66,13 @@ namespace VehicleEquipment.Locomotion.Wheels
 
             try
             {
-                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(leftValue), ValidatedSpeed(rightValue));
+                int validatedSpeedLeft = ValidatedSpeed(leftValue);
+                int validatedSpeedRight = ValidatedSpeed(rightValue);
 
-                CurrentSpeedLeft = leftValue;
-                CurrentSpeedRight = rightValue;
+                vehicleCommunication.Write(MessageCode.NoMessage, validatedSpeedLeft, validatedSpeedRight);
+
+                CurrentSpeedLeft = validatedSpeedLeft;
+                CurrentSpeedRight = validatedSpeedRight;
             }
             catch (Exception e)
             {
@@ -79,8 +84,8 @@ namespace VehicleEquipment.Locomotion.Wheels
 
         private static int ValidatedSpeed(int value)
         {
-            if (value > 100) return 100;
-            if (value < -100) return -100;
+            if (value > MaximumValidSpeed) return MaximumValidSpeed;
+            if (value < -MaximumValidSpeed) return -MaximumValidSpeed;
 
             return value;
         }
