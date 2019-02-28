@@ -67,7 +67,7 @@
                 <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
                 <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
 
-                <TextBlock x:Name="LastReadingTimeText" Text="Last reading from sensors:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
+                <TextBlock x:Name="LastReadingTimeText" Text="New cycles collected at:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
                 <TextBlock Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
 
                 <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
