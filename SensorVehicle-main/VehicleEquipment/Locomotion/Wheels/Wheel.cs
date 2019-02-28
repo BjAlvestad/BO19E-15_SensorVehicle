@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
-    public class Wheel : IWheel
+    public class Wheel : ThreadSafeNotifyPropertyChanged, IWheel
     {
         private readonly IVehicleCommunication vehicleCommunication;
 

@@ -1,7 +1,11 @@
-﻿namespace VehicleEquipment.Locomotion.Wheels
+﻿using System.ComponentModel;
+
+namespace VehicleEquipment.Locomotion.Wheels
 {
-    public interface IWheel
+    public interface IWheel : INotifyPropertyChanged
     {
+        bool RaiseNotificationForSelective { get; set; }
+
         int CurrentSpeedLeft { get; }
         int CurrentSpeedRight { get; }
 
