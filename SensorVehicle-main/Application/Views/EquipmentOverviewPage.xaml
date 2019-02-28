@@ -15,6 +15,96 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- DISTANCE sesor data-->
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <!--ULTRASONIC sensor data box (contains properties that only raises NotifyPropertyChanged selectively)-->
+                <RelativePanel Visibility="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock x:Name="UlTitle" Text="Ultrasonic" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+                    <TextBlock x:Name="FwdUlText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="UlTitle"/>
+                    <TextBlock x:Name="FwdUlValue" Text="{x:Bind ViewModel.Ultrasonic.Fwd, Mode=OneWay}" RelativePanel.Below="FwdUlText" RelativePanel.AlignHorizontalCenterWith="FwdUlText"/>
+
+                    <TextBlock x:Name="LeftUlText" Text="Left" RelativePanel.LeftOf="FwdUlText" RelativePanel.Below="FwdUlValue"/>
+                    <TextBlock x:Name="LeftUlValue" Text="{x:Bind ViewModel.Ultrasonic.Left, Mode=OneWay}" RelativePanel.Below="LeftUlText" RelativePanel.AlignHorizontalCenterWith="LeftUlText"/>
+
+                    <TextBlock x:Name="RightUlText" Text="Right" RelativePanel.RightOf="FwdUlText" RelativePanel.Below="FwdUlValue"/>
+                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Right, Mode=OneWay}" RelativePanel.Below="RightUlText" RelativePanel.AlignHorizontalCenterWith="RightUlText"/>
+
+                    <TextBlock x:Name="LastReadingTimeUlText" Text="Last reading from sensors:" RelativePanel.AlignHorizontalCenterWith="FwdUlText" RelativePanel.Below="LeftUlValue" Margin="0, 10, 0, 0"/>
+                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeUlText" RelativePanel.AlignRightWith="LastReadingTimeUlText"/>              
+                </RelativePanel>
+
+                <!--LIDAR sensor data box (contains properties that only raises NotifyPropertyChanged selectively)-->
+                <RelativePanel Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock x:Name="LidarTitle" Text="Lidar" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+
+                    <TextBlock x:Name="LidarFwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="LidarTitle"/>
+                    <TextBlock x:Name="LidarFwdValue" Text="{x:Bind ViewModel.Lidar.Fwd, Mode=OneWay}" RelativePanel.Below="LidarFwdText" RelativePanel.AlignHorizontalCenterWith="LidarFwdText"/>
+
+                    <TextBlock x:Name="LidarLeftText" Text="Left" RelativePanel.LeftOf="LidarFwdText" RelativePanel.Below="LidarFwdValue"/>
+                    <TextBlock x:Name="LidarLeftValue" Text="{x:Bind ViewModel.Lidar.Left, Mode=OneWay}" RelativePanel.Below="LidarLeftText" RelativePanel.AlignHorizontalCenterWith="LidarLeftText"/>
+
+                    <TextBlock x:Name="LidarRightText" Text="Right" RelativePanel.RightOf="LidarFwdText" RelativePanel.Below="LidarFwdValue"/>
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="LidarRightText" RelativePanel.AlignHorizontalCenterWith="LidarRightText"/>
+
+
+                    <TextBlock x:Name="LidarCollectorMessage" Text="Collector is not running!" Foreground="Red" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarLeftValue"
+                               Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+
+                    <TextBlock x:Name="LastReadingTimeText" Text="New cycle collected at:" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarCollectorMessage" Margin="0, 10, 0, 0"/>
+                    <TextBlock x:Name="LidarsLastUpdateBlock"  Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
+
+                    <ToggleSwitch Header="Auto Calculate" OffContent="Update from Control Logic" OnContent="Allways updates" IsOn="{x:Bind ViewModel.AutoCalculateLidarDistance, Mode=TwoWay}" RelativePanel.Below="LidarsLastUpdateBlock"
+                                  Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </RelativePanel>
+            </StackPanel>
+
+            <!--LOCOMOTION-->
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <!--WHEELS-->
+                <RelativePanel Visibility="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Wheel" FontSize="24" FontWeight="Bold" x:Name="WheelTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+                    <TextBlock Text="Speed left:" x:Name="WheelSpeedLeftText" RelativePanel.Below="WheelTitle" RelativePanel.LeftOf="WheelTitle" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" x:Name="WheelSpeedLeftValue" RelativePanel.Below="WheelSpeedLeftText" RelativePanel.AlignLeftWith="WheelSpeedLeftText" />
+                    <TextBlock Text="Speed Right:" x:Name="WheelSpeedRightText" RelativePanel.Below="WheelTitle" RelativePanel.RightOf="WheelTitle"/>
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" RelativePanel.Below="WheelSpeedRightText" RelativePanel.AlignLeftWith="WheelSpeedRightText" />
+
+                    <Button Content="STOP" FontSize="50" Click="{x:Bind ViewModel.StopWheels}" RelativePanel.Below="WheelSpeedLeftValue" RelativePanel.AlignHorizontalCenterWithPanel="True" />
+                </RelativePanel>
+
+                <!--ENCODER-->
+                <RelativePanel Visibility="{x:Bind ViewModel.Encoder.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock x:Name="EncoderTitle" Text="Encoder" FontSize="24" FontWeight="Bold" Margin="0, 10, 0, 0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+                    <TextBlock Text="ToBeDone" RelativePanel.Below="EncoderTitle" RelativePanel.AlignHorizontalCenterWith="EncoderTitle"/>
+                </RelativePanel>
+            </StackPanel>
+            
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+            <StackPanel Grid.Row="0" Grid.Column="4">
+                <ToggleSwitch Header="Ultrasonic" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ToggleSwitch Header="Lidar" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ToggleSwitch Header="Wheels" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Wheels, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ToggleSwitch Header="Encoder" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Encoder.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Encoder, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

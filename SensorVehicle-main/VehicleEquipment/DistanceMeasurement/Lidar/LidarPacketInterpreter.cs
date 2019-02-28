@@ -5,9 +5,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
     internal static class LidarPacketInterpreter
     {
-        private const float MinimumRange = 0.3f;
-
-        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, HashSet<VerticalAngle> verticalAnglesToCalculate)
+        public static ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> InterpretData(Queue<byte[]> lidarDataPackets, IEnumerable<VerticalAngle> verticalAnglesToCalculate, float minimumAllowedDistance)
         {
             IDictionary<VerticalAngle, List<HorizontalPoint>> interpretedData = InitializeCollection(verticalAnglesToCalculate);
 
@@ -20,7 +18,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 foreach (VerticalAngle verticalAngle in verticalAnglesToCalculate)
                 {
                     float distance = GetDistance(dataPack, verticalAngle);
-                    if (distance > MinimumRange)
+                    if (distance > minimumAllowedDistance)
                     {
                         interpretedData[verticalAngle].Add(new HorizontalPoint(azimuthAngle, distance));
                     }

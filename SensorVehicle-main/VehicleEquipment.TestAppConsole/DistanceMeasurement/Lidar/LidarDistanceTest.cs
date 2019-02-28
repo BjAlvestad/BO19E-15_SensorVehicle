@@ -19,9 +19,9 @@ namespace VehicleEquipment.TestAppConsole.DistanceMeasurement.Lidar
         
         public static void PrintAverageDirections()
         {
-            Console.WriteLine($"\t Fwd: {lidarDistance.GetFwd() : 000.00}\t\t");
-            Console.WriteLine($"Left: {lidarDistance.GetLeft() : 000.00} \t Right: {lidarDistance.GetRight() : 000.00}\t\t");
-            Console.WriteLine($"\t Aft: {lidarDistance.GetAft() : 000.00}\t\t");
+            Console.WriteLine($"\t Fwd: {lidarDistance.Fwd : 000.00}\t\t");
+            Console.WriteLine($"Left: {lidarDistance.Left : 000.00} \t Right: {lidarDistance.Right : 000.00}\t\t");
+            Console.WriteLine($"\t Aft: {lidarDistance.Aft : 000.00}\t\t");
         }
 
         public static void PrintDirectionsContinously()

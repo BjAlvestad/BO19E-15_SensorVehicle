@@ -1,7 +1,11 @@
-﻿namespace VehicleEquipment.Locomotion.Encoder
+﻿using System.ComponentModel;
+
+namespace VehicleEquipment.Locomotion.Encoder
 {
-    public interface IEncoder
+    public interface IEncoder : INotifyPropertyChanged
     {
+        bool RaiseNotificationForSelective { get; set; }
+
         int TimeAccumulatedForLastRequest { get; }
         double DistanceAtLastRequest { get; }
         double AvgVel { get; }

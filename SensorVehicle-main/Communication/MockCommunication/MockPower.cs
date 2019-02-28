@@ -1,22 +1,56 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Helpers;
 
 namespace Communication.MockCommunication
 {
-    public class MockPower : IPower
+    public class MockPower : ThreadSafeNotifyPropertyChanged, IPower
     {
-        public bool Lidar { get; set; }
-        public bool Ultrasound { get; set; }
-        public bool Wheels { get; set; }
-        public bool Encoder { get; set; }
-        public bool Spare1 { get; set; }
-        public bool Spare2 { get; set; }
-        public bool Spare3 { get; set; }
+        private bool _lidar;
+        public bool Lidar
+        {
+            get => _lidar;
+            set => SetProperty(ref _lidar, value);
+        }
+
+        private bool _ultrasound;
+        public bool Ultrasound
+        {
+            get => _ultrasound;
+            set => SetProperty(ref _ultrasound, value);
+        }
+
+        private bool _wheels;
+        public bool Wheels
+        {
+            get => _wheels;
+            set => SetProperty(ref _wheels, value);
+        }
+
+        private bool _encoder;
+        public bool Encoder
+        {
+            get => _encoder;
+            set => SetProperty(ref _encoder, value);
+        }
+
+        private bool _spare1;
+        public bool Spare1
+        {
+            get => _spare1;
+            set => SetProperty(ref _spare1, value);
+        }
+
+        private bool _spare2;
+        public bool Spare2
+        {
+            get => _spare2;
+            set => SetProperty(ref _spare2, value);
+        }
+
+        private bool _spare3;
+        public bool Spare3
+        {
+            get => _spare3;
+            set => SetProperty(ref _spare3, value);
+        }
     }
 }

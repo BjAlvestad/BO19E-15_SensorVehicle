@@ -1,8 +1,9 @@
 ﻿using System;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
-    public class Encoder : IEncoder
+    public class Encoder : ThreadSafeNotifyPropertyChanged, IEncoder
     {
         private readonly IVehicleCommunication _vehicleCommunication ;
 

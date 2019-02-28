@@ -15,6 +15,86 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" >
+                <StackPanel>
+                    <ComboBox ItemsSource="{x:Bind ViewModel.VerticalAngles}" SelectedItem="{x:Bind ViewModel.SelectedVerticalAngle, Mode=TwoWay}" />
+                    <Button Content="Add to active" Click="{x:Bind ViewModel.AddSelectedVerticalAngleToActive}" />
+                    <TextBlock Text="Active vertical angles"/>
+                    <ListView ItemsSource="{x:Bind ViewModel.Lidar.ActiveVerticalAngles, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedActiveVerticalAngle, Mode=TwoWay}" SelectionMode="Single" ></ListView>
+                    <Button Content="Remove from active" Click="{x:Bind ViewModel.RemoveSelectedVerticalAngleFromActive}"/>
+                    <Button Content="Set as default" Click="{x:Bind ViewModel.SetAsDefaultAngle}"/>
+                    <TextBlock Text="Default angle:" />
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultVerticalAngle, Mode=OneWay}"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Default calc type:" />
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=OneWay}"/>
+                    <ComboBox ItemsSource="{x:Bind ViewModel.CalculationTypes}" SelectedItem="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=TwoWay}" />
+                    <TextBlock Text="Collection cycles:" />
+                    <TextBox Text="{x:Bind ViewModel.Lidar.NumberOfCycles, Mode=TwoWay}"/>
+                    <TextBlock Text="Default &#x0a;beam opening:" />
+                    <TextBox Text="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}"/>
+                    <TextBlock Text="MinRange:" />
+                    <TextBox Text="{x:Bind ViewModel.Lidar.MinRange, Mode=TwoWay}"/>
+                    <TextBlock Text="MaxRange:" />
+                    <TextBox Text="{x:Bind ViewModel.Lidar.MaxRange, Mode=TwoWay}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
+            <RelativePanel Grid.Row="0" Grid.Column="2"
+                           Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
+                <TextBlock x:Name="FwdValue" Text="{x:Bind ViewModel.Lidar.Fwd, Mode=OneWay}" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
+
+                <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
+                <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Lidar.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
+
+                <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
+                <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
+
+                <TextBlock x:Name="LastReadingTimeText" Text="New cycles collected at:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
+                <TextBlock Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
+
+                <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
+                <TextBox x:Name="ToAngleBox" Text="{x:Bind ViewModel.ToAngle, Mode=TwoWay}" Description="To" RelativePanel.AlignRightWithPanel="True"/>
+                <ListView ItemsSource="{x:Bind ViewModel.DistancesInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
+
+            </RelativePanel>
+            <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"
+                       Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"
+                       Text="'Run Collector' must be on to be able to use any distance data from the Lidar. &#x0a; &#x0a;Distance data will not update on the display unless the 'Display Data' is on (but can still be used in code).&#x0a;This is done to make control logic more efficient.&#x0a;Note: The 'Display Data' slider is only visible if 'Power' is switched on." />                
+
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+            <StackPanel Grid.Row="0" Grid.Column="4">
+                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Lidar, Mode=TwoWay}" />
+                <ToggleSwitch Header="Run Collector" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Lidar.RunCollector, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Collect' can remain on (but hidden) when 'Power' is switched off -->
+                <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ToggleSwitch Header="Autocalculate" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Autocalculate, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+
+            <!--ERROR MESSAGE box (displays error messages from )-->
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
+                       Text="{x:Bind ViewModel.Lidar.Message, Mode=OneWay}" TextWrapping="Wrap"
+                       Tapped="{x:Bind ViewModel.Lidar.ClearMessage, Mode=OneWay}" />
+
         </Grid>
     </Grid>
 </Page>

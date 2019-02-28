@@ -45,7 +45,9 @@ namespace Application
             Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
 
             bool isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+#pragma warning disable 219
             bool runAgainstSimulator = false;
+#pragma warning restore 219
 
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;

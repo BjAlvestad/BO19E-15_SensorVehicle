@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using VehicleEquipment;
 
-namespace Helpers
+namespace VehicleEquipment
 {
     public static class ArrayConverter
     {

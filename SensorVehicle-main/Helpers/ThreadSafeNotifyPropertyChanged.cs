@@ -20,6 +20,13 @@ namespace Helpers
             _uiSyncContext = SynchronizationContext.Current;
         }
 
+        private bool _raiseNotificationForSelective;
+        public bool RaiseNotificationForSelective
+        {
+            get { return _raiseNotificationForSelective; }
+            set { SetProperty(ref _raiseNotificationForSelective, value); }
+        }
+
         /// <summary>
         /// Instansiates a class for raising property changed notification from threads other than UI thread.
         /// </summary>
@@ -39,12 +46,12 @@ namespace Helpers
         /// <param name="value">Desired value for the property.</param>
         /// <param name="propertyName">Name of the property used to notify listeners. This value is optional and can be provided automatically when invoked from compilers that support CallerMemberName.</param>
         /// <returns>True if the value was changed, false if the existing value matched the desired value.</returns>
-        public bool SetPropertyRaiseSelectively<T>(ref T storage, T value, bool raiseNotificationSwitch, [CallerMemberName] string propertyName = null)
+        public bool SetPropertyRaiseSelectively<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
             storage = value;
-            if (raiseNotificationSwitch) RaiseSyncedPropertyChanged(propertyName);
+            if (RaiseNotificationForSelective) RaiseSyncedPropertyChanged(propertyName);
 
             return true;
         }

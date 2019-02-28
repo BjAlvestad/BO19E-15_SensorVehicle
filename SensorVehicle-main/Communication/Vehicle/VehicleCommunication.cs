@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Windows.Devices.I2c;
-using Helpers;
 using VehicleEquipment;
 
 namespace Communication.Vehicle

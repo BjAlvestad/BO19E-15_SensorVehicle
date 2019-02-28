@@ -1,6 +1,8 @@
-﻿namespace Communication
+﻿using System.ComponentModel;
+
+namespace Communication
 {
-    public interface IPower
+    public interface IPower : INotifyPropertyChanged
     {
         bool Lidar { get; set; }
         bool Ultrasound { get; set; }

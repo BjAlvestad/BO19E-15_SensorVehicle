@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
-    public class Wheel : IWheel
+    public class Wheel : ThreadSafeNotifyPropertyChanged, IWheel
     {
+        private const int MaximumValidSpeed = 60; //TEMP speed reduction from 100 to 60 until microcontroller code is fixed (to keep motors below 12V)
+
         private readonly IVehicleCommunication vehicleCommunication;
 
         public Wheel(IVehicleCommunication comWithWheel)
@@ -12,8 +15,19 @@ namespace VehicleEquipment.Locomotion.Wheels
             vehicleCommunication = comWithWheel;
         }
 
-        public int CurrentSpeedLeft { get; private set; }
-        public int CurrentSpeedRight { get; private set; }
+        private int _currentSpeedLeft;
+        public int CurrentSpeedLeft
+        {
+            get { return _currentSpeedLeft; }
+            private set { SetPropertyRaiseSelectively(ref _currentSpeedLeft, value); }
+        }
+
+        private int _currentSpeedRight;
+        public int CurrentSpeedRight
+        {
+            get { return _currentSpeedRight; }
+            private set { SetPropertyRaiseSelectively(ref _currentSpeedRight, value); }
+        }
 
         public void Fwd(int speed = 50)
         {
@@ -43,18 +57,22 @@ namespace VehicleEquipment.Locomotion.Wheels
         /// <summary>
         /// Sends desired speed to wheel encoder - Input range [-100, 100]
         /// </summary>
-        /// <param name="LeftValue">Left wheel speed (valid value is between -100 and +100)</param>
-        /// <param name="RightValue">Right wheel speed (valid value is between -100 and +100)</param>
-        public void SetSpeed(int LeftValue, int RightValue)
+        /// <param name="leftValue">Left wheel speed (valid value is between -100 and +100)</param>
+        /// <param name="rightValue">Right wheel speed (valid value is between -100 and +100)</param>
+        /// <param name="onlySendIfValuesChanged">If set to false, new command will be sent to wheels, even if command is the same as old.</param>
+        public void SetSpeed(int leftValue, int rightValue, bool onlySendIfValuesChanged = true)
         {
-            if (LeftValue == CurrentSpeedLeft && RightValue == CurrentSpeedRight) return;
+            if (onlySendIfValuesChanged && leftValue == CurrentSpeedLeft && rightValue == CurrentSpeedRight) return;
 
             try
             {
-                vehicleCommunication.Write(MessageCode.NoMessage, ValidatedSpeed(LeftValue), ValidatedSpeed(RightValue));
+                int validatedSpeedLeft = ValidatedSpeed(leftValue);
+                int validatedSpeedRight = ValidatedSpeed(rightValue);
 
-                CurrentSpeedLeft = LeftValue;
-                CurrentSpeedRight = RightValue;
+                vehicleCommunication.Write(MessageCode.NoMessage, validatedSpeedLeft, validatedSpeedRight);
+
+                CurrentSpeedLeft = validatedSpeedLeft;
+                CurrentSpeedRight = validatedSpeedRight;
             }
             catch (Exception e)
             {
@@ -66,8 +84,8 @@ namespace VehicleEquipment.Locomotion.Wheels
 
         private static int ValidatedSpeed(int value)
         {
-            if (value > 100) return 100;
-            if (value < -100) return -100;
+            if (value > MaximumValidSpeed) return MaximumValidSpeed;
+            if (value < -MaximumValidSpeed) return -MaximumValidSpeed;
 
             return value;
         }

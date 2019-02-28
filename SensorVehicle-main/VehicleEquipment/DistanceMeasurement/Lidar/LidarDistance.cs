@@ -4,96 +4,185 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
-    public class LidarDistance : ILidarDistance, IDistance
+    public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance
     {
-        public CalculationType DefaultCalculationType { get; set; }
-        public VerticalAngle DefaultVerticalAngle { get; set; }
-
-
         private bool _fwdHasBeenCalculated;
         private bool _leftHasBeenCalculated;
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
-        private float _fwd;
-        private float _left;
-        private float _right;
-        private float _aft;
-        private ILidarPacketReceiver _packetReceiver;
-        private CancellationTokenSource _collectorCancelToken = new CancellationTokenSource();
-        private HashSet<VerticalAngle> _activeVerticalAngles; // HashSet will not contain any duplicate value
+        private readonly ILidarPacketReceiver _packetReceiver;
+        private CancellationTokenSource _collectorCancelToken;
+
+        public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
         public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
-            DefaultCalculationType = CalculationType.Max; //TEMP
 
-            MinRange = 1.0f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'.
+            DefaultHalfBeamOpening = 15;
+            DefaultCalculationType = CalculationType.Max; //TEMP
+            DefaultVerticalAngle = verticalAngles[0];
+
+            MinRange = 0.3f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
             MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
-            Resolution = float.NaN;  // Don't know the distance resolution
 
             NumberOfCycles = 3;
-            _activeVerticalAngles = new HashSet<VerticalAngle>(verticalAngles);
+
+            ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
+            ActiveVerticalAngles.AddFromArray(verticalAngles);
         }
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
-        public float MinRange { get; private set; }
-        public float MaxRange { get; private set; }
-        public float Resolution { get; private set; }
-        public DateTime LastUpdate { get; private set; }
-        public bool IsCollectorRunning { get; private set; }
-        public string CollectorMessage { get; private set; }
-        public byte NumberOfCycles { get; set; }
-
-        public float GetFwd()
+        private float _minRange;
+        public float MinRange
         {
-            if (_fwdHasBeenCalculated)
+            get { return _minRange; }
+            set { SetProperty(ref _minRange, value);  }
+        }
+
+        //TODO: MaxRange is currently not in use. To be put in use or removed.
+        private float _maxRange;
+        public float MaxRange
+        {
+            get { return _maxRange; }
+            set { SetProperty(ref _maxRange, value); }
+        }
+
+        private DateTime _lastUpdate;
+        public DateTime LastUpdate
+        {
+            get { return _lastUpdate; }
+            private set { SetProperty(ref _lastUpdate, value); }
+        }
+
+        public bool IsCollectorRunning { get; private set; }
+        
+        private CalculationType _defaultCalculationType;
+        public CalculationType DefaultCalculationType
+        {
+            get { return _defaultCalculationType; }
+            set { SetProperty(ref _defaultCalculationType, value); }
+        }
+
+        private VerticalAngle _defaultVerticalAngle;
+        public VerticalAngle DefaultVerticalAngle
+        {
+            get { return _defaultVerticalAngle; }
+            set { SetProperty(ref _defaultVerticalAngle, value); }
+        }
+
+        private int _defaultHalfBeamOpening;
+        public int DefaultHalfBeamOpening
+        {
+            get { return _defaultHalfBeamOpening; }
+            set { SetProperty(ref _defaultHalfBeamOpening, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        private int _numberOfCycles;
+        public int NumberOfCycles
+        {
+            get { return _numberOfCycles; }
+            set
             {
+                int valueToSet = value > 0 ? value : 1;
+                SetProperty(ref _numberOfCycles, valueToSet);
+            }
+        }
+
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
+        private bool _runCollector;
+        public bool RunCollector
+        {
+            get { return _runCollector; }
+            set
+            {
+                SetProperty(ref _runCollector, value);
+                //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
+                if(value) StartCollector();
+                else StopCollector();
+            }
+        }
+
+        private float _fwd;
+        public float Fwd
+        {
+            get
+            {
+                if (_fwdHasBeenCalculated)
+                {
+                    return _fwd;
+                }
+
+                _fwdHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _fwd, GetDistance((360 - DefaultHalfBeamOpening), (0 + DefaultHalfBeamOpening)));
                 return _fwd;
             }
-
-            _fwd = GetDistance(345, 15);
-            _fwdHasBeenCalculated = true;
-            return _fwd;
         }
 
-        public float GetLeft()
+        private float _left;
+        public float Left
         {
-            if (_leftHasBeenCalculated)
+            get
             {
+                if (_leftHasBeenCalculated)
+                {
+                    return _left;
+                }
+
+                _leftHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _left, GetDistance(270 - DefaultHalfBeamOpening, 270 + DefaultHalfBeamOpening));
                 return _left;
             }
-
-            _left = GetDistance(255, 285);
-            _leftHasBeenCalculated = true;
-            return _left;
         }
 
-        public float GetRight()
+        private float _right;
+        public float Right
         {
-            if (_rightHasBeenCalculated)
+            get
             {
+                if (_rightHasBeenCalculated)
+                {
+                    return _right;
+                }
+
+                _rightHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _right, GetDistance(90 - DefaultHalfBeamOpening, 90 + DefaultHalfBeamOpening));
                 return _right;
             }
-
-            _right = GetDistance(75, 105);
-            _rightHasBeenCalculated = true;
-            return _right;
         }
 
-        public float GetAft()
+        private float _aft;
+        public float Aft
         {
-            if (_aftHasBeenCalculated)
+            get
             {
+                if (_aftHasBeenCalculated)
+                {
+                    return _aft;
+                }
+
+                _aft = GetDistance(180 - DefaultHalfBeamOpening, 180 + DefaultHalfBeamOpening);
+                _aftHasBeenCalculated = true;
                 return _aft;
             }
-
-            _aft = GetDistance(165, 195);
-            _aftHasBeenCalculated = true;
-            return _aft;
         }
 
         public float GetDistance(float fromAngle, float toAngle)
@@ -117,7 +206,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             List<float> distancesInRange = new List<float>();
             bool angleSpansZero = fromAngle > toAngle;
 
-            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
+            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);  //BUG: Will return if no values in left sector when (measurement spanns zero)
             if (startIndex == -1) return new List<float>(){float.NaN};
 
             //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
@@ -169,6 +258,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+
         public void StartCollector()
         {
             if (IsCollectorRunning)
@@ -176,6 +271,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 return;
             }
             IsCollectorRunning = true;
+            _collectorCancelToken = new CancellationTokenSource();
             PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
         }
 
@@ -196,8 +292,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             {
                 while (true)
                 {
-                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync(NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, _activeVerticalAngles);  //TODO: Change LidarPacketInterpreter to utilize HashSet instead of List
+                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, MinRange);
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
@@ -210,9 +306,14 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     // https://blogs.msdn.microsoft.com/benwilli/2016/06/30/asynchronous-infinite-loops-instead-of-timers/
                 }
             }
+            catch (OperationCanceledException oce)
+            {
+                if(string.IsNullOrEmpty(Message)) Message = "Lidar collectors operation has been cancelled";
+            }
             catch (Exception e)
             {
-                CollectorMessage = $"A collector error occure:\n{e.Message}";
+                Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
+                HasUnacknowledgedError = true;
                 StopCollector();
             }
         }

@@ -47,14 +47,13 @@ namespace Application.ViewModels
         public void ApplyNewWheelSpeed()
         {
             Wheel.SetSpeed(LeftWheel, RightWheel);
-            RaisePropertyChanged(nameof(Wheel));
         }
 
         public void StopWheels()
         {
             LeftWheel = 0;
             RightWheel = 0;
-            Wheel.SetSpeed(LeftWheel, RightWheel);
+            Wheel.SetSpeed(LeftWheel, RightWheel, onlySendIfValuesChanged: false);
         }
 
         private bool _applyWheelSpeedContinously;
