@@ -15,7 +15,20 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
-            <StackPanel Orientation="Horizontal">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
                 <StackPanel >
                     <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"/> 
                     <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
@@ -40,8 +53,12 @@
                     <ToggleSwitch Header="Toggle collect encoder distance continously" OffContent="Encoder distance won't update automatically" OnContent="Encoder speed is collectet at intervall" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
                     <Button Content="Reset total distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
                 </StackPanel>
-
             </StackPanel>
+
+            <!--ERROR MESSAGE box (displays error messages from )-->
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
+                       Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
+                       Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
 
         </Grid>
     </Grid>

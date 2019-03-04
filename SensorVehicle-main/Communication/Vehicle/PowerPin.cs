@@ -1,4 +1,5 @@
-﻿using Windows.Devices.Gpio;
+﻿using System;
+using Windows.Devices.Gpio;
 
 namespace Communication.Vehicle
 {
@@ -13,9 +14,18 @@ namespace Communication.Vehicle
         /// <param name="gpioNumber">This is GPIO number (not physical pin number)</param>
         public PowerPin(int gpioNumber)
         {
-            _gpioPin = GpioController.GetDefault().OpenPin(gpioNumber);
-            _gpioPin.Write(GpioPinValue.Low);
-            _gpioPin.SetDriveMode(GpioPinDriveMode.Output);
+            try
+            {
+                _gpioPin = GpioController.GetDefault().OpenPin(gpioNumber);
+                _gpioPin.Write(GpioPinValue.Low);
+                _gpioPin.SetDriveMode(GpioPinDriveMode.Output);
+                PinFailedToOpen = false;
+            }
+            catch (Exception e)
+            {
+                PinFailedToOpen = true;
+                throw new Exception($"An error when trying to open GPIO-pin {gpioNumber}:\n{e.Message}\n\nDetails: \n{e}\n****************\n\n)");
+            }
         }
 
         private bool _power;
@@ -24,9 +34,18 @@ namespace Communication.Vehicle
             get { return _power; }
             set
             {
-                _power = value;
-                _gpioPin.Write(value ? GpioPinValue.High : GpioPinValue.Low);
+                try
+                {
+                    _gpioPin.Write(value ? GpioPinValue.High : GpioPinValue.Low);
+                    _power = value;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"An error occured when trying to switch power state to {(value ? "ON" : "OFF")}:\n{e.Message}\n\nDetails: \n{e}\n****************\n\n)");
+                }
             }
         }
+
+        public bool PinFailedToOpen { get; private set; }
     }
 }

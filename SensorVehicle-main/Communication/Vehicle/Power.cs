@@ -1,4 +1,7 @@
-﻿using Helpers;
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Helpers;
 
 namespace Communication.Vehicle
 {
@@ -17,24 +20,39 @@ namespace Communication.Vehicle
         {
             // For Raspberry Pi 3b, the GPIO 0-8 have pull high as default (on), while GPIO 9-27 have pull low (off)
             // Note: This was checked in the datasheet for broadcom BCM2835, and not BCM2837 which is what is actually mounted on the 3b unit we have.
-            _lidarPin = new PowerPin(12);
-            _ultrasoundPin = new PowerPin(16);
-            _wheelsPin = new PowerPin(20);
-            _encoderPin = new PowerPin(21);
+            _lidarPin = OpenNewPowerPin(gpioNumber: 12, equipmentName: "Lidar");
+            _ultrasoundPin = OpenNewPowerPin(gpioNumber: 16, equipmentName:"Ultrasound");
+            _wheelsPin = OpenNewPowerPin(gpioNumber: 20, equipmentName: "Wheels");
+            _encoderPin = OpenNewPowerPin(gpioNumber: 21, equipmentName: "Encoder");
 
-            _spare1Pin = new PowerPin(13);
-            _spare2Pin = new PowerPin(19);
-            _spare3Pin = new PowerPin(26);
+            _spare1Pin = OpenNewPowerPin(gpioNumber: 13, equipmentName: "Spare1");
+            _spare2Pin = OpenNewPowerPin(gpioNumber: 19, equipmentName: "Spare2");
+            _spare3Pin = OpenNewPowerPin(gpioNumber: 26, equipmentName: "Spare3");
         }
 
+        //TODO: Find a better way for exception handling of switching power state on pin (which requires less code repetition), and add exception handling for the remaining ones.
         private bool _lidar;
         public bool Lidar
         {
             get { return _lidar; }
             set
             {
-                _lidarPin.Power = value;
-                SetProperty(ref _lidar, value);
+                if (_lidarPin == null)
+                {
+                    RaiseSyncedPropertyChanged();
+                    HasUnacknowledgedError = true;
+                    if(value) Message += "Can's switch on power to Lidar, since its Power-pin did not open properly.\n** ** ** ** **\n";
+                    return;
+                }
+                try
+                {
+                    _lidarPin.Power = value;
+                    SetProperty(ref _lidar, value);
+                }
+                catch (Exception e)
+                {
+                    Message += $"LIDAR POWER ERROR:\n{e}\n\n{e.InnerException}\n** ** ** ** **\n";
+                }
             }
         }
 
@@ -101,6 +119,44 @@ namespace Communication.Vehicle
             {
                 _spare3Pin.Power = value;
                 SetProperty(ref _spare3, value);
+            }
+        }
+
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+
+        private PowerPin OpenNewPowerPin(int gpioNumber, string equipmentName)
+        {
+            try
+            {
+                return new PowerPin(gpioNumber);
+            }
+            catch (Exception e)
+            {
+                HasUnacknowledgedError = true;
+                Message += $"PIN FAILED TO OPEN for {equipmentName}. Check connection for GPIO-pin {gpioNumber} and restart program.\n" +
+                           $"If no loose connection was found, try restarting the operating system.\n** ** ** ** **\n";
+
+                Debug.Print($"FAILED TO OPEN PIN {gpioNumber} \nException message:\n{e.Message} \n\n{e.InnerException}");
+
+                return null;
             }
         }
     }

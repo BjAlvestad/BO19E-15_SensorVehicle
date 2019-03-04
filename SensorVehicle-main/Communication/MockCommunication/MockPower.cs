@@ -1,4 +1,6 @@
-﻿using Helpers;
+﻿using System;
+using System.Runtime.CompilerServices;
+using Helpers;
 
 namespace Communication.MockCommunication
 {
@@ -51,6 +53,38 @@ namespace Communication.MockCommunication
         {
             get => _spare3;
             set => SetProperty(ref _spare3, value);
+        }
+
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+        private bool SetPropertyWithErrorHandling(ref bool storage, bool value, [CallerMemberName] string propertyName = null)
+        {
+            try
+            {
+                return SetProperty(ref storage, value, propertyName);
+            }
+            catch (Exception e)
+            {
+                Message += $"An error occured when trying to switch {propertyName} {(value ? "ON" : "OFF")}:\n{e.Message}\n\nDetails: \n{e}\n****************\n\n";
+                return false;
+            }
         }
     }
 }

@@ -11,5 +11,9 @@ namespace Communication
         bool Spare1 { get; set; }
         bool Spare2 { get; set; }
         bool Spare3 { get; set; }
+
+        bool HasUnacknowledgedError { get; }
+        string Message { get; }
+        void ClearMessage();
     }
 }

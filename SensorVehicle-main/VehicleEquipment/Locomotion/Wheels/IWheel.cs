@@ -16,5 +16,9 @@ namespace VehicleEquipment.Locomotion.Wheels
         void TurnRight(int speed);
         void Reverse(int speed);
         void Stop();
+
+        bool HasUnacknowledgedError { get; }
+        string Message { get; }
+        void ClearMessage();
     }
 }

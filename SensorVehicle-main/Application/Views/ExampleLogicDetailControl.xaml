@@ -31,7 +31,8 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunExampleLogic, Mode=TwoWay}" />
-                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessage, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessage, Mode=OneWay}" TextWrapping="Wrap"
+                           Tapped="{x:Bind MasterMenuItem.ClearMessage, Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

@@ -15,6 +15,13 @@ namespace ExampleLogic
         /// </summary>
         public abstract ExampleLogicDetails Details { get; }
 
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
         private string _errorMessage;
         public string ErrorMessage
         {
@@ -30,6 +37,12 @@ namespace ExampleLogic
         public abstract void Initialize();
         public abstract void Run();
 
+        public void ClearMessage()
+        {
+            ErrorMessage = "";
+            HasUnacknowledgedError = false;
+        }
+
         private bool _runExampleLogic;
         public bool RunExampleLogic
         {
@@ -43,6 +56,7 @@ namespace ExampleLogic
                 {
                     StartControlLogicTask();
                 }
+                RaiseSyncedPropertyChanged();
             }
         }
 
@@ -50,6 +64,8 @@ namespace ExampleLogic
         {
             Task.Run(() =>
             {
+                if (HasUnacknowledgedError) return;
+
                 try
                 {
                     Initialize();
@@ -61,7 +77,8 @@ namespace ExampleLogic
                 }
                 catch (Exception e)
                 {
-                    _runExampleLogic = false;
+                    RunExampleLogic = false;
+                    HasUnacknowledgedError = true;
                     ErrorMessage = $"CONTROL LOGIC ERROR - '{Details.Title}' generated the following exception:\n{e.Message}";
                     _wheel.SetSpeed(0, 0);
                 }
