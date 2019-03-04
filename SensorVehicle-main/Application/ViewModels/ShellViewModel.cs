@@ -11,6 +11,13 @@ using Prism.Windows.Navigation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
+using Communication;
+using ExampleLogic;
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Encoder;
+using VehicleEquipment.Locomotion.Wheels;
+
 using WinUI = Microsoft.UI.Xaml.Controls;
 
 namespace Application.ViewModels
@@ -21,6 +28,19 @@ namespace Application.ViewModels
         private WinUI.NavigationView _navigationView;
         private bool _isBackEnabled;
         private WinUI.NavigationViewItem _selected;
+
+        #region ControlLogicPropertiesForVisibilityBinding
+        //TODO: Add StudentLogic here (and perform required changes in ShellPage) once that class/library has been properly implemented
+        public ExampleLogicService ExampleLogic { get; }
+        #endregion
+
+        #region SensorPropertiesForColorBinding
+        public ILidarDistance Lidar { get; }
+        public IUltrasonic Ultrasonic { get; }
+        public IWheel Wheel { get; }
+        public IEncoder Encoder { get; }
+        public IPower Power { get; }
+        #endregion
 
         public ICommand ItemInvokedCommand { get; }
 
@@ -36,9 +56,15 @@ namespace Application.ViewModels
             set { SetProperty(ref _selected, value); }
         }
 
-        public ShellViewModel(INavigationService navigationServiceInstance)
+        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoder encoder, IPower power, ExampleLogicService exampleLogic)
         {
             _navigationService = navigationServiceInstance;
+            Lidar = lidar;
+            Ultrasonic = ultrasonic;
+            Wheel = wheel;
+            Encoder = encoder;
+            Power = power;
+            ExampleLogic = exampleLogic;
             ItemInvokedCommand = new DelegateCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked);
         }
 
