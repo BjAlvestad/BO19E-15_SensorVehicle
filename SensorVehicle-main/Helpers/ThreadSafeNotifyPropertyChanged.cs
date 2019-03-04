@@ -6,7 +6,7 @@ using System.Threading;
 namespace Helpers
 {
     // Used Prisms BindableBase code as a starting point for this class. https://github.com/PrismLibrary/Prism/blob/master/Source/Prism/Mvvm/BindableBase.cs (22.02.2019)
-    public class ThreadSafeNotifyPropertyChanged : INotifyPropertyChanged
+    public abstract class ThreadSafeNotifyPropertyChanged : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly SynchronizationContext _uiSyncContext;
@@ -15,9 +15,18 @@ namespace Helpers
         /// Instansiates a class for raising property changed notification from threads other than UI thread.
         /// NB: This class must be instantiated from a UI thread, or the UI threads must be passed inn as an argument in the constructor.
         /// </summary>
-        public ThreadSafeNotifyPropertyChanged()
+        protected ThreadSafeNotifyPropertyChanged()
         {
             _uiSyncContext = SynchronizationContext.Current;
+        }
+
+        /// <summary>
+        /// Instansiates a class for raising property changed notification from threads other than UI thread.
+        /// </summary>
+        /// <param name="uiSyncContext">The synchronization context for the UI thread</param>
+        protected ThreadSafeNotifyPropertyChanged(SynchronizationContext uiSyncContext)
+        {
+            _uiSyncContext = uiSyncContext;
         }
 
         private bool _raiseNotificationForSelective;
@@ -25,15 +34,6 @@ namespace Helpers
         {
             get { return _raiseNotificationForSelective; }
             set { SetProperty(ref _raiseNotificationForSelective, value); }
-        }
-
-        /// <summary>
-        /// Instansiates a class for raising property changed notification from threads other than UI thread.
-        /// </summary>
-        /// <param name="uiSyncContext">The synchronization context for the UI thread</param>
-        public ThreadSafeNotifyPropertyChanged(SynchronizationContext uiSyncContext)
-        {
-            _uiSyncContext = uiSyncContext;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Helpers
         /// <param name="value">Desired value for the property.</param>
         /// <param name="propertyName">Name of the property used to notify listeners. This value is optional and can be provided automatically when invoked from compilers that support CallerMemberName.</param>
         /// <returns>True if the value was changed, false if the existing value matched the desired value.</returns>
-        public bool SetPropertyRaiseSelectively<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected virtual bool SetPropertyRaiseSelectively<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
@@ -64,7 +64,7 @@ namespace Helpers
         /// <param name="value">Desired value for the property.</param>
         /// <param name="propertyName">Name of the property used to notify listeners. This value is optional and can be provided automatically when invoked from compilers that support CallerMemberName.</param>
         /// <returns>True if the value was changed, false if the existing value matched the desired value.</returns>
-        public virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
@@ -80,7 +80,7 @@ namespace Helpers
         /// <param name="propertyName">Name of the property used to notify listeners. This
         /// value is optional and can be provided automatically when invoked from compilers
         /// that support <see cref="CallerMemberNameAttribute"/>.</param>
-        public void RaiseSyncedPropertyChanged([CallerMemberName]string propertyName = null)
+        protected virtual void RaiseSyncedPropertyChanged([CallerMemberName]string propertyName = null)
         {
             if (_uiSyncContext == null)
             {
