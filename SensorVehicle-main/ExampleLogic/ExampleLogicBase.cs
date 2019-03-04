@@ -56,6 +56,7 @@ namespace ExampleLogic
                 {
                     StartControlLogicTask();
                 }
+                RaiseSyncedPropertyChanged();
             }
         }
 
