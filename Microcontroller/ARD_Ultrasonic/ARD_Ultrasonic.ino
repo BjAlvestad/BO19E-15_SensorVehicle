@@ -1,93 +1,145 @@
 #include <Wire.h>
-#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/libraries/Wire/src/Wire.h"
 
-byte response[6]; // this data is sent to PI
+//byte response[6]; // this data is sent to PI
 
 // defines pins numbers
-const int trigPinLeft = 8;
-const int echoPinLeft = 9;
-const int trigPinRight = 6;
-const int echoPinRight = 7;
-const int trigPinForward = 4;
-const int echoPinForward = 5;
+const int pin_trig_left = 8;
+const int pin_echo_left = 9;
+
+const int pin_trig_right = 6;
+const int pin_echo_right = 7;
+
+const int pin_trig_forward_left = 2;
+const int pin_echo_forward_left = 3;
+
+const int pin_trig_forward_right = 4;
+const int pin_echo_forward_right = 5;
+
+const int pin_new_message = 10;
+const int pin_mode_1 = 12;
+const int pin_mode_2 = 11;
 
 const int size_of_byte_array = 23;
 const byte address = 0x25;
+const int pause = 40;
 
 // defines variables
-long distanceLeft;
-long distanceRight;
-long distanceForward;
+long distance_left;
+long distance_right;
+long distance_forward_left;
+long distance_forward_right;
 
-byte bDistanceLeft;
-byte bDistanceRight[2];
-byte bDistanceForward[2];
+//long distance_shortest;
+int count;
 
-String Sdl;
-String Sdr;
-String Sdf;
-String s;
+////byte bDistanceLeft;
+//byte bDistanceRight[2];
+//byte bDistanceForward[2];
+//
+////String Sdl;
+//String Sdr;
+//String Sdf;
+//String s;
 
-char cL[3];
-char cF[3];
-char cR[3];
+//char cL[3];
+//char cF[3];
+//char cR[3];
 
-char a[20];
-int x;
-void I2CRequest();
-long Ultrasonic(int trigPin, int echoPin);
-// the setup function runs once when you press reset or power the board
+//char a[20];
+//int x;
+
+
+void i2c_request();
+long ultrasonic(int trig_pin, int echo_pin);
+void check_distance(long distance);
+void set_mode(int i);
+void send_byte_array(int message, int array_length, long longs_to_be_sent[]);
+
+
+
 void setup() {
-	pinMode(trigPinLeft, OUTPUT); // Sets the trigPin as an Output
-	pinMode(echoPinLeft, INPUT); // Sets the echoPin as an Input
-	pinMode(trigPinRight, OUTPUT);
-	pinMode(echoPinRight, INPUT);
-	pinMode(trigPinForward, OUTPUT);
-	pinMode(echoPinForward, INPUT);
+
+	pinMode(pin_trig_left, OUTPUT);
+	pinMode(pin_echo_left, INPUT);
+
+	pinMode(pin_trig_right, OUTPUT);
+	pinMode(pin_echo_right, INPUT);
+
+	pinMode(pin_trig_forward_left, OUTPUT);
+	pinMode(pin_echo_forward_left, INPUT);
+
+	pinMode(pin_trig_forward_right, OUTPUT);
+	pinMode(pin_echo_forward_right, INPUT);
+
+	pinMode(pin_mode_1, OUTPUT);
+	pinMode(pin_mode_2, OUTPUT);
+
+	digitalWrite(pin_mode_1, HIGH);
+	digitalWrite(pin_mode_2, LOW);
+
+	pinMode(pin_new_message, OUTPUT);
 
 
-	Serial.begin(9600); // Starts the serial communication
+	Serial.begin(9600);
 
-	Wire.begin(address); // Set the address of this slave on I2C
+	Wire.begin(address);
 
-	Wire.onRequest(I2CRequest);
+	Wire.onRequest(i2c_request);
 }
 
-// the loop function runs over and over again until power down or reset
+
+
 void loop() {
+	count = 0;
 
-	distanceLeft = Ultrasonic(trigPinLeft, echoPinLeft);
-	delay(60);
+	distance_forward_right = ultrasonic(pin_trig_forward_right, pin_echo_forward_right);
+	check_distance(distance_forward_right);
+	delay(pause);
 
-	distanceForward = Ultrasonic(trigPinForward, echoPinForward);
-	delay(60);
+	distance_left = ultrasonic(pin_trig_left, pin_echo_left);
+	check_distance(distance_left);
+	delay(pause);
 
-	distanceRight = Ultrasonic(trigPinRight, echoPinRight);
-	delay(60);
+	distance_forward_left = ultrasonic(pin_trig_forward_left, pin_echo_forward_left);
+	check_distance(distance_forward_left);
+	delay(pause);
+
+	distance_right = ultrasonic(pin_trig_right, pin_echo_right);
+	check_distance(distance_right);
+	delay(pause);
+
+	digitalWrite(pin_new_message, HIGH);
+
+	if (count > 3)
+	{
+		// mode 3
+		set_mode(3);
+	}
 }
 
-// function that executes whenever data is requested by master
-// this function is registered as an event, see setup()
-void I2CRequest() {
+void i2c_request() {
+
 	Serial.println("I2C-Request");
-	long longsToBeSent[] = { distanceLeft, distanceForward, distanceRight };
-	int arrayLength = sizeof(longsToBeSent) / sizeof(long);
-	SendByteArray(0, arrayLength, longsToBeSent);
+
+	long longs_to_be_sent[] = { distance_left, distance_forward_left, distance_right, distance_forward_right };
+	const int array_length = sizeof(longs_to_be_sent) / sizeof(long);
+	send_byte_array(0, array_length, longs_to_be_sent);
+
+	digitalWrite(pin_new_message, LOW);
 }
 
-long Ultrasonic(int trigPin, int echoPin )
+long ultrasonic(const int trig_pin, const int echo_pin)
 {
-	digitalWrite(trigPin, LOW);
+	digitalWrite(trig_pin, LOW);
 	delayMicroseconds(2);
 	// Sets the trigPin on HIGH state for 10 micro seconds
-	digitalWrite(trigPin, HIGH);
+	digitalWrite(trig_pin, HIGH);
 	delayMicroseconds(10);
-	digitalWrite(trigPin, LOW);
+	digitalWrite(trig_pin, LOW);
 	// Reads the echoPin, returns the sound wave travel time in microseconds
-	long duration = pulseIn(echoPin, HIGH);
+	const long duration = pulseIn(echo_pin, HIGH);
 	// Calculating the distance
-	int distance = duration * 0.034 / 2;
-	// Prints the distance on the Serial Monitor
+	const int distance = duration * 0.034 / 2;
 
 
 	if (distance > 400)
@@ -101,29 +153,79 @@ long Ultrasonic(int trigPin, int echoPin )
 	else
 	{
 		return distance;
-	}	
+	}
 }
 
-void SendByteArray(int message, int arrayLength, long longsToBeSent[])
+void check_distance(const long distance)
 {
-	byte byteArray[size_of_byte_array];
-	byteArray[0] = (byte)address;
-	byteArray[1] = (byte)message;
-	byteArray[2] = (byte)(arrayLength);
-	int elementsBeforeLong = 3;
-
-	const int bitSizeOfLong = sizeof(long) * 8;
-
-	for (int i = 0; i < arrayLength; i++)
+	if (distance < 20)
 	{
+		// mode 2
+		set_mode(2);
+	}
+	else if (distance < 15)
+	{
+		// mode 1
+		set_mode(1);
+	}
+	else if (distance < 10)
+	{
+		// mode 0
+		set_mode(0);
+	}
+	else
+	{
+		count++;
+	}
 
-		int shiftByLong = sizeof(long) * i;
+}
+
+void set_mode(const int i)
+{
+	switch (i)
+	{
+	case 0:
+		digitalWrite(pin_mode_1, LOW);
+		digitalWrite(pin_mode_2, LOW);
+		break;
+	case 1:
+		digitalWrite(pin_mode_1, LOW);
+		digitalWrite(pin_mode_2, HIGH);
+		break;
+	case 2:
+		digitalWrite(pin_mode_1, HIGH);
+		digitalWrite(pin_mode_2, LOW);
+		break;
+	case 3:
+		digitalWrite(pin_mode_1, HIGH);
+		digitalWrite(pin_mode_2, HIGH);
+		break;
+	default:
+		digitalWrite(pin_mode_1, LOW);
+		digitalWrite(pin_mode_2, HIGH);
+		break;
+	}
+}
+
+void send_byte_array(const int message, const int array_length, long longs_to_be_sent[])
+{
+	byte byte_array[size_of_byte_array];
+	byte_array[0] = byte(address);
+	byte_array[1] = byte(message);
+	byte_array[2] = byte(array_length);
+	const int elements_before_long = 3;
+
+	const int bit_size_of_long = sizeof(long) * 8;
+
+	for (int i = 0; i < array_length; i++)
+	{
+		const int shift_by_long = sizeof(long) * i;
 		for (int j = 1; j <= sizeof(long); j++)
 		{
-			byteArray[(elementsBeforeLong - 1) + shiftByLong + j] = (byte)(longsToBeSent[i] >> (bitSizeOfLong - 8 * j));
+			byte_array[(elements_before_long - 1) + shift_by_long + j] = byte(longs_to_be_sent[i] >> (bit_size_of_long - 8 * j));
 		}
 	}
 
-	Wire.write(byteArray, size_of_byte_array);
+	Wire.write(byte_array, size_of_byte_array);
 }
 

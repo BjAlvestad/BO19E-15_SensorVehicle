@@ -59,7 +59,7 @@ void onRequestEvent()
 	int arrayLength = sizeof(longsToBeSent) / sizeof(long);
 	SendByteArray(0, arrayLength, longsToBeSent);
 }
-void SendByteArray(int message, int arrayLength, long longsToBeSent[])
+void send_byte_array(int message, int arrayLength, long longsToBeSent[])
 {
 	byte byteArray[size_of_byte_array];
 	byteArray[0] = (byte)address;
