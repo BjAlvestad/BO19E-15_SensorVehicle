@@ -29,9 +29,6 @@ Servo wheels_left;
 int data_left, data_right;
 int speed_left, speed_right;
 
-//bool standstill = false;
-//bool safe = false;
-//bool new_value = false;
 
 /// mode
 // 3 = full speed
@@ -105,10 +102,10 @@ void receive_event(int x)
 		{
 			data[i] = Wire.read();
 		}
-		Serial.print("Element 5: ");
+		/*Serial.print("Element 5: ");
 		Serial.println(data[5]);
 		Serial.print("Element 6: ");
-		Serial.println(data[6]);
+		Serial.println(data[6]);*/
 		AssembleDataFromVehicle(data);
 	}
 }
@@ -214,34 +211,20 @@ void AssembleIntsFromByteArray(long numberOfLongs, int startIndex, byte array[])
 			}
 			longs[i] = assembledLong;
 		}
-		Serial.print("Long[0]: ");
+		/*Serial.print("Long[0]: ");
 		Serial.println(longs[0]);
 		Serial.print("Long[1]: ");
-		Serial.println(longs[1]);
+		Serial.println(longs[1]);*/
+
+
 		data_left = data_check(longs[0]);  // Between -100 and 100;
 		data_right = data_check(longs[1]);
-		Serial.println("Etter data_check: ");
+
+
+		/*Serial.println("Etter data_check: ");
 		Serial.println(data_left);
 		Serial.println(data_right);
-		Serial.println("---------");
-
-
-		//data_left = mode_check(data_left);  // Divide value with mode
-		//data_right = mode_check(data_right);
-		//Serial.println("Etter mode_check: ");
-		//Serial.println(data_left);
-		//Serial.println(data_right);
-		//Serial.println("---------");
-
-
-		/*new_speed_left = speed_map(data_left);
-		new_speed_right = speed_map(data_right);
-		Serial.println("new_speed_left: ");
-		Serial.println(new_speed_left);
-		Serial.println("---------");
-		Serial.println("new_speed_right: ");
-		Serial.println(new_speed_right);
 		Serial.println("---------");*/
-		
+			   		
 	}
 }
