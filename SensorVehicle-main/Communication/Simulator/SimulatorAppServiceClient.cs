@@ -9,7 +9,7 @@ namespace Communication.Simulator
     // Based on https://github.com/lprichar/UwpMessageRelay/blob/master/UwpMessageRelay.Consumer/Services/MessageRelayService.cs
     public class SimulatorAppServiceClient
     {
-        const string AppServiceName = "no.hvl.SensorVehicle2dSimulatorAppService";
+        const string AppServiceName = "no.hvl.SensorVehicle2dSimAppService";
         private AppServiceConnection _connection;
         public event Action<ValueSet> OnMessageReceived;
 
