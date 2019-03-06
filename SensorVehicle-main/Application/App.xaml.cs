@@ -31,6 +31,9 @@ namespace Application
     [Windows.UI.Xaml.Data.Bindable]
     public sealed partial class App : PrismUnityApplication
     {
+        private const bool RunAgainstSimulatorInsteadOfMock = true;
+        private readonly bool _isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+
         public App()
         {
             InitializeComponent();
@@ -44,16 +47,11 @@ namespace Application
             Container.RegisterType<ISampleDataService, SampleDataService>();  //TEMP: Remove after StudentLogic and ExampleLogic pages has been changed
             Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
 
-            bool isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
-#pragma warning disable 219
-            bool runAgainstSimulator = false;
-#pragma warning restore 219
-
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;
             IVehicleCommunication encoderCommunication;
             IVehicleCommunication wheelCommunication;
-            if (isRunningOnPhysicalCar)
+            if (_isRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
@@ -61,11 +59,12 @@ namespace Application
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
-            //else if (runAgainstSimulator)
-            //{
             //    // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
-            //}
+            else if (RunAgainstSimulatorInsteadOfMock)
+            {
+            }
             else // Connect up against mock/random data instead of simulator
+#pragma warning disable 162
             {
                 lidarPacketReceiver = new MockLidarPacketReceiver();
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
@@ -73,6 +72,8 @@ namespace Application
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }
+#pragma warning restore 162
+
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
             Container.RegisterType<IEncoder, Encoder>(new ContainerControlledLifetimeManager(), new InjectionConstructor(encoderCommunication));
