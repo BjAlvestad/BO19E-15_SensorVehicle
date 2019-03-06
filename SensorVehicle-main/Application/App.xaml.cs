@@ -18,6 +18,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Communication;
 using Communication.MockCommunication;
+using Communication.Simulator;
 using Communication.Vehicle;
 using ExampleLogic;
 using VehicleEquipment;
@@ -33,6 +34,8 @@ namespace Application
     {
         private const bool RunAgainstSimulatorInsteadOfMock = true;
         private readonly bool _isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+
+        private readonly SimulatorAppServiceClient _simulatorAppServiceClient = new SimulatorAppServiceClient();
 
         public App()
         {
@@ -59,9 +62,14 @@ namespace Application
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
-            //    // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
             else if (RunAgainstSimulatorInsteadOfMock)
             {
+                lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
+                ultrasonicCommunication = new SimulatedVehicleCommunication(Device.Ultrasonic, _simulatorAppServiceClient);
+                encoderCommunication = new SimulatedVehicleCommunication(Device.Encoder, _simulatorAppServiceClient);
+                wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
+                Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
+                // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
             }
             else // Connect up against mock/random data instead of simulator
 #pragma warning disable 162
