@@ -60,7 +60,7 @@ namespace SimulatorUwpXaml
                         distanceToClosestWall = distanceToWall;
                     }
                 }
-                lidarReadings.Add(distanceToClosestWall ?? float.NaN);
+                lidarReadings.Add((distanceToClosestWall/100) ?? float.NaN);
             }
 
             return lidarReadings;
