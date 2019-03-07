@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
@@ -92,10 +91,10 @@ namespace Communication.Simulator
             DisposeConnection();
         }
 
-        private async Task SendMessageAsync(KeyValuePair<string, object> keyValuePair)
+        public async Task SendMessageAsync(ValueSet keyValuePair)
         {
             var connection = await CachedConnection();
-            var result = await connection.SendMessageAsync(new ValueSet {keyValuePair});
+            var result = await connection.SendMessageAsync(keyValuePair);
             if (result.Status == AppServiceResponseStatus.Success)
             {
                 return;
@@ -104,9 +103,16 @@ namespace Communication.Simulator
             throw new Exception("Error sending " + result.Status);
         }
 
-        public async Task SendMessageAsync(string key, string value)
+        public async Task<ValueSet> RequestDataAsync(ValueSet keyValuePair)
         {
-            await SendMessageAsync(new KeyValuePair<string, object>(key, value));
+            var connection = await CachedConnection();
+            var result = await connection.SendMessageAsync(keyValuePair);
+            if (result.Status == AppServiceResponseStatus.Success)
+            {
+                return result.Message;
+            }
+
+            throw new Exception("Error sending " + result.Status);
         }
     }
 }
