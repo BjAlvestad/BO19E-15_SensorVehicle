@@ -46,6 +46,8 @@ namespace Communication.Simulator
 
         private VehicleDataPacket ConvertData(ValueSet data)
         {
+            if(data.Count == 0) throw new Exception($"Data received from simulated {_simulatedDevice} was empty. Unable to convert data");
+
             VehicleDataPacket convertedData = new VehicleDataPacket
             {
                 DeviceAddress = (Device) data["ADDRESS"],
