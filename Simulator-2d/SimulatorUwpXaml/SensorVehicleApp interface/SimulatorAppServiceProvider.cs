@@ -13,9 +13,11 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
         private AppServiceConnection _simulatorAppServiceConnection;
         private BackgroundTaskDeferral _simulatorAppServiceDeferral;
 
+        private SimulatedWheel _wheel;
         private SimulatedUltrasoundSensor _ultrasound;
         public void InstantiateSimulatedEquipment(VehicleSprite vehicle, Lidar distances)
         {
+            _wheel = new SimulatedWheel(vehicle);
             _ultrasound = new SimulatedUltrasoundSensor(distances);
         }
 
@@ -60,6 +62,9 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             Device receivedFromAddress = (Device) message["ADDRESS"];
             switch (receivedFromAddress)
             {
+                case Device.Wheel:
+                    _wheel.ExecuteWheelCommand(message);
+                    break;
                 case Device.Ultrasonic:
                     if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_ultrasound.ReturnData());
                         break;
