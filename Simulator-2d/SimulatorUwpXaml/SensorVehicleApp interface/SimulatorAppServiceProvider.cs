@@ -79,6 +79,10 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
                 case Device.EncoderRight:
                     if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_encoderRight.ReturnData());
                     break;
+                case Device.GyroAccelerometer:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Received request from invalid device address {receivedFromAddress}");
             }
 
             messageDeferral.Complete();
