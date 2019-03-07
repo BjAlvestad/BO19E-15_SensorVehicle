@@ -56,15 +56,6 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
         {
             AppServiceDeferral messageDeferral = args.GetDeferral();
             ValueSet message = args.Request.Message;
-            Debug.WriteLine($"OnAppServiceRequestReceived:  {string.Join(", ", message.Values)}");
-            //string text = message["Lidar"] as string;
-            //Device device = (Device)message["Address"];
-            //Debug.WriteLine($"OnAppServiceRequestReceived:  {text}");
-            //if ("Value" == text)
-            //{
-            //    ValueSet returnMessage = new ValueSet {{"Response", "True"}};
-            //    await args.Request.SendResponseAsync(returnMessage);
-            //}
 
             if (message.ContainsKey("LIDAR"))
             {
