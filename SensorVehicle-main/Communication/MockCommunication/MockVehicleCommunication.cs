@@ -30,7 +30,7 @@ namespace Communication.MockCommunication
             {
                 case Device.Ultrasonic:
                     return UltrasonicMockRead();
-                case Device.Encoder:
+                case Device.EncoderLeft:
                     return EncoderMockRead();
                 default:
                     Debug.WriteLine($"Attempted to read from '{_nameOfDevice}', but this has not been implemented in '{nameof(MockVehicleCommunication)}'.");

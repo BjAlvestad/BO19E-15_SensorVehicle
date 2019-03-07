@@ -58,7 +58,7 @@ namespace Application
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new VehicleCommunication(Device.Encoder);
+                encoderCommunication = new VehicleCommunication(Device.EncoderLeft);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
@@ -66,7 +66,7 @@ namespace Application
             {
                 lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
                 ultrasonicCommunication = new SimulatedVehicleCommunication(Device.Ultrasonic, _simulatorAppServiceClient);
-                encoderCommunication = new SimulatedVehicleCommunication(Device.Encoder, _simulatorAppServiceClient);
+                encoderCommunication = new SimulatedVehicleCommunication(Device.EncoderLeft, _simulatorAppServiceClient);
                 wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
                 Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
                 // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
@@ -76,7 +76,7 @@ namespace Application
             {
                 lidarPacketReceiver = new MockLidarPacketReceiver();
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new MockVehicleCommunication(Device.Encoder);
+                encoderCommunication = new MockVehicleCommunication(Device.EncoderLeft);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }

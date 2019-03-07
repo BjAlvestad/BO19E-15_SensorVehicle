@@ -9,9 +9,9 @@ namespace VehicleEquipment.UnitTests
         [Fact]
         public void ToByteArray_ValidImputData_ValidOutput()
         {
-            byte[] result = ArrayConverter.ToByteArray(23, Device.Encoder, MessageCode.NoMessage, int.MaxValue, int.MinValue, 0, +100, -100);
+            byte[] result = ArrayConverter.ToByteArray(23, Device.EncoderLeft, MessageCode.NoMessage, int.MaxValue, int.MinValue, 0, +100, -100);
 
-            Assert.Equal((byte)Device.Encoder, result[0]);
+            Assert.Equal((byte)Device.EncoderLeft, result[0]);
             Assert.Equal((byte)MessageCode.NoMessage, result[1]);
             Assert.Equal(5, result[2]);
 
@@ -51,7 +51,7 @@ namespace VehicleEquipment.UnitTests
         {
             VehicleDataPacket result = ArrayConverter.AssembleDataFromVehicle(FakeVehicleBytePacket);
 
-            Assert.Equal(Device.Encoder, result.DeviceAddress);
+            Assert.Equal(Device.EncoderLeft, result.DeviceAddress);
             Assert.Equal(MessageCode.NoMessage, result.Code);
             Assert.Equal(int.MaxValue, result.Integers[0]);
             Assert.Equal(int.MinValue, result.Integers[1]);
@@ -65,7 +65,7 @@ namespace VehicleEquipment.UnitTests
         {
             byte[] incorrectNumberOfIntsArray =
             {
-                (byte) Device.Encoder, (byte) MessageCode.NoMessage, 2,
+                (byte) Device.EncoderLeft, (byte) MessageCode.NoMessage, 2,
                 0b0111_1111, 0b1111_1111, 0b1111_1111, 0b1111_1111, // int.MaxValue
             };
 
@@ -75,7 +75,7 @@ namespace VehicleEquipment.UnitTests
 
         private byte[] FakeVehicleBytePacket = new byte[23]
         {
-            (byte)Device.Encoder, (byte)MessageCode.NoMessage, 5, 
+            (byte)Device.EncoderLeft, (byte)MessageCode.NoMessage, 5, 
             0b0111_1111, 0b1111_1111, 0b1111_1111, 0b1111_1111, // int.MaxValue
             0b1000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0000,  // int.MinValue
             0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0000, // 0
