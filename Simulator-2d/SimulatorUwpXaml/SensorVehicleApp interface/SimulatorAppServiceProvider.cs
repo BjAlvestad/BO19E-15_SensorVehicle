@@ -15,10 +15,13 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
 
         private SimulatedWheel _wheel;
         private SimulatedUltrasoundSensor _ultrasound;
+        private SimulatedLidarPacketTransmitter _lidar;
+
         public void InstantiateSimulatedEquipment(VehicleSprite vehicle, Lidar distances)
         {
             _wheel = new SimulatedWheel(vehicle);
             _ultrasound = new SimulatedUltrasoundSensor(distances);
+            _lidar = new SimulatedLidarPacketTransmitter(distances);
         }
 
         public void OnBackgroundActivated(BackgroundActivatedEventArgs args)
@@ -58,6 +61,13 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             //    ValueSet returnMessage = new ValueSet {{"Response", "True"}};
             //    await args.Request.SendResponseAsync(returnMessage);
             //}
+
+            if (message.ContainsKey("LIDAR"))
+            {
+                await args.Request.SendResponseAsync(_lidar.ReturnData());
+                messageDeferral.Complete();
+                return;
+            }
 
             Device receivedFromAddress = (Device) message["ADDRESS"];
             switch (receivedFromAddress)

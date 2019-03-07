@@ -110,6 +110,7 @@
     <Compile Include="Screen and scaling\Hud.cs" />
     <Compile Include="Screen and scaling\HudPosition.cs" />
     <Compile Include="Screen and scaling\Screen.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatedLidarPacketTransmitter.cs" />
     <Compile Include="SensorVehicleApp interface\SimulatedUltrasoundSensor.cs" />
     <Compile Include="SensorVehicleApp interface\SimulatedWheel.cs" />
     <Compile Include="SensorVehicleApp interface\SimulatorAppServiceProvider.cs" />
