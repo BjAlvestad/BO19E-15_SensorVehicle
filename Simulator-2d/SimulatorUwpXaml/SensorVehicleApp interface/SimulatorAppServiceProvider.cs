@@ -14,12 +14,16 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
         private BackgroundTaskDeferral _simulatorAppServiceDeferral;
 
         private SimulatedWheel _wheel;
+        private SimulatedEncoderSensor _encoderLeft;
+        private SimulatedEncoderSensor _encoderRight;
         private SimulatedUltrasoundSensor _ultrasound;
         private SimulatedLidarPacketTransmitter _lidar;
 
         public void InstantiateSimulatedEquipment(VehicleSprite vehicle, Lidar distances)
         {
             _wheel = new SimulatedWheel(vehicle);
+            _encoderLeft = new SimulatedEncoderSensor(vehicle, leftWeelNotRight: true);
+            _encoderRight = new SimulatedEncoderSensor(vehicle, leftWeelNotRight: false);
             _ultrasound = new SimulatedUltrasoundSensor(distances);
             _lidar = new SimulatedLidarPacketTransmitter(distances);
         }
@@ -78,6 +82,12 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
                 case Device.Ultrasonic:
                     if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_ultrasound.ReturnData());
                         break;
+                case Device.EncoderLeft:
+                    if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_encoderLeft.ReturnData());
+                    break;
+                case Device.EncoderRight:
+                    if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_encoderRight.ReturnData());
+                    break;
             }
 
             messageDeferral.Complete();
