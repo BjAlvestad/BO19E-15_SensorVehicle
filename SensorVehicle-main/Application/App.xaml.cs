@@ -147,5 +147,25 @@ namespace Application
             var success = await Windows.System.Launcher.LaunchUriAsync(uri);
             return success;
         }
+
+        //TODO: Hvis denne ikke brukes, s[ slett den
+        //private async Task EnsureConnected()
+        //{
+        //    var retryDelay = 10000;
+        //    await Task.Delay(retryDelay);
+        //    while (!_connection.IsConnected)
+        //    {
+        //        try
+        //        {
+        //            await _connection.Open();
+        //        }
+        //        catch (Exception)
+        //        {
+        //            // note ensure MessageRelay is deployed by right clicking on UwpMessageRelay.MessageRelay and selecting "Deploy"
+        //            string MessageResultsText = $"Unable to connect to siren of shame engine. Retrying in {(retryDelay / 1000)} seconds...";
+        //            await Task.Delay(retryDelay);
+        //        }
+        //    }
+        //}
     }
 }
