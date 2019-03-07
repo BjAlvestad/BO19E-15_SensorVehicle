@@ -3,17 +3,17 @@
 //byte response[6]; // this data is sent to PI
 
 // defines pins numbers
-const int pin_trig_left = 8;
-const int pin_echo_left = 9;
+const int pin_trig_left = 9;
+const int pin_echo_left = 8;
 
-const int pin_trig_right = 6;
-const int pin_echo_right = 7;
+const int pin_trig_right = 7;
+const int pin_echo_right = 6;
 
-const int pin_trig_forward_left = 2;
-const int pin_echo_forward_left = 3;
+const int pin_trig_forward_left = 3;
+const int pin_echo_forward_left = 2;
 
-const int pin_trig_forward_right = 4;
-const int pin_echo_forward_right = 5;
+const int pin_trig_forward_right = 5;
+const int pin_echo_forward_right = 4;
 
 const int pin_new_message = 10;
 const int pin_mode_1 = 12;
@@ -21,7 +21,7 @@ const int pin_mode_2 = 11;
 
 const int size_of_byte_array = 23;
 const byte address = 0x25;
-const int pause = 40;
+const int pause = 30;
 
 // defines variables
 long distance_left;
@@ -31,6 +31,7 @@ long distance_forward_right;
 
 //long distance_shortest;
 int count;
+int mode;
 
 ////byte bDistanceLeft;
 //byte bDistanceRight[2];
@@ -85,6 +86,9 @@ void setup() {
 	Wire.begin(address);
 
 	Wire.onRequest(i2c_request);
+
+	mode = 1;
+	
 }
 
 
@@ -97,7 +101,7 @@ void loop() {
 	delay(pause);
 
 	distance_left = ultrasonic(pin_trig_left, pin_echo_left);
-	check_distance(distance_left);
+	check_distance(distance_left+5);
 	delay(pause);
 
 	distance_forward_left = ultrasonic(pin_trig_forward_left, pin_echo_forward_left);
@@ -105,15 +109,25 @@ void loop() {
 	delay(pause);
 
 	distance_right = ultrasonic(pin_trig_right, pin_echo_right);
-	check_distance(distance_right);
+	check_distance(distance_right+5);
 	delay(pause);
 
 	digitalWrite(pin_new_message, HIGH);
 
+
+	const String text = "L: " + String(distance_left) + "\t FL: " +String(distance_forward_left) + "\t FR: " +
+		String(distance_forward_right) + "\t R: " + String(distance_right) + "\t Mode: " + String(mode) + "\t Count: " + String(count);
+	Serial.println(text);
+
 	if (count > 3)
 	{
+		if (mode < 3)
+		{
+			mode++;
+			
+		}
+		set_mode(mode);
 		// mode 3
-		set_mode(3);
 	}
 }
 
@@ -158,25 +172,49 @@ long ultrasonic(const int trig_pin, const int echo_pin)
 
 void check_distance(const long distance)
 {
-	if (distance < 20)
+	if (distance < 15)
 	{
-		// mode 2
-		set_mode(2);
+		mode = 0;
+		set_mode(mode);
 	}
-	else if (distance < 15)
+	else if (distance < 20 )
 	{
-		// mode 1
-		set_mode(1);
+		if (mode < 1)
+		{
+			count++;
+		}
+		else
+		{
+			mode = 1;
+			set_mode(mode);
+		}
+		
 	}
-	else if (distance < 10)
+	else if (distance < 25)
 	{
-		// mode 0
-		set_mode(0);
+		if (mode< 2)
+		{
+			count++;
+		}
+		else
+		{
+			mode = 2;
+			set_mode(mode);
+		}
+
+	
 	}
 	else
 	{
-		count++;
+		if (mode < 3)
+		{
+			count++;
+
+		}
+
+	
 	}
+	
 
 }
 
@@ -185,24 +223,31 @@ void set_mode(const int i)
 	switch (i)
 	{
 	case 0:
+		Serial.println("MODE 0");
+
 		digitalWrite(pin_mode_1, LOW);
 		digitalWrite(pin_mode_2, LOW);
 		break;
 	case 1:
+		Serial.println("MODE 1");
+
 		digitalWrite(pin_mode_1, LOW);
 		digitalWrite(pin_mode_2, HIGH);
 		break;
 	case 2:
+		Serial.println("MODE 2");
+
 		digitalWrite(pin_mode_1, HIGH);
 		digitalWrite(pin_mode_2, LOW);
 		break;
 	case 3:
+		Serial.println("MODE 3");
+
 		digitalWrite(pin_mode_1, HIGH);
 		digitalWrite(pin_mode_2, HIGH);
 		break;
 	default:
-		digitalWrite(pin_mode_1, LOW);
-		digitalWrite(pin_mode_2, HIGH);
+		
 		break;
 	}
 }
