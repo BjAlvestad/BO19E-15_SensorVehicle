@@ -91,6 +91,10 @@ namespace Application
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             await LaunchApplicationAsync(PageTokens.InfoPage, null);
+            if (RunAgainstSimulatorInsteadOfMock && !_isRunningOnPhysicalCar)
+            {
+                await LaunchSimulator();
+            }
         }
 
         private async Task LaunchApplicationAsync(string page, object launchParam)
@@ -135,6 +139,13 @@ namespace Application
             var shell = Container.Resolve<ShellPage>();
             shell.SetRootFrame(rootFrame);
             return shell;
+        }
+
+        private async Task<bool> LaunchSimulator()
+        {
+            var uri = new Uri("hvl-sensorvehicle-simulator:");  // launch arguments may be put behind the colon
+            var success = await Windows.System.Launcher.LaunchUriAsync(uri);
+            return success;
         }
     }
 }
