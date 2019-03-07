@@ -13,6 +13,12 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
         private AppServiceConnection _simulatorAppServiceConnection;
         private BackgroundTaskDeferral _simulatorAppServiceDeferral;
 
+        private SimulatedUltrasoundSensor _ultrasound;
+        public void InstantiateSimulatedEquipment(VehicleSprite vehicle, Lidar distances)
+        {
+            _ultrasound = new SimulatedUltrasoundSensor(distances);
+        }
+
         public void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             IBackgroundTaskInstance taskInstance = args.TaskInstance;
@@ -50,6 +56,15 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             //    ValueSet returnMessage = new ValueSet {{"Response", "True"}};
             //    await args.Request.SendResponseAsync(returnMessage);
             //}
+
+            Device receivedFromAddress = (Device) message["ADDRESS"];
+            switch (receivedFromAddress)
+            {
+                case Device.Ultrasonic:
+                    if (message.ContainsKey("REQUEST")) await args.Request.SendResponseAsync(_ultrasound.ReturnData());
+                        break;
+            }
+
             messageDeferral.Complete();
         }
 

@@ -1,5 +1,6 @@
 ﻿using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -62,6 +63,9 @@ namespace SimulatorUwpXaml
             _lidar = new Lidar(_vehicle);
 
             _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));
+
+            ((App) Application.Current).AppServiceProvider.InstantiateSimulatedEquipment(_vehicle, _lidar);
+
             // TODO: use this.Content to load your game content here
         }
 
