@@ -17,7 +17,7 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             ValueSet data = new ValueSet();
 
             data.Add("ADDRESS", (int)Device.Ultrasonic);
-            data.Add("MESSAGE", (int)Device.Ultrasonic);
+            data.Add("MESSAGE", 0);
             data.Add("NUMBER_OF_INTS", NumberOfUltrasoundSensors);
 
             data.Add("DATA", DistanceData());
