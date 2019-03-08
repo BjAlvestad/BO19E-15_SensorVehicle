@@ -14,10 +14,12 @@ using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Communication;
 using Communication.MockCommunication;
+using Communication.Simulator;
 using Communication.Vehicle;
 using ExampleLogic;
 using VehicleEquipment;
@@ -31,9 +33,22 @@ namespace Application
     [Windows.UI.Xaml.Data.Bindable]
     public sealed partial class App : PrismUnityApplication
     {
+        private readonly Uri _simulatorUri = new Uri("hvl-sensorvehicle-simulator:");  // Launch arguments may be put behind the colon
+
+        // The public properties can be accessed from elsewhere in code using: ((App) PrismUnityApplication.Current).DesiredPropertyNameHere
+        public bool IsRunningOnPhysicalCar { get; }
+        public bool RunAgainstSimulatorInsteadOfMock { get; }
+        public LaunchQuerySupportStatus SimulatorAppAvailabilityStatus { get; }
+
+        private readonly SimulatorAppServiceClient _simulatorAppServiceClient = new SimulatorAppServiceClient();
+
         public App()
         {
             InitializeComponent();
+
+            IsRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+            SimulatorAppAvailabilityStatus = Launcher.QueryUriSupportAsync(_simulatorUri, LaunchQuerySupportType.Uri).GetAwaiter().GetResult();
+            RunAgainstSimulatorInsteadOfMock = SimulatorAppAvailabilityStatus == LaunchQuerySupportStatus.Available;
         }
 
         protected override void ConfigureContainer()
@@ -44,35 +59,36 @@ namespace Application
             Container.RegisterType<ISampleDataService, SampleDataService>();  //TEMP: Remove after StudentLogic and ExampleLogic pages has been changed
             Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
 
-            bool isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
-#pragma warning disable 219
-            bool runAgainstSimulator = false;
-#pragma warning restore 219
-
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;
             IVehicleCommunication encoderCommunication;
             IVehicleCommunication wheelCommunication;
-            if (isRunningOnPhysicalCar)
+            if (IsRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new VehicleCommunication(Device.Encoder);
+                encoderCommunication = new VehicleCommunication(Device.EncoderLeft);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
-            //else if (runAgainstSimulator)
-            //{
-            //    // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
-            //}
+            else if (RunAgainstSimulatorInsteadOfMock)
+            {
+                lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
+                ultrasonicCommunication = new SimulatedVehicleCommunication(Device.Ultrasonic, _simulatorAppServiceClient);
+                encoderCommunication = new SimulatedVehicleCommunication(Device.EncoderLeft, _simulatorAppServiceClient);
+                wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
+                Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
+                // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
+            }
             else // Connect up against mock/random data instead of simulator
             {
                 lidarPacketReceiver = new MockLidarPacketReceiver();
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new MockVehicleCommunication(Device.Encoder);
+                encoderCommunication = new MockVehicleCommunication(Device.EncoderLeft);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }
+
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
             Container.RegisterType<IEncoder, Encoder>(new ContainerControlledLifetimeManager(), new InjectionConstructor(encoderCommunication));
@@ -82,6 +98,10 @@ namespace Application
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             await LaunchApplicationAsync(PageTokens.InfoPage, null);
+            if (RunAgainstSimulatorInsteadOfMock && !IsRunningOnPhysicalCar)
+            {
+                await LaunchSimulator();
+            }
         }
 
         private async Task LaunchApplicationAsync(string page, object launchParam)
@@ -127,5 +147,31 @@ namespace Application
             shell.SetRootFrame(rootFrame);
             return shell;
         }
+
+        private async Task<bool> LaunchSimulator()
+        {
+            var success = await Windows.System.Launcher.LaunchUriAsync(_simulatorUri);
+            return success;
+        }
+
+        //TODO: Hvis denne ikke brukes, s[ slett den
+        //private async Task EnsureConnected()
+        //{
+        //    var retryDelay = 10000;
+        //    await Task.Delay(retryDelay);
+        //    while (!_connection.IsConnected)
+        //    {
+        //        try
+        //        {
+        //            await _connection.Open();
+        //        }
+        //        catch (Exception)
+        //        {
+        //            // note ensure MessageRelay is deployed by right clicking on UwpMessageRelay.MessageRelay and selecting "Deploy"
+        //            string MessageResultsText = $"Unable to connect to siren of shame engine. Retrying in {(retryDelay / 1000)} seconds...";
+        //            await Task.Delay(retryDelay);
+        //        }
+        //    }
+        //}
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace VehicleEquipment
+﻿namespace SimulatorUwpXaml
 {
     public enum Device
     {

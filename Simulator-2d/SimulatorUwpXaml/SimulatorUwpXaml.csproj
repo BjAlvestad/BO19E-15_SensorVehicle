@@ -103,12 +103,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SensorVehicleApp interface\Device.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screen and scaling\Hud.cs" />
     <Compile Include="Screen and scaling\HudPosition.cs" />
     <Compile Include="Screen and scaling\Screen.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatedEncoderSensor.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatedLidarPacketTransmitter.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatedUltrasoundSensor.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatedWheel.cs" />
+    <Compile Include="SensorVehicleApp interface\SimulatorAppServiceProvider.cs" />
     <Compile Include="SimulatorGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map and boundaries\SimulatorMap.cs" />
@@ -156,9 +162,7 @@
       <Version>1.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SensorVehicle interface\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

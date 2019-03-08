@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SimulatorUwpXaml.SensorVehicleApp_interface;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -26,6 +27,8 @@ namespace SimulatorUwpXaml
     sealed partial class App : Application
 {
     static string deviceFamily;
+
+    public SimulatorAppServiceProvider AppServiceProvider { get; } = new SimulatorAppServiceProvider();
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -151,6 +154,12 @@ namespace SimulatorUwpXaml
 
             //TODO: For additional tips see reply on https://social.msdn.microsoft.com/Forums/sqlserver/en-US/a857bd53-abd9-40ad-9c89-b23d512abebe/uwpapp-hangscrashes-when-launched-by-uri?forum=wpdevelop
         }
+    }
+
+    protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+    {
+        base.OnBackgroundActivated(args);
+        AppServiceProvider.OnBackgroundActivated(args);
     }
 
     /// <summary>
