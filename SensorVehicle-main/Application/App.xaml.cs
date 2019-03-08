@@ -34,6 +34,7 @@ namespace Application
     {
         private const bool RunAgainstSimulatorInsteadOfMock = true;
         private readonly bool _isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+        private readonly Uri _simulatorUri = new Uri("hvl-sensorvehicle-simulator:");  // Launch arguments may be put behind the colon
 
         private readonly SimulatorAppServiceClient _simulatorAppServiceClient = new SimulatorAppServiceClient();
 
@@ -143,8 +144,7 @@ namespace Application
 
         private async Task<bool> LaunchSimulator()
         {
-            var uri = new Uri("hvl-sensorvehicle-simulator:");  // launch arguments may be put behind the colon
-            var success = await Windows.System.Launcher.LaunchUriAsync(uri);
+            var success = await Windows.System.Launcher.LaunchUriAsync(_simulatorUri);
             return success;
         }
 
