@@ -86,7 +86,7 @@ namespace SimulatorUwpXaml
         protected override void Update(GameTime gameTime)
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
-            _vehicle.Update(elapsedTimeSinceLastUpdate);
+            _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
             _lidar.Update360(_simulatorMap.Boundaries);
 
             base.Update(gameTime);
@@ -112,6 +112,19 @@ namespace SimulatorUwpXaml
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private bool WallClearanceOk(float safetyDistance)
+        {
+            const float sensorOffsetAbreast = 50 / 2.0f / 100;
+            const float sensorOffsetAbeam = 20 / 2.0f / 100;
+
+            if (_lidar.Fwd < sensorOffsetAbreast + safetyDistance) return false;
+            if (_lidar.Left < sensorOffsetAbeam + safetyDistance) return false;
+            if (_lidar.Right < sensorOffsetAbeam + safetyDistance) return false;
+            if (_lidar.Aft < sensorOffsetAbreast) return false;
+
+            return true;
         }
     }
 }

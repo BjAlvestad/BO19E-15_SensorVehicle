@@ -31,7 +31,7 @@ namespace SimulatorUwpXaml
 
         public float RateOfTurn { get; set; }
 
-        public void Update (float elapsedTimeSinceLastUpdate)
+        public void Update (float elapsedTimeSinceLastUpdate, bool noObstruction)
         {
             if (Picking2D.IsPickedUpForMove(this))
             {
@@ -43,7 +43,7 @@ namespace SimulatorUwpXaml
             }
             else
             {
-                Move(elapsedTimeSinceLastUpdate);           
+                if(noObstruction) Move(elapsedTimeSinceLastUpdate);
             }
         }
 
