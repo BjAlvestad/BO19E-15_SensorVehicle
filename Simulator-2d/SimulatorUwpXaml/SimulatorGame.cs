@@ -58,7 +58,7 @@ namespace SimulatorUwpXaml
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f));
-            _vehicle.Position = new Vector2(1500, 300);
+            _vehicle.Position = new Vector2(150, 150);
 
             _lidar = new Lidar(_vehicle);
 
