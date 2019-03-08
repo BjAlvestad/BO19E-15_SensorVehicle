@@ -14,6 +14,7 @@ using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Communication;
@@ -32,15 +33,22 @@ namespace Application
     [Windows.UI.Xaml.Data.Bindable]
     public sealed partial class App : PrismUnityApplication
     {
-        private const bool RunAgainstSimulatorInsteadOfMock = true;
-        private readonly bool _isRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
         private readonly Uri _simulatorUri = new Uri("hvl-sensorvehicle-simulator:");  // Launch arguments may be put behind the colon
+
+        // The public properties can be accessed from elsewhere in code using: ((App) PrismUnityApplication.Current).DesiredPropertyNameHere
+        public bool IsRunningOnPhysicalCar { get; }
+        public bool RunAgainstSimulatorInsteadOfMock { get; }
+        public LaunchQuerySupportStatus SimulatorAppAvailabilityStatus { get; }
 
         private readonly SimulatorAppServiceClient _simulatorAppServiceClient = new SimulatorAppServiceClient();
 
         public App()
         {
             InitializeComponent();
+
+            IsRunningOnPhysicalCar = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT";
+            SimulatorAppAvailabilityStatus = Launcher.QueryUriSupportAsync(_simulatorUri, LaunchQuerySupportType.Uri).GetAwaiter().GetResult();
+            RunAgainstSimulatorInsteadOfMock = SimulatorAppAvailabilityStatus == LaunchQuerySupportStatus.Available;
         }
 
         protected override void ConfigureContainer()
@@ -55,7 +63,7 @@ namespace Application
             IVehicleCommunication ultrasonicCommunication;
             IVehicleCommunication encoderCommunication;
             IVehicleCommunication wheelCommunication;
-            if (_isRunningOnPhysicalCar)
+            if (IsRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
@@ -73,7 +81,6 @@ namespace Application
                 // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
             }
             else // Connect up against mock/random data instead of simulator
-#pragma warning disable 162
             {
                 lidarPacketReceiver = new MockLidarPacketReceiver();
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
@@ -81,7 +88,6 @@ namespace Application
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }
-#pragma warning restore 162
 
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
@@ -92,7 +98,7 @@ namespace Application
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             await LaunchApplicationAsync(PageTokens.InfoPage, null);
-            if (RunAgainstSimulatorInsteadOfMock && !_isRunningOnPhysicalCar)
+            if (RunAgainstSimulatorInsteadOfMock && !IsRunningOnPhysicalCar)
             {
                 await LaunchSimulator();
             }
