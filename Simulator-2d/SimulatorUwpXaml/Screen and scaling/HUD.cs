@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
+using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -38,9 +39,9 @@ namespace SimulatorUwpXaml
             SetHudsToDefaultPositions();
         }
 
-        public static HudPosition DistanceDataPosition { get; set; }
-        public static HudPosition VehicleDataPosition { get; set; }
-        public static HudPosition DebugDataPosition { get; set; }
+        public HudPosition DistanceDataPosition { get; set; }
+        public HudPosition VehicleDataPosition { get; set; }
+        public HudPosition DebugDataPosition { get; set; }
 
         public void DrawDistances(Lidar distance)
         {
@@ -69,11 +70,32 @@ namespace SimulatorUwpXaml
             _spriteBatch.DrawString(_font, message, DebugDataPosition.Top, Color.Black);
         }
 
-        public static void SetHudsToDefaultPositions()
+        public void SetHudsToDefaultPositions()
         {
             DistanceDataPosition = new HudPosition(new Vector2(150, 150), 75);
             VehicleDataPosition = new HudPosition(new Vector2(Screen.Width - Screen.ScaleToHighDPI(200), Screen.ScaleToHighDPI(100)), (75));
             DebugDataPosition = new HudPosition(new Vector2(Screen.Width - Screen.ScaleToHighDPI(300), Screen.Height - Screen.ScaleToHighDPI(100)), 75);
+        }
+
+        public void SetHudsToDefaultPositionsInWorld(Camera camera)
+        {
+            Vector2 origoShift = new Vector2(Screen.Width/2, Screen.Height/2);
+
+            Vector2 distanceDataOrigin = new Vector2(150 - Screen.Width/2, 150 - Screen.Height/2);
+            Vector2 distanceDataInWorld = Vector2.Zero;
+            camera.ToWorld(ref distanceDataOrigin, out distanceDataInWorld);
+            
+            Vector2 vehicleDataOrigin = new Vector2(Screen.Width/2 - Screen.ScaleToHighDPI(200), Screen.ScaleToHighDPI(100) - Screen.Height/2);
+            Vector2 vehicleDataInWorld = Vector2.Zero;
+            camera.ToWorld(ref vehicleDataOrigin, out vehicleDataInWorld);
+            
+            Vector2 debugDataOrigin = new Vector2(Screen.Width/2 - Screen.ScaleToHighDPI(300), Screen.Height/2 - Screen.ScaleToHighDPI(100));
+            Vector2 debugDataInWorld = Vector2.Zero;
+            camera.ToWorld(ref debugDataOrigin, out debugDataInWorld);
+
+            DistanceDataPosition = new HudPosition(distanceDataInWorld, 75);
+            VehicleDataPosition = new HudPosition(vehicleDataInWorld, 75);
+            DebugDataPosition = new HudPosition(debugDataInWorld, 75);
         }
     }
 }

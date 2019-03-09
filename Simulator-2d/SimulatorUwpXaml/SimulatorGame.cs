@@ -104,6 +104,8 @@ namespace SimulatorUwpXaml
                 _camera.Position = _vehicle.Position;
             }
 
+            _hud.SetHudsToDefaultPositionsInWorld(_camera);
+
             base.Update(gameTime);
         }
 
