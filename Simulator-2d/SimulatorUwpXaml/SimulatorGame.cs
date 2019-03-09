@@ -16,6 +16,7 @@ namespace SimulatorUwpXaml
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         private Camera _camera;
+        private Picking2D _picking2D;
 
         private Hud _hud;
 
@@ -40,6 +41,7 @@ namespace SimulatorUwpXaml
         {
             this.IsMouseVisible = true; 
             _camera = new Camera(_graphics.GraphicsDevice);
+            _picking2D = new Picking2D(_camera);
             base.Initialize();
         }
 
@@ -93,7 +95,14 @@ namespace SimulatorUwpXaml
             _lidar.Update360(_simulatorMap.Boundaries);
 
             _camera.Update(gameTime);
-            _camera.Position = _vehicle.Position;
+            if (Picking2D.IsPickedUpForMove(_vehicle))
+            {
+                ScrollCameraIfAtEdge();
+            }
+            else
+            {
+                _camera.Position = _vehicle.Position;
+            }
 
             base.Update(gameTime);
         }
@@ -131,6 +140,44 @@ namespace SimulatorUwpXaml
             if (_lidar.Aft < sensorOffsetAbreast) return false;
 
             return true;
+        }
+
+        //TODO: Refactor scrolling into separate class
+        const float border = 200;
+        const float scrollSpeedReductionFactor = 50;
+        private void ScrollCameraIfAtEdge()
+        {
+            Vector2 mousePosition = Picking2D.MouseLocation();
+
+            if (mousePosition.X < border) _camera.Position = ScrollLeft(mousePosition);
+            if (mousePosition.X > Screen.Width - border) _camera.Position = ScrollRight(mousePosition);
+
+            if (mousePosition.Y < border) _camera.Position = ScrollUp(mousePosition);
+            if (mousePosition.Y > Screen.Height - border) _camera.Position = ScrollDown(mousePosition);
+        }
+
+        private Vector2 ScrollLeft(Vector2 mousePosition)
+        {
+            Vector2 movementTowardsLeft = new Vector2((mousePosition.X - border) / scrollSpeedReductionFactor, 0);
+            return Vector2.Add(_camera.Position, movementTowardsLeft);
+        }
+
+        private Vector2 ScrollRight(Vector2 mousePosition)
+        {
+            Vector2 movementTowardsRight = new Vector2((mousePosition.X + border - Screen.Width) / scrollSpeedReductionFactor, 0);
+            return Vector2.Add(_camera.Position, movementTowardsRight);
+        }
+
+        private Vector2 ScrollUp(Vector2 mousePosition)
+        {
+            Vector2 movementUpwards = new Vector2(0, (mousePosition.Y - border) / scrollSpeedReductionFactor);
+            return Vector2.Add(_camera.Position, movementUpwards);
+        }
+
+        private Vector2 ScrollDown(Vector2 mousePosition)
+        {
+            Vector2 movementDownwards = new Vector2(0, (mousePosition.Y + border - Screen.Height) / scrollSpeedReductionFactor);
+            return Vector2.Add(_camera.Position, movementDownwards);
         }
     }
 }

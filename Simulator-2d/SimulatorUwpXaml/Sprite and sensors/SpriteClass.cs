@@ -35,7 +35,7 @@ namespace SimulatorUwpXaml
         {
             if (Picking2D.IsPickedUpForMove(this))
             {
-                Position = Picking2D.MouseLocation();
+                Position = Picking2D.MouseLocationInWorld();
             }
             else if (Picking2D.IsPickedUpForRotate(this))
             {
