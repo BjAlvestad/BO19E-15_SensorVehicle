@@ -1,6 +1,7 @@
 ﻿using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +15,7 @@ namespace SimulatorUwpXaml
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+        private Camera _camera;
 
         private Hud _hud;
 
@@ -37,6 +39,7 @@ namespace SimulatorUwpXaml
         protected override void Initialize()
         {
             this.IsMouseVisible = true; 
+            _camera = new Camera(_graphics.GraphicsDevice);
             base.Initialize();
         }
 
@@ -89,6 +92,9 @@ namespace SimulatorUwpXaml
             _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
             _lidar.Update360(_simulatorMap.Boundaries);
 
+            _camera.Update(gameTime);
+            _camera.Position = _vehicle.Position;
+
             base.Update(gameTime);
         }
 
@@ -100,7 +106,7 @@ namespace SimulatorUwpXaml
         {
             GraphicsDevice.Clear(Color.DarkGray);
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
+            _spriteBatch.Begin(_camera, samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
             _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
 
