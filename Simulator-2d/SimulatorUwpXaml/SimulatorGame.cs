@@ -58,7 +58,7 @@ namespace SimulatorUwpXaml
             //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.1 ok, 0.2 ok, 0.5 ok, 0.6 ok, 0.9 ok.
             //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.92 ok,
             //Test with 'BruntKart.Tmx' and 1440p monitor - values giving 100x100 grid:    0.91, 0.93
-            _simulatorMap = new SimulatorMap(Content, mapName: "4B-korridorer.tmx", scale: Screen.ScaleToHighDPI(1.0f));
+            _simulatorMap = new SimulatorMap(Content, mapName: "4B-corridores.tmx", scale: Screen.ScaleToHighDPI(1.0f));
             //_simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: 0.92f);
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
