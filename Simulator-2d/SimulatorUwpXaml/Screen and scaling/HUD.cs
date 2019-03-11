@@ -18,11 +18,13 @@ namespace SimulatorUwpXaml
     {
         private readonly SpriteBatch _spriteBatch;
         private readonly SpriteFont _font;
+        private readonly Camera _camera;
 
-        public Hud(SpriteBatch spriteBatch, SpriteFont fontForHUD)
+        public Hud(SpriteBatch spriteBatch, SpriteFont fontForHUD, Camera camera)
         {
             _spriteBatch = spriteBatch;
             _font = fontForHUD;
+            _camera = camera;
 
             SetHudsToDefaultPositions();
             //DisplayInformation.GetForCurrentView().DpiChanged += Screen_DpiChanged;
@@ -79,23 +81,29 @@ namespace SimulatorUwpXaml
 
         public void SetHudsToDefaultPositionsInWorld(Camera camera)
         {
-            Vector2 origoShift = new Vector2(Screen.Width/2, Screen.Height/2);
+            float widthFromCenter = Screen.Width / 2;
+            float heightFromCenter = Screen.Height / 2;
 
-            Vector2 distanceDataOrigin = new Vector2(150 - Screen.Width/2, 150 - Screen.Height/2);
+            Vector2 distanceDataOrigin = new Vector2(ScaledAndZoomedPixles(100) - widthFromCenter, ScaledAndZoomedPixles(100) - heightFromCenter);
             Vector2 distanceDataInWorld = Vector2.Zero;
             camera.ToWorld(ref distanceDataOrigin, out distanceDataInWorld);
             
-            Vector2 vehicleDataOrigin = new Vector2(Screen.Width/2 - Screen.ScaleToHighDPI(200), Screen.ScaleToHighDPI(100) - Screen.Height/2);
+            Vector2 vehicleDataOrigin = new Vector2(widthFromCenter - ScaledAndZoomedPixles(200), ScaledAndZoomedPixles(100) - heightFromCenter);
             Vector2 vehicleDataInWorld = Vector2.Zero;
             camera.ToWorld(ref vehicleDataOrigin, out vehicleDataInWorld);
             
-            Vector2 debugDataOrigin = new Vector2(Screen.Width/2 - Screen.ScaleToHighDPI(300), Screen.Height/2 - Screen.ScaleToHighDPI(100));
+            Vector2 debugDataOrigin = new Vector2(widthFromCenter - ScaledAndZoomedPixles(250), heightFromCenter -ScaledAndZoomedPixles(100));
             Vector2 debugDataInWorld = Vector2.Zero;
             camera.ToWorld(ref debugDataOrigin, out debugDataInWorld);
 
             DistanceDataPosition = new HudPosition(distanceDataInWorld, 75);
             VehicleDataPosition = new HudPosition(vehicleDataInWorld, 75);
             DebugDataPosition = new HudPosition(debugDataInWorld, 75);
+        }
+
+        private float ScaledAndZoomedPixles(float desiredPixelDistance)
+        {
+            return Screen.ScaleToHighDPI(desiredPixelDistance) * _camera.Zoom;
         }
     }
 }

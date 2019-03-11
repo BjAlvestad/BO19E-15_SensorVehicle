@@ -68,7 +68,7 @@ namespace SimulatorUwpXaml
 
             _lidar = new Lidar(_vehicle);
 
-            _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"));
+            _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"), _camera);
 
             ((App) Application.Current).AppServiceProvider.InstantiateSimulatedEquipment(_vehicle, _lidar);
 
@@ -95,6 +95,7 @@ namespace SimulatorUwpXaml
             _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
             _lidar.Update360(_simulatorMap.Boundaries);
 
+            SetCameraZoom(gameTime);
             _camera.Update(gameTime);
             if (Picking2D.IsPickedUpForMove(_vehicle))
             {
@@ -108,6 +109,18 @@ namespace SimulatorUwpXaml
             _hud.SetHudsToDefaultPositionsInWorld(_camera);
 
             base.Update(gameTime);
+        }
+
+        private void SetCameraZoom(GameTime gameTime)
+        {
+            const float defaultZoom = 1f;
+            const float minimumZoom = 0.1f;
+            const float maximumZoom = 3f;
+            const float zoomIncrementPerMillisecond = 0.001f;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.PageUp) && _camera.Zoom < maximumZoom) _camera.Zoom += zoomIncrementPerMillisecond * gameTime.ElapsedGameTime.Milliseconds;
+            if (Keyboard.GetState().IsKeyDown(Keys.PageDown) && _camera.Zoom > minimumZoom) _camera.Zoom -= zoomIncrementPerMillisecond * gameTime.ElapsedGameTime.Milliseconds;
+            if (Keyboard.GetState().IsKeyDown(Keys.Home)) _camera.Zoom = defaultZoom;
         }
 
         /// <summary>
