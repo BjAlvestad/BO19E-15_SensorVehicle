@@ -20,6 +20,21 @@
 /processorParam:TextureFormat=Compressed
 /build:HUD/HudDistance.spritefont
 
+#begin Maps/4B-corridores.tmx
+/copy:Maps/4B-corridores.tmx
+
+#begin Maps/BlackWhiteTileSet20x20px.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/BlackWhiteTileSet20x20px.png
+
 #begin Maps/BruntKart.tmx
 /copy:Maps/BruntKart.tmx
 
