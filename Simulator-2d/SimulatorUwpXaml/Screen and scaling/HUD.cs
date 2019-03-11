@@ -62,8 +62,8 @@ namespace SimulatorUwpXaml
 
         public void DrawDebugMessages(string mousePosition, string vehiclePosition)
         {
-            _spriteBatch.DrawString(_font, $"Mouse position:\n {mousePosition}", DebugDataPosition.Left, Color.Black);
-            _spriteBatch.DrawString(_font, $"Vehicle position:\n {vehiclePosition}", DebugDataPosition.Right, Color.Black);
+            _spriteBatch.DrawString(_font, $"Mouse pos. (screen):\n {mousePosition}", DebugDataPosition.Left, Color.Black);
+            _spriteBatch.DrawString(_font, $"Vehicle pos (world):\n {vehiclePosition}", DebugDataPosition.Right, Color.Black);
         }
 
         public void DrawDebugMouseOverObject(SpriteClass sprite)
