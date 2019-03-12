@@ -38,7 +38,8 @@ int mode = 2;
 void receive_event(int x);
 int data_check(int data);
 int mode_check(int data);
-
+void assemble_data_from_vehicle(byte vehicle_byte_array[]);
+void assemble_ints_from_byte_array(long number_of_longs, int start_index, byte array[]);
 int speed_map(int data);
 
 void setup()
@@ -88,7 +89,7 @@ void loop()
 	//Serial.print(wheels_left.readMicroseconds());
 	//Serial.print("  Right: ");
 	//Serial.println(wheels_right.readMicroseconds());
-	delay(1000);
+	//delay(1000);
 }
 
 void receive_event(int x)
@@ -106,7 +107,7 @@ void receive_event(int x)
 		Serial.println(data[5]);
 		Serial.print("Element 6: ");
 		Serial.println(data[6]);*/
-		AssembleDataFromVehicle(data);
+		assemble_data_from_vehicle(data);
 	}
 }
 
@@ -180,36 +181,36 @@ int mode_check(int data)
 	return 0;
 }
 
-void AssembleDataFromVehicle(byte vehicleByteArray[])
+void assemble_data_from_vehicle(byte vehicle_byte_array[])
 {
-	int address = vehicleByteArray[0];
-	int code = vehicleByteArray[1];
-	int numberOfLongs = vehicleByteArray[2];
-	int emptyBytes = 3;
+	int address = vehicle_byte_array[0];
+	int code = vehicle_byte_array[1];
+	const int number_of_longs = vehicle_byte_array[2];
+	const int empty_bytes = 3;
 	Serial.print("NumOfLongs: ");
-	Serial.println(numberOfLongs);
-	AssembleIntsFromByteArray(numberOfLongs, emptyBytes, vehicleByteArray);
+	Serial.println(number_of_longs);
+	assemble_ints_from_byte_array(number_of_longs, empty_bytes, vehicle_byte_array);
 }
 
-void AssembleIntsFromByteArray(long numberOfLongs, int startIndex, byte array[])
+void assemble_ints_from_byte_array(const long number_of_longs, const int start_index, byte array[])
 {
 	Serial.println("Ouside if");
-	if (size_of_byte_array >= (sizeof(long)*numberOfLongs + startIndex))
+	if (size_of_byte_array >= (sizeof(long)*number_of_longs + start_index))
 	{
 		Serial.println("inside if");
-		const int bitsInLong = sizeof(long) * 8;
+		const int bits_in_long = sizeof(long) * 8;
 		long longs[2];
 
-		for (int i = 0; i < numberOfLongs; i++)
+		for (int i = 0; i < number_of_longs; i++)
 		{
-			int assembledLong = 0;
-			int shiftByLong = sizeof(long) * i;
+			int assembled_long = 0;
+			const int shift_by_long = sizeof(long) * i;
 
 			for (int j = 1; j <= sizeof(long); j++)
 			{
-				assembledLong |= array[startIndex - 1 + j + shiftByLong] << (bitsInLong - 8 * j);
+				assembled_long |= array[start_index - 1 + j + shift_by_long] << (bits_in_long - 8 * j);
 			}
-			longs[i] = assembledLong;
+			longs[i] = assembled_long;
 		}
 		/*Serial.print("Long[0]: ");
 		Serial.println(longs[0]);

@@ -33,29 +33,11 @@ long distance_forward_right;
 int count;
 int mode;
 
-////byte bDistanceLeft;
-//byte bDistanceRight[2];
-//byte bDistanceForward[2];
-//
-////String Sdl;
-//String Sdr;
-//String Sdf;
-//String s;
-
-//char cL[3];
-//char cF[3];
-//char cR[3];
-
-//char a[20];
-//int x;
-
-
 void i2c_request();
 long ultrasonic(int trig_pin, int echo_pin);
 void check_distance(long distance);
 void set_mode(int i);
 void send_byte_array(int message, int array_length, long longs_to_be_sent[]);
-
 
 
 void setup() {
@@ -151,8 +133,8 @@ long ultrasonic(const int trig_pin, const int echo_pin)
 	delayMicroseconds(10);
 	digitalWrite(trig_pin, LOW);
 	// Reads the echoPin, returns the sound wave travel time in microseconds
-	const long duration = pulseIn(echo_pin, HIGH);
-	// Calculating the distance
+	const long duration = pulseIn(echo_pin, HIGH,100000);  // todo: De nye ultra.ene krever lengre timeout. Hvorfor..!?! Burde vært 24000
+
 	const int distance = duration * 0.034 / 2;
 
 
@@ -160,9 +142,9 @@ long ultrasonic(const int trig_pin, const int echo_pin)
 	{
 		return 400;
 	}
-	else if (distance < 2)
+	else if (distance == 0)
 	{
-		return 0;
+		return 401;
 	}
 	else
 	{

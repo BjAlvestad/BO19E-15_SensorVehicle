@@ -7,6 +7,8 @@
 */
 #include <TimerOne.h>
 #include <Wire.h>
+#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino/Arduino.h"
+#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/libraries/Wire/src/Wire.h"
 const double ticks_per_cm = 10.6;
 const int address = 0x30;
 const int size_of_byte_array = 23;
