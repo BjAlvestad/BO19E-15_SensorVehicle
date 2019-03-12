@@ -6,7 +6,7 @@ namespace VehicleEquipment.Locomotion.Wheels
 {
     public class Wheel : ThreadSafeNotifyPropertyChanged, IWheel
     {
-        private const int MaximumValidSpeed = 60; //TEMP speed reduction from 100 to 60 until microcontroller code is fixed (to keep motors below 12V)
+        private const int MaximumValidSpeed = 100;
 
         private readonly IVehicleCommunication vehicleCommunication;
 
