@@ -18,6 +18,7 @@ namespace SimulatorUwpXaml
     {
         private readonly SpriteBatch _spriteBatch;
         private readonly SpriteFont _font;
+        private readonly Color _hudColor = Color.White;
         private readonly Camera _camera;
 
         public Hud(SpriteBatch spriteBatch, SpriteFont fontForHUD, Camera camera)
@@ -47,29 +48,29 @@ namespace SimulatorUwpXaml
 
         public void DrawDistances(Lidar distance)
         {
-            _spriteBatch.DrawString(_font, $"^ {distance.Fwd}", DistanceDataPosition.Top, Color.Black);
-            _spriteBatch.DrawString(_font, $"{distance.Left} <", DistanceDataPosition.Left, Color.Black);
-            _spriteBatch.DrawString(_font, $"> {distance.Right}", DistanceDataPosition.Right, Color.Black);
-            _spriteBatch.DrawString(_font, $"V: {distance.Aft}", DistanceDataPosition.Bottom, Color.Black);
+            _spriteBatch.DrawString(_font, $"^ {distance.Fwd}", DistanceDataPosition.Top, _hudColor);
+            _spriteBatch.DrawString(_font, $"{distance.Left} <", DistanceDataPosition.Left, _hudColor);
+            _spriteBatch.DrawString(_font, $"> {distance.Right}", DistanceDataPosition.Right, _hudColor);
+            _spriteBatch.DrawString(_font, $"V: {distance.Aft}", DistanceDataPosition.Bottom, _hudColor);
         }
 
         public void DrawVehicleData(VehicleSprite vehicle)
         {
-            _spriteBatch.DrawString(_font, $"Direction:\n {vehicle.AngleInDegrees}", VehicleDataPosition.Top, Color.Black);
-            _spriteBatch.DrawString(_font, $"Speed Left:\n {vehicle.SpeedLeftWheel}", VehicleDataPosition.Left, Color.Black);
-            _spriteBatch.DrawString(_font, $"Speed Right:\n {vehicle.SpeedRightWheel}", VehicleDataPosition.Right, Color.Black);
+            _spriteBatch.DrawString(_font, $"Direction:\n {vehicle.AngleInDegrees}", VehicleDataPosition.Top, _hudColor);
+            _spriteBatch.DrawString(_font, $"Speed Left:\n {vehicle.SpeedLeftWheel}", VehicleDataPosition.Left, _hudColor);
+            _spriteBatch.DrawString(_font, $"Speed Right:\n {vehicle.SpeedRightWheel}", VehicleDataPosition.Right, _hudColor);
         }
 
         public void DrawDebugMessages(string mousePosition, string vehiclePosition)
         {
-            _spriteBatch.DrawString(_font, $"Mouse pos. (screen):\n {mousePosition}", DebugDataPosition.Left, Color.Black);
-            _spriteBatch.DrawString(_font, $"Vehicle pos (world):\n {vehiclePosition}", DebugDataPosition.Right, Color.Black);
+            _spriteBatch.DrawString(_font, $"Mouse pos. (screen):\n {mousePosition}", DebugDataPosition.Left, _hudColor);
+            _spriteBatch.DrawString(_font, $"Vehicle pos (world):\n {vehiclePosition}", DebugDataPosition.Right, _hudColor);
         }
 
         public void DrawDebugMouseOverObject(SpriteClass sprite)
         {
             string message = Picking2D.IsMouseIntersectingSprite(sprite) ? "Mouse Over:\n  Car" : "Mouse Over:\n  None";
-            _spriteBatch.DrawString(_font, message, DebugDataPosition.Top, Color.Black);
+            _spriteBatch.DrawString(_font, message, DebugDataPosition.Top, _hudColor);
         }
 
         public void SetHudsToDefaultPositions()
