@@ -21,6 +21,10 @@ namespace SimulatorUwpXaml
         {
             _mountingPlatform = mountingPlatform;
             DistanceReadings = new List<float>();
+            for (int i = 0; i < 360; i++)
+            {
+                DistanceReadings.Add(float.NaN);
+            }
         }
 
         public float Fwd
