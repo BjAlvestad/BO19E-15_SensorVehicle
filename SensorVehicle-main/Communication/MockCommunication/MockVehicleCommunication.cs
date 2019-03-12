@@ -49,8 +49,9 @@ namespace Communication.MockCommunication
                 Integers = new List<int>
                 {
                     _random.Next(0, 400),  // Left distance
-                    _random.Next(0, 400),  // Fwd distance
-                    _random.Next(0, 400)  // Right distance
+                    _random.Next(0, 400),  // FwdRight distance
+                    _random.Next(0, 400),  // Right distance
+                    _random.Next(0, 400)  // FwdLeft distance
                 }
             };
 
