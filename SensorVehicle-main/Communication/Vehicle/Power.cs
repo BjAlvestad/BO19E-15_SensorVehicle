@@ -28,6 +28,12 @@ namespace Communication.Vehicle
             _spare1Pin = OpenNewPowerPin(gpioNumber: 13, equipmentName: "Spare1");
             _spare2Pin = OpenNewPowerPin(gpioNumber: 19, equipmentName: "Spare2");
             _spare3Pin = OpenNewPowerPin(gpioNumber: 26, equipmentName: "Spare3");
+
+            //TEMP: Issues with microcontrollers when not all are powered on. They are now physically connected to power. Sets the power switces as true on start up her, so that user does not have to do it manually.
+            //TODO: Remove power for Ultrasuond, Wheels and Encoder from code implementation (or connect back the equipment physically to these powerpins)
+            Ultrasound = true;
+            Wheels = true;
+            Encoder = true;
         }
 
         //TODO: Find a better way for exception handling of switching power state on pin (which requires less code repetition), and add exception handling for the remaining ones.
