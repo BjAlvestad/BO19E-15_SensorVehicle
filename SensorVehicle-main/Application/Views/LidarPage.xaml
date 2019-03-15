@@ -17,15 +17,15 @@
                 Place your content here.-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="0.1*" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="0.1*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="20" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" MinHeight="100"/>
             </Grid.RowDefinitions>
 
             <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
