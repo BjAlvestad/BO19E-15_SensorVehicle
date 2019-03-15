@@ -47,7 +47,10 @@
                     <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Right, Mode=OneWay}" RelativePanel.Below="RightUlText" RelativePanel.AlignHorizontalCenterWith="RightUlText"/>
 
                     <TextBlock x:Name="LastReadingTimeUlText" Text="Last reading from sensors:" RelativePanel.AlignHorizontalCenterWith="FwdUlText" RelativePanel.Below="LeftUlValue" Margin="0, 10, 0, 0"/>
-                    <TextBlock Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeUlText" RelativePanel.AlignRightWith="LastReadingTimeUlText"/>              
+                    <TextBlock x:Name="ULLastUpdateBlock" Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeUlText" RelativePanel.AlignRightWith="LastReadingTimeUlText"/>
+
+                    <ToggleSwitch Header="Auto-collect UL distances" OffContent="Off (updates from logic)" OnContent="Forced update" IsOn="{x:Bind ViewModel.Ultrasonic.RefreshUltrasonicContinously, Mode=TwoWay}" RelativePanel.Below="ULLastUpdateBlock"
+                                  Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </RelativePanel>
 
                 <!--LIDAR sensor data box (contains properties that only raises NotifyPropertyChanged selectively)-->

@@ -61,7 +61,7 @@
                 <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Ultrasound, Mode=TwoWay}" />
                 <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.RefreshUltrasonicContinously, Mode=TwoWay}"
+                <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Ultrasonic.RefreshUltrasonicContinously, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Autocollect' (and ) can remain on (but hidden) when 'Power' is switched off -->
             </StackPanel>
 

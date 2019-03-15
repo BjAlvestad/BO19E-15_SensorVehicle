@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
@@ -100,6 +102,28 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         {
             Message = "";
             HasUnacknowledgedError = false;
+        }
+        
+        //TODO: This property should be removed once pin-interrupt on new distance data available has been set up (Allready connected and implemented on microcontroller side - GPIO5 on SBC)
+        private bool _refreshUltrasonicContinously;
+        public bool RefreshUltrasonicContinously
+        {
+            get { return _refreshUltrasonicContinously; }
+            set
+            {
+                SetProperty(ref _refreshUltrasonicContinously, value);
+                if (value)
+                {
+                    Task.Run(() =>
+                    {
+                        while (RefreshUltrasonicContinously)
+                        {
+                            UpdateDistanceProperties();
+                            Thread.Sleep(PermissableDistanceAge.Milliseconds / 2);
+                        }
+                    });
+                }
+            }
         }
 
         private void UpdateDistanceProperties()
