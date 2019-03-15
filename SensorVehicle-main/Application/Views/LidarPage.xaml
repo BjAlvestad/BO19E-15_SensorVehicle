@@ -25,35 +25,37 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="20" />
-                <RowDefinition Height="Auto" MinHeight="100"/>
+                <RowDefinition Height="Auto" MinHeight="20"/>
             </Grid.RowDefinitions>
 
             <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" >
-                <StackPanel>
-                    <ComboBox ItemsSource="{x:Bind ViewModel.VerticalAngles}" SelectedItem="{x:Bind ViewModel.SelectedVerticalAngle, Mode=TwoWay}" />
-                    <Button Content="Add to active" Click="{x:Bind ViewModel.AddSelectedVerticalAngleToActive}" />
-                    <TextBlock Text="Active vertical angles"/>
-                    <ListView ItemsSource="{x:Bind ViewModel.Lidar.ActiveVerticalAngles, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedActiveVerticalAngle, Mode=TwoWay}" SelectionMode="Single" ></ListView>
-                    <Button Content="Remove from active" Click="{x:Bind ViewModel.RemoveSelectedVerticalAngleFromActive}"/>
-                    <Button Content="Set as default" Click="{x:Bind ViewModel.SetAsDefaultAngle}"/>
-                    <TextBlock Text="Default angle:" />
-                    <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultVerticalAngle, Mode=OneWay}"/>
+            <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Horizontal" >
+                    <StackPanel>
+                        <ComboBox ItemsSource="{x:Bind ViewModel.VerticalAngles}" SelectedItem="{x:Bind ViewModel.SelectedVerticalAngle, Mode=TwoWay}" />
+                        <Button Content="Add &#x0a;to active" Click="{x:Bind ViewModel.AddSelectedVerticalAngleToActive}" />
+                        <TextBlock Text="Active verticals"/>
+                        <ListView ItemsSource="{x:Bind ViewModel.Lidar.ActiveVerticalAngles, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedActiveVerticalAngle, Mode=TwoWay}" SelectionMode="Single" ></ListView>
+                        <Button Content="Remove &#x0a;from active" Click="{x:Bind ViewModel.RemoveSelectedVerticalAngleFromActive}"/>
+                        <Button Content="Set &#x0a;as default" Click="{x:Bind ViewModel.SetAsDefaultAngle}"/>
+                        <TextBlock Text="Default angle:" />
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultVerticalAngle, Mode=OneWay}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5, 0, 5, 0">
+                        <TextBlock Text="Default &#x0a;calc type:" />
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=OneWay}"/>
+                        <ComboBox ItemsSource="{x:Bind ViewModel.CalculationTypes}" SelectedItem="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=TwoWay}" />
+                        <TextBlock Text="Collection &#x0a;cycles:" />
+                        <TextBox Text="{x:Bind ViewModel.Lidar.NumberOfCycles, Mode=TwoWay}"/>
+                        <TextBlock Text="Beam width:" />
+                        <TextBox Text="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}"/>
+                        <TextBlock Text="MinRange:" />
+                        <TextBox Text="{x:Bind ViewModel.Lidar.MinRange, Mode=TwoWay}"/>
+                        <TextBlock Text="MaxRange:" />
+                        <TextBox Text="{x:Bind ViewModel.Lidar.MaxRange, Mode=TwoWay}"/>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Default calc type:" />
-                    <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=OneWay}"/>
-                    <ComboBox ItemsSource="{x:Bind ViewModel.CalculationTypes}" SelectedItem="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=TwoWay}" />
-                    <TextBlock Text="Collection cycles:" />
-                    <TextBox Text="{x:Bind ViewModel.Lidar.NumberOfCycles, Mode=TwoWay}"/>
-                    <TextBlock Text="Default &#x0a;beam opening:" />
-                    <TextBox Text="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}"/>
-                    <TextBlock Text="MinRange:" />
-                    <TextBox Text="{x:Bind ViewModel.Lidar.MinRange, Mode=TwoWay}"/>
-                    <TextBlock Text="MaxRange:" />
-                    <TextBox Text="{x:Bind ViewModel.Lidar.MaxRange, Mode=TwoWay}"/>
-                </StackPanel>
-            </StackPanel>
+            </ScrollViewer>
 
             <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"
