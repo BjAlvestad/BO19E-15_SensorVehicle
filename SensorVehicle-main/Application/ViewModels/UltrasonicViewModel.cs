@@ -58,16 +58,9 @@ namespace Application.ViewModels
             }
         }
 
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
-        {
-            base.OnNavigatedTo(e, viewModelState);
-            if (Power.Ultrasound) Ultrasonic.RaiseNotificationForSelective = true;
-        }
-
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
             RefreshUltrasonicContinously = false;
-            Ultrasonic.RaiseNotificationForSelective = false;
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }
