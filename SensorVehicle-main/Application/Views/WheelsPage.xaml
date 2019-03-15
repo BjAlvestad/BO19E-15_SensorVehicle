@@ -23,40 +23,89 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" MinHeight="50" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
-                <StackPanel >
-                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"/> 
-                    <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
-                </StackPanel>
-                <StackPanel >
-                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}"/>  
-                    <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
-                </StackPanel>
-                <StackPanel>
-                    <Button Content="Apply new wheelspeed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"></Button>
-                    <ToggleSwitch Header="Apply the wheel speed continously when moving slider" OffContent="Speed won't be changed untill you click apply button" OnContent="The wheel speed will automatically be set to the slider position" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
-                    <ToggleSwitch Header="Toggle continous update between view and actual values" OffContent="Speed won't refresh on the display (but will still work in code logic)" OnContent="Display updates to reflect speed setpoint" IsOn="{x:Bind ViewModel.TogglePeriodicRaisePropertyChanged, Mode=TwoWay}" />
-                    <TextBox Text="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" Description="Update interval" />
-                    <Button Content="Stop wheels" FontSize="50" Click="{x:Bind ViewModel.StopWheels}"/>
-                </StackPanel>
+            <!--WHEELS MANUAL CONTROL-->
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                <RelativePanel>
+                    <Button x:Name="StopWheelButton" Content="Stop wheels" FontSize="39" Click="{x:Bind ViewModel.StopWheels}" RelativePanel.AlignTopWithPanel="True"/>
+
+                    <StackPanel Orientation="Horizontal" x:Name="SliderPanel" RelativePanel.Below="StopWheelButton" RelativePanel.AlignLeftWith="StopWheelButton">
+                        <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                        <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" MinHeight="200"/>
+                    </StackPanel>
+
+                    <StackPanel RelativePanel.Below="StopWheelButton" RelativePanel.RightOf="SliderPanel">
+                        <ToggleSwitch Header="Apply wheelspeed" OffContent="On button click" OnContent="Automatically" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                        <Button Content="Apply new wheelspeed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"
+                                Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+                        <TextBox Text="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" Description="Update interval"
+                                 Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </RelativePanel>
+            </StackPanel>
+
+            <!--WHEEL AND ENCODER DATA-->
+            <!--TODO: Revrite to relative panel instead of stack pannel (or some other way of organization that is more flexible than the current one)-->
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+                <StackPanel.Resources>
+                    <Thickness x:Key="DataSpacing">10,0,0,0</Thickness>
+                </StackPanel.Resources>
 
                 <StackPanel>
-                    <TextBox Text="{x:Bind ViewModel.Encoder.DistanceAtLastRequest, Mode=OneWay}" Description="Distance since last request"/>
-                    <TextBox Text="{x:Bind ViewModel.Encoder.TimeAccumulatedForLastRequest, Mode=OneWay}" Description="Time"/>
-                    <TextBox Text="{x:Bind ViewModel.Encoder.AvgVel, Mode=OneWay}" Description="Average Velocity (cm/s)"/>
-                    <TextBox Text="{x:Bind ViewModel.Encoder.TotalDistanceTravelled, Mode=OneWay}" Description="Total Distance traveled (cm)"/>
-                    <ToggleSwitch Header="Toggle collect encoder distance continously" OffContent="Encoder distance won't update automatically" OnContent="Encoder speed is collectet at intervall" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
-                    <Button Content="Reset total distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
+                    <TextBlock Text="POWER:" FontWeight="Bold" Margin="0, 10, 0, 0"/>
+                    <TextBlock Text="Requested [%]:"/>
+                    <TextBlock Text="Actual [%]:"/>
+
+                    <TextBlock Text="ENCODER:" FontWeight="Bold" Margin="0, 10, 0, 0"/>
+                    <TextBlock Text="Total distance [cm]:"/>
+                    <TextBlock Text="Collected from:"/>
+                    <TextBlock Text="Last collected at:"/>
+                    <TextBlock Text="Last distance [m]:"/>
+                    <TextBlock Text="Duration: [ms]"/>
+                    <TextBlock Text="Velocity (cm/s):"/>
+                </StackPanel>
+                <StackPanel Margin="10, 0">
+                    <TextBlock Text="Left:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" />
+                    <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
+
+                    <TextBlock Text="{x:Bind ViewModel.Encoder.TotalDistanceTravelled, Mode=OneWay}" Margin="0,0,0,0" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoder.DistanceAtLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoder.TimeAccumulatedForLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoder.AvgVel, Mode=OneWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Right:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" />
+                    <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
+
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="ToDo" />
+                </StackPanel>
+                <StackPanel Margin="10, 30, 0, 0">
+                    <TextBlock Text="Sent at:" />
                 </StackPanel>
             </StackPanel>
 
-            <!--ERROR MESSAGE box (displays error messages from )-->
-            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+                <StackPanel  Grid.Row="0" Grid.Column="4">
+                    <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
+                    <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
+                </StackPanel>
+
+                <!--ERROR MESSAGE box (displays error messages from )-->
+                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
                        Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
                        Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
 
