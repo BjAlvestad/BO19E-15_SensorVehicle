@@ -67,15 +67,14 @@
                     <TextBlock x:Name="LidarRightText" Text="Right" RelativePanel.RightOf="LidarFwdText" RelativePanel.Below="LidarFwdValue"/>
                     <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="LidarRightText" RelativePanel.AlignHorizontalCenterWith="LidarRightText"/>
 
-
-                    <TextBlock x:Name="LidarCollectorMessage" Text="Collector is not running!" Foreground="Red" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarLeftValue"
+                    <TextBlock x:Name="LastReadingTimeText" Text="New cycle collected at:" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarLeftValue" Margin="0, 10, 0, 0"/>
+                    <TextBlock x:Name="LidarsLastUpdateBlock"  Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"
+                               Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock Text="Collector is not running!" Foreground="Red" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LastReadingTimeText" FontWeight="ExtraBold"
                                Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
 
-                    <TextBlock x:Name="LastReadingTimeText" Text="New cycle collected at:" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarCollectorMessage" Margin="0, 10, 0, 0"/>
-                    <TextBlock x:Name="LidarsLastUpdateBlock"  Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
-
                     <ToggleSwitch Header="Auto Calculate" OffContent="Update from Control Logic" OnContent="Allways updates" IsOn="{x:Bind ViewModel.AutoCalculateLidarDistance, Mode=TwoWay}" RelativePanel.Below="LidarsLastUpdateBlock"
-                                  Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                  Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </RelativePanel>
             </StackPanel>
 
