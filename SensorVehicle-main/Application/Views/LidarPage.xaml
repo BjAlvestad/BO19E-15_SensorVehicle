@@ -56,25 +56,27 @@
             </StackPanel>
 
             <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
-            <RelativePanel Grid.Row="0" Grid.Column="2"
+            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"
                            Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
-                <TextBlock x:Name="FwdValue" Text="{x:Bind ViewModel.Lidar.Fwd, Mode=OneWay}" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
+                <RelativePanel>
+                    <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
+                    <TextBlock x:Name="FwdValue" Text="{x:Bind ViewModel.Lidar.Fwd, Mode=OneWay}" RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
 
-                <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
-                <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Lidar.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
+                    <TextBlock x:Name="LeftText" Text="Left" RelativePanel.LeftOf="FwdText" RelativePanel.Below="FwdValue"/>
+                    <TextBlock x:Name="LeftValue" Text="{x:Bind ViewModel.Lidar.Left, Mode=OneWay}" RelativePanel.Below="LeftText" RelativePanel.AlignHorizontalCenterWith="LeftText"/>
 
-                <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
-                <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
+                    <TextBlock x:Name="RightText" Text="Right" RelativePanel.RightOf="FwdText" RelativePanel.Below="FwdValue"/>
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.Right, Mode=OneWay}" RelativePanel.Below="RightText" RelativePanel.AlignHorizontalCenterWith="RightText"/>
 
-                <TextBlock x:Name="LastReadingTimeText" Text="New cycles collected at:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
-                <TextBlock Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
-
-                <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
-                <TextBox x:Name="ToAngleBox" Text="{x:Bind ViewModel.ToAngle, Mode=TwoWay}" Description="To" RelativePanel.AlignRightWithPanel="True"/>
-                <ListView ItemsSource="{x:Bind ViewModel.DistancesInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
-
-            </RelativePanel>
+                    <TextBlock x:Name="LastReadingTimeText" Text="New cycles collected at:" RelativePanel.AlignHorizontalCenterWith="FwdText" RelativePanel.Below="LeftValue" Margin="0, 10, 0, 0"/>
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.LastUpdate, Mode=OneWay}" RelativePanel.Below="LastReadingTimeText" RelativePanel.AlignRightWith="LastReadingTimeText"/>
+                </RelativePanel>
+                <RelativePanel>
+                    <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
+                    <TextBox x:Name="ToAngleBox" Text="{x:Bind ViewModel.ToAngle, Mode=TwoWay}" Description="To" RelativePanel.AlignRightWithPanel="True"/>
+                    <ListView ItemsSource="{x:Bind ViewModel.DistancesInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
+                </RelativePanel>
+            </StackPanel>
             <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"
                        Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"
                        Text="'Run Collector' must be on to be able to use any distance data from the Lidar. &#x0a; &#x0a;Distance data will not update on the display unless the 'Display Data' is on (but can still be used in code).&#x0a;This is done to make control logic more efficient.&#x0a;Note: The 'Display Data' slider is only visible if 'Power' is switched on." />                
