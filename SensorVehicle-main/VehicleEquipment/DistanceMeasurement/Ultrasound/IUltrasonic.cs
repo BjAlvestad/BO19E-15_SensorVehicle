@@ -24,5 +24,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         string Message { get; }
 
         void ClearMessage();
+
+        bool RefreshUltrasonicContinously { get; set; }
     }
 }
