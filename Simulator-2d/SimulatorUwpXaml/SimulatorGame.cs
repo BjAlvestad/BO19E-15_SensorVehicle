@@ -19,7 +19,7 @@ namespace SimulatorUwpXaml
         private Camera _camera;
         private Picking2D _picking2D;
 
-        private Hud _hud;
+        public HudViewModel HUDViewModel { get; private set; }
 
         private Lidar _lidar;
         private SimulatorMap _simulatorMap;
@@ -63,7 +63,7 @@ namespace SimulatorUwpXaml
 
             _lidar = new Lidar(_vehicle);
 
-            _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"), _camera);
+            HUDViewModel = new HudViewModel(_lidar, _vehicle, _camera, _picking2D);
 
             ((App) Application.Current).AppServiceProvider.InstantiateSimulatedEquipment(_vehicle, _lidar);
 
@@ -101,7 +101,7 @@ namespace SimulatorUwpXaml
                 _camera.Position = _vehicle.Position;
             }
 
-            _hud.SetHudsToDefaultPositionsInWorld(_camera);
+            HUDViewModel.RefreshHud(_vehicle);
 
             base.Update(gameTime);
         }
@@ -129,11 +129,6 @@ namespace SimulatorUwpXaml
             _spriteBatch.Begin(_camera, samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
             _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
-
-            _hud.DrawDistances(_lidar);
-            _hud.DrawVehicleData(_vehicle);
-            _hud.DrawDebugMessages($"X: {Mouse.GetState().X}  Y: {Mouse.GetState().Y}", $"{_vehicle.Position}");
-            _hud.DrawDebugMouseOverObject(_vehicle);
 
             _spriteBatch.End();
 

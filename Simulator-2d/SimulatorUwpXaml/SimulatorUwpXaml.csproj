@@ -103,12 +103,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screen and scaling\HudViewModel.cs" />
     <Compile Include="SensorVehicleApp interface\Device.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Screen and scaling\Hud.cs" />
-    <Compile Include="Screen and scaling\HudPosition.cs" />
     <Compile Include="Screen and scaling\Screen.cs" />
     <Compile Include="SensorVehicleApp interface\SimulatedEncoderSensor.cs" />
     <Compile Include="SensorVehicleApp interface\SimulatedLidarPacketTransmitter.cs" />

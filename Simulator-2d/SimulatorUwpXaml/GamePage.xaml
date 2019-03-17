@@ -6,7 +6,59 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="AntiqueWhite" />
+        </Style>
+    </Page.Resources>
 
-  <SwapChainPanel x:Name="swapChainPanel" />
+    <Grid>
+        <SwapChainPanel x:Name="swapChainPanel" />
 
+        <RelativePanel>
+            <!--DISTANCE (LIDAR) -->
+            <RelativePanel RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True">
+                <TextBlock x:Name="LidarTitle" Text="Distance" FontSize="24" FontWeight="Bold" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+                <TextBlock x:Name="LidarFwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="LidarTitle"/>
+                <TextBlock x:Name="LidarFwdValue" Text="{x:Bind _game.HUDViewModel.DistanceFwd, Mode=OneWay}" RelativePanel.Below="LidarFwdText" RelativePanel.AlignHorizontalCenterWith="LidarFwdText"/>
+
+                <TextBlock x:Name="LidarLeftText" Text="Left" RelativePanel.LeftOf="LidarFwdText" RelativePanel.Below="LidarFwdValue"/>
+                <TextBlock x:Name="LidarLeftValue" Text="{x:Bind _game.HUDViewModel.DistanceLeft, Mode=OneWay}" RelativePanel.Below="LidarLeftText" RelativePanel.AlignHorizontalCenterWith="LidarLeftText"/>
+
+                <TextBlock x:Name="LidarRightText" Text="Right" RelativePanel.RightOf="LidarFwdText" RelativePanel.Below="LidarFwdValue"/>
+                <TextBlock Text="{x:Bind _game.HUDViewModel.DistanceRight, Mode=OneWay}" RelativePanel.Below="LidarRightText" RelativePanel.AlignHorizontalCenterWith="LidarRightText"/>
+ 
+                <TextBlock x:Name="LidarAftText" Text="Aft" RelativePanel.AlignHorizontalCenterWith="LidarFwdText" RelativePanel.Below="LidarLeftValue"/>
+                <TextBlock Text="{x:Bind _game.HUDViewModel.DistanceAft, Mode=OneWay}" RelativePanel.Below="LidarAftText" RelativePanel.AlignHorizontalCenterWith="LidarAftText"/>                    
+            </RelativePanel>
+            
+            <!--VEHICLE-->
+            <RelativePanel  RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                <TextBlock Text="Wheel" FontSize="24" FontWeight="Bold" x:Name="WheelTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
+
+                <TextBlock Text="Speed left:" x:Name="WheelSpeedLeftText" RelativePanel.Below="WheelTitle" RelativePanel.LeftOf="WheelTitle" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.WheelSpeedLeft, Mode=OneWay}" x:Name="WheelSpeedLeftValue" RelativePanel.Below="WheelSpeedLeftText" RelativePanel.AlignLeftWith="WheelSpeedLeftText" />
+                <TextBlock Text="Speed Right:" x:Name="WheelSpeedRightText" RelativePanel.Below="WheelTitle" RelativePanel.RightOf="WheelTitle"/>
+                <TextBlock Text="{x:Bind _game.HUDViewModel.WheelSpeedRight, Mode=OneWay}" RelativePanel.Below="WheelSpeedRightText" RelativePanel.AlignLeftWith="WheelSpeedRightText" />
+
+                <TextBlock Text="Direction:" x:Name="DirectionTitle" RelativePanel.Below="WheelSpeedLeftValue" RelativePanel.AlignHorizontalCenterWith="WheelTitle"/>
+                <TextBlock Text="{x:Bind _game.HUDViewModel.VehicleDirection, Mode=OneWay}" RelativePanel.Below="DirectionTitle" RelativePanel.AlignHorizontalCenterWith="DirectionTitle" />
+
+                <Button Content="STOP" FontSize="12" Click="{x:Bind _game.HUDViewModel.StopWheels}" x:Name="StopButton" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
+            </RelativePanel>
+            
+            <!--DEBUG DATA-->
+            <StackPanel RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignLeftWithPanel="True">
+                <TextBlock Text="Debug data" FontSize="24" FontWeight="Bold" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.MouseOverObject, Mode=OneWay}" />
+                <TextBlock Text="Mouse Position:" FontWeight="Bold" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.MousePosScreenRaw, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.MousePosScreen, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.MousePosWorld, Mode=OneWay}" />
+                <TextBlock Text="Vehicle position:" FontWeight="Bold" />
+                <TextBlock Text="{x:Bind _game.HUDViewModel.VehiclePosWorld, Mode=OneWay}" />
+            </StackPanel>
+        </RelativePanel>
+    </Grid>
 </Page>
