@@ -93,7 +93,7 @@ namespace SimulatorUwpXaml
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
             _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
-            _lidar.Update360(_simulatorMap.Boundaries);
+            _lidar.Update360(_simulatorMap.Boundaries, Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
             SetCameraZoom(gameTime);
             _camera.Update(gameTime);
