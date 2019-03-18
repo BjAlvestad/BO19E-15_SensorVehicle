@@ -56,6 +56,26 @@ namespace VehicleEquipment.Locomotion.Encoder
             }
         }
 
+        private bool _hasUnacknowledgedError;
+        public bool HasUnacknowledgedError
+        {
+            get { return _hasUnacknowledgedError; }
+            set { SetProperty(ref _hasUnacknowledgedError, value); }
+        }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            private set { SetProperty(ref _message, value); }
+        }
+
+        public void ClearMessage()
+        {
+            Message = "";
+            HasUnacknowledgedError = false;
+        }
+
         public void ResetTotalDistanceTraveled()
         {
             Left.TotalDistanceTravelled = 0;
@@ -66,10 +86,33 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         public void CollectAndResetDistanceFromEncoders()
         {
-            Left.CollectAndResetDistanceFromEncoder();
-            RaiseSyncedPropertyChangedSelectively(nameof(Left));
-            Right.CollectAndResetDistanceFromEncoder();
-            RaiseSyncedPropertyChangedSelectively(nameof(Right));
+            if (HasUnacknowledgedError)
+            {
+                CollectContinously = false;
+                return;
+            }
+
+            try
+            {
+                Left.CollectAndResetDistanceFromEncoder();
+                RaiseSyncedPropertyChangedSelectively(nameof(Left));
+            }
+            catch (Exception e)
+            {
+                Message += $"ERROR: An exception occured when collecting encoder data from Left Encoder:\n{e.Message}\n\n";
+                HasUnacknowledgedError = true;
+            }
+
+            try
+            {
+                Right.CollectAndResetDistanceFromEncoder();
+                RaiseSyncedPropertyChangedSelectively(nameof(Right));
+            }
+            catch (Exception e)
+            {
+                Message += $"ERROR: An exception occured when collecting encoder data from Right Encoder:\n{e.Message}\n\n";
+                HasUnacknowledgedError = true;
+            }
         }
     }
 }

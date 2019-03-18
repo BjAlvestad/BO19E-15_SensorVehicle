@@ -110,9 +110,13 @@
                 </StackPanel>
 
                 <!--ERROR MESSAGE box (displays error messages from )-->
-                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
-                       Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
-                       Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
+                <TextBlock Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
+                           Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind ViewModel.Encoders.Message, Mode=OneWay}" TextWrapping="Wrap"
+                           Tapped="{x:Bind ViewModel.Encoders.ClearMessage, Mode=OneWay}" />
+            </StackPanel>
+
 
         </Grid>
     </Grid>

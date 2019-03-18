@@ -38,6 +38,7 @@ namespace VehicleEquipment.Locomotion.Encoder
                 DistanceAtLastRequest = double.NaN;
                 TimeAccumulatedForLastRequest = 0;
                 Message = $"ERROR: An exception occured when collecting encoder data: {p.Message}";
+                throw;
             }
 
             LastRequestTimeStamp = DateTime.Now;

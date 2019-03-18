@@ -13,6 +13,10 @@ namespace VehicleEquipment.Locomotion.Encoder
         TimeSpan CollectionInterval { get; set; }
         bool CollectContinously { get; set; }
 
+        bool HasUnacknowledgedError { get; }
+        string Message { get; }
+        void ClearMessage();
+
         void ResetTotalDistanceTraveled();
         void CollectAndResetDistanceFromEncoders();
     }
