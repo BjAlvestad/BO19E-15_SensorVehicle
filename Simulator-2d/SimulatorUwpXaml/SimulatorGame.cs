@@ -19,7 +19,7 @@ namespace SimulatorUwpXaml
         private Camera _camera;
         private Picking2D _picking2D;
 
-        private Hud _hud;
+        public HudViewModel HUDViewModel { get; private set; }
 
         private Lidar _lidar;
         private SimulatorMap _simulatorMap;
@@ -55,12 +55,7 @@ namespace SimulatorUwpXaml
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //BUG: Creates visible grid for certain scaling values (with 50x50 tiles). 
-            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.1 ok, 0.2 ok, 0.5 ok, 0.6 ok, 0.9 ok.
-            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving no grid - Ok:    0.92 ok,
-            //Test with 'BruntKart.Tmx' and 1440p monitor - values giving 100x100 grid:    0.91, 0.93
             _simulatorMap = new SimulatorMap(Content, mapName: "4B-corridores.tmx", scale: Screen.ScaleToHighDPI(1.0f * GlobalScale));
-            //_simulatorMap = new SimulatorMap(Content, mapName: "BruntKart.tmx", scale: 0.92f);
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f * GlobalScale));
@@ -68,7 +63,7 @@ namespace SimulatorUwpXaml
 
             _lidar = new Lidar(_vehicle);
 
-            _hud = new Hud(_spriteBatch, Content.Load<SpriteFont>("HUD/HudDistance"), _camera);
+            HUDViewModel = new HudViewModel(_lidar, _vehicle, _camera, _picking2D);
 
             ((App) Application.Current).AppServiceProvider.InstantiateSimulatedEquipment(_vehicle, _lidar);
 
@@ -93,7 +88,7 @@ namespace SimulatorUwpXaml
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
             _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
-            _lidar.Update360(_simulatorMap.Boundaries);
+            _lidar.Update360(_simulatorMap.Boundaries, Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
             SetCameraZoom(gameTime);
             _camera.Update(gameTime);
@@ -106,7 +101,7 @@ namespace SimulatorUwpXaml
                 _camera.Position = _vehicle.Position;
             }
 
-            _hud.SetHudsToDefaultPositionsInWorld(_camera);
+            HUDViewModel.RefreshHud(_vehicle);
 
             base.Update(gameTime);
         }
@@ -134,11 +129,6 @@ namespace SimulatorUwpXaml
             _spriteBatch.Begin(_camera, samplerState: SamplerState.PointClamp);  // SamplerState.PointClamp removes gaps between tiles when rendering (reccomended)
             _simulatorMap.DrawMap(_spriteBatch);
             _vehicle.Draw(_spriteBatch);
-
-            _hud.DrawDistances(_lidar);
-            _hud.DrawVehicleData(_vehicle);
-            _hud.DrawDebugMessages($"X: {Mouse.GetState().X}  Y: {Mouse.GetState().Y}", $"{_vehicle.Position}");
-            _hud.DrawDebugMouseOverObject(_vehicle);
 
             _spriteBatch.End();
 

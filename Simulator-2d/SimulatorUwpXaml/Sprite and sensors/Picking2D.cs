@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SimulatorUwpXaml
 {
-    class Picking2D
+    public class Picking2D
     {
         private static bool _spritePickedUpForMove;
         private static bool _spritePickedUpForRotate;

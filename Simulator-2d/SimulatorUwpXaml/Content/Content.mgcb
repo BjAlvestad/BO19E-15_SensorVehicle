@@ -13,13 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin HUD/HudDistance.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:HUD/HudDistance.spritefont
-
 #begin Maps/4B-corridores.tmx
 /copy:Maps/4B-corridores.tmx
 
