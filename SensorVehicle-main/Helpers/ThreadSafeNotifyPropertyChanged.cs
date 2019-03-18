@@ -75,6 +75,20 @@ namespace Helpers
         }
 
         /// <summary>
+        /// Raises this object's PropertyChanged event [ONLY IF the RaiseNotificationForSelective boolean is true] on the UI thread SyncContext (assuming that was the sync context given when instantiating this class).
+        /// </summary>
+        /// <param name="propertyName">Name of the property used to notify listeners. This
+        /// value is optional and can be provided automatically when invoked from compilers
+        /// that support <see cref="CallerMemberNameAttribute"/>.</param>
+        protected virtual void RaiseSyncedPropertyChangedSelectively([CallerMemberName] string propertyName = null)
+        {
+            if (RaiseNotificationForSelective)
+            {
+                RaiseSyncedPropertyChanged(propertyName);
+            }
+        }
+
+        /// <summary>
         /// Raises this object's PropertyChanged event on the UI thread SyncContext (assuming that was the sync context given when instantiating this class).
         /// </summary>
         /// <param name="propertyName">Name of the property used to notify listeners. This
