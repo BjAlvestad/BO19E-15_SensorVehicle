@@ -18,7 +18,7 @@ namespace ExampleLogic.L1_CenterCorridor
                 Author = "BO19-E15",
                 SuitableForSubjects = "Control systems",
 
-                Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to keep to the center of the corridor.\n" +
+                Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to steer towards the center of the corridor.\n" +
                               "The left wheel speed is controlled by the distance from the right ultrasound sensor.\n" +
                               "The right wheel speed is controlled by the distance from the left ultrasound sensor.\n" +
                               "Overall speed is affected by distance in front. When meeting opstruction, the car will turn until no obstruction"
@@ -37,13 +37,13 @@ namespace ExampleLogic.L1_CenterCorridor
 
         public override void Run()
         {
-            if (_ultrasonic.Fwd < 0.2)
+            if (_ultrasonic.Fwd < 0.5)
             {
-               RotateAwayFromObstruction(desiredFrontalClearance: 0.5f, rotationSpeedPercentage: 50);
+               RotateAwayFromObstruction(desiredFrontalClearance: 1.0f, rotationSpeedPercentage: 50);
             }
             else
             {
-                float reductionRate = Math.Min(_ultrasonic.Fwd/4, 1.0f);
+                float reductionRate = 1.0f;
                 KeepCenterCorridor(reductionRate);
             }
         }
