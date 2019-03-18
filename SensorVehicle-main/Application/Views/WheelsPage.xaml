@@ -85,12 +85,12 @@
                     <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" />
                     <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
 
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalDistanceTravelled, Mode=OneWay}" />
                     <TextBlock Text="ToDo" />
                     <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TimeAccumulatedForLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay}" />
                 </StackPanel>
                 <StackPanel Margin="10, 30, 0, 0">
                     <TextBlock Text="Sent at:" />
@@ -100,7 +100,9 @@
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
                 <StackPanel  Grid.Row="0" Grid.Column="4">
                     <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
                     <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
+                    <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}" />
                     <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
                 </StackPanel>
 

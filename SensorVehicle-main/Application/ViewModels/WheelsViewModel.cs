@@ -112,7 +112,6 @@ namespace Application.ViewModels
                 }
 
                 RaisePropertyChanged(nameof(Wheel));
-                RaisePropertyChanged(nameof(Encoder));
                 await Task.Delay(UpdateInterval, cancellationToken);
             }
         }
