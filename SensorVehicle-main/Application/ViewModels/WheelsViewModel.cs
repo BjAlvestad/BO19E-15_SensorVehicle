@@ -62,22 +62,11 @@ namespace Application.ViewModels
             get { return _applyWheelSpeedContinously; }
             set
             {
-                SetProperty(ref _applyWheelSpeedContinously, value);
-                if (TogglePeriodicRaisePropertyChanged == false) TogglePeriodicRaisePropertyChanged = true;
-            }
-        }
-
-        private bool _togglePeriodicRaisePropertyChanged;
-        public bool TogglePeriodicRaisePropertyChanged
-        {
-            get { return _togglePeriodicRaisePropertyChanged; }
-            set
-            {
-                bool valueChanged = SetProperty(ref _togglePeriodicRaisePropertyChanged, value);
+                bool valueChanged = SetProperty(ref _applyWheelSpeedContinously, value);
                 if (value && valueChanged)
                 {
                     _periodicRaisePropertyChangedToken = new CancellationTokenSource();
-                    PeriodicRaisePropertyChangedAsync(_periodicRaisePropertyChangedToken.Token);
+                    PeriodicApplyNewWheelSpeed(_periodicRaisePropertyChangedToken.Token);
                 }
                 else if(valueChanged)
                 {
@@ -86,14 +75,12 @@ namespace Application.ViewModels
             }
         }
 
-        private async Task PeriodicRaisePropertyChangedAsync(CancellationToken cancellationToken)
+        //TODO: Consider removing PeriodicApplyNewWheelSpeed and simplifying ApplyWheelSpeedContinously to be a pure boolean. A method subscribed to the property changed notification of the sliders (properties they are bound to) can set the new speed IF ApplyWheelSpeedContinously is true. DateTime/TimeSpan can be used in the if-check to only raise at certain intervals if desired.
+        private async Task PeriodicApplyNewWheelSpeed(CancellationToken cancellationToken)
         {
             while (true)
             {
-                if (ApplyWheelSpeedContinously)
-                {
-                    Wheel.SetSpeed(LeftWheel, RightWheel);
-                }
+                Wheel.SetSpeed(LeftWheel, RightWheel);
 
                 await Task.Delay(UpdateInterval, cancellationToken);
             }
