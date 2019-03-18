@@ -3,7 +3,7 @@ using Helpers;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
-    public class Encoder : ThreadSafeNotifyPropertyChanged, IEncoder
+    public class Encoder
     {
         private readonly IVehicleCommunication _vehicleCommunication ;
 
@@ -19,11 +19,6 @@ namespace VehicleEquipment.Locomotion.Encoder
         public Encoder(IVehicleCommunication comWithEncoder)
         {
             _vehicleCommunication = comWithEncoder;
-        }
-
-        public void ResetTotalDistanceTraveled()
-        {
-            TotalDistanceTravelled = 0;
         }
 
         public double CollectAndResetDistanceFromEncoder()
@@ -48,5 +43,11 @@ namespace VehicleEquipment.Locomotion.Encoder
             LastRequestTimeStamp = DateTime.Now;
             return DistanceAtLastRequest;
         }
+
+        //TODO: Consider changeing names of properties
+        // Suggested changes to the three fields above
+        //TimeSpan TimeSinceLastReading { get; }
+        //double DistanceTravelledInCm { get; }
+        //double AvgSpeed { get; }
     }
 }

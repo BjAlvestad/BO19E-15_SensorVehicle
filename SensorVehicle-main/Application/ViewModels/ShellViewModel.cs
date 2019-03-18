@@ -38,7 +38,7 @@ namespace Application.ViewModels
         public ILidarDistance Lidar { get; }
         public IUltrasonic Ultrasonic { get; }
         public IWheel Wheel { get; }
-        public IEncoder Encoder { get; }
+        public IEncoders Encoders { get; }
         public IPower Power { get; }
         #endregion
 
@@ -56,13 +56,13 @@ namespace Application.ViewModels
             set { SetProperty(ref _selected, value); }
         }
 
-        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoder encoder, IPower power, ExampleLogicService exampleLogic)
+        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic)
         {
             _navigationService = navigationServiceInstance;
             Lidar = lidar;
             Ultrasonic = ultrasonic;
             Wheel = wheel;
-            Encoder = encoder;
+            Encoders = encoders;
             Power = power;
             ExampleLogic = exampleLogic;
             ItemInvokedCommand = new DelegateCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked);

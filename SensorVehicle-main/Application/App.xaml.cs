@@ -61,13 +61,15 @@ namespace Application
 
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;
-            IVehicleCommunication encoderCommunication;
+            IVehicleCommunication encoderLeftCommunication;
+            IVehicleCommunication encoderRightCommunication;
             IVehicleCommunication wheelCommunication;
             if (IsRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
                 ultrasonicCommunication = new VehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new VehicleCommunication(Device.EncoderLeft);
+                encoderLeftCommunication = new VehicleCommunication(Device.EncoderLeft);
+                encoderRightCommunication = new VehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
             }
@@ -75,7 +77,8 @@ namespace Application
             {
                 lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
                 ultrasonicCommunication = new SimulatedVehicleCommunication(Device.Ultrasonic, _simulatorAppServiceClient);
-                encoderCommunication = new SimulatedVehicleCommunication(Device.EncoderLeft, _simulatorAppServiceClient);
+                encoderLeftCommunication = new SimulatedVehicleCommunication(Device.EncoderLeft, _simulatorAppServiceClient);
+                encoderRightCommunication = new SimulatedVehicleCommunication(Device.EncoderRight, _simulatorAppServiceClient);
                 wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
                 Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
                 // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
@@ -84,14 +87,15 @@ namespace Application
             {
                 lidarPacketReceiver = new MockLidarPacketReceiver();
                 ultrasonicCommunication = new MockVehicleCommunication(Device.Ultrasonic);
-                encoderCommunication = new MockVehicleCommunication(Device.EncoderLeft);
+                encoderLeftCommunication = new MockVehicleCommunication(Device.EncoderLeft);
+                encoderRightCommunication = new MockVehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
                 Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
             }
 
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
-            Container.RegisterType<IEncoder, Encoder>(new ContainerControlledLifetimeManager(), new InjectionConstructor(encoderCommunication));
+            Container.RegisterType<IEncoders, Encoders>(new ContainerControlledLifetimeManager(), new InjectionConstructor(new Encoder(encoderLeftCommunication), new Encoder(encoderRightCommunication)));
             Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(), new InjectionConstructor(wheelCommunication));
         }
 

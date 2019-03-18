@@ -13,15 +13,15 @@ namespace Application.ViewModels
     {
         private CancellationTokenSource _periodicRaisePropertyChangedToken;
 
-        public WheelsViewModel(IWheel wheel, IEncoder encoder)
+        public WheelsViewModel(IWheel wheel, IEncoders encoders)
         {
             Wheel = wheel;
-            Encoder = encoder;
+            Encoders = encoders;
         }
 
         public IWheel Wheel { get; set; }
 
-        public IEncoder Encoder { get; private set; }
+        public IEncoders Encoders { get; private set; }
 
         private TimeSpan _updateInterval;
         public TimeSpan UpdateInterval
@@ -108,7 +108,7 @@ namespace Application.ViewModels
 
                 if (CollectEncoderDistanceContinously)
                 {
-                    Encoder.CollectAndResetDistanceFromEncoder();
+                    Encoders.CollectAndResetDistanceFromEncoders();
                 }
 
                 RaisePropertyChanged(nameof(Wheel));

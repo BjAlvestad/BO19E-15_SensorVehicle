@@ -73,12 +73,12 @@
                     <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" />
                     <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
 
-                    <TextBlock Text="{x:Bind ViewModel.Encoder.TotalDistanceTravelled, Mode=OneWay}" Margin="0,0,0,0" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalDistanceTravelled, Mode=OneWay}" Margin="0,0,0,0" />
                     <TextBlock Text="ToDo" />
                     <TextBlock Text="ToDo" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoder.DistanceAtLastRequest, Mode=OneWay}" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoder.TimeAccumulatedForLastRequest, Mode=OneWay}" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoder.AvgVel, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TimeAccumulatedForLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay}" />
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="Right:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
@@ -101,7 +101,7 @@
                 <StackPanel  Grid.Row="0" Grid.Column="4">
                     <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
                     <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
-                    <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoder.ResetTotalDistanceTraveled}" />
+                    <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
                 </StackPanel>
 
                 <!--ERROR MESSAGE box (displays error messages from )-->
