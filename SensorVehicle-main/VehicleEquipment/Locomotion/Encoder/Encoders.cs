@@ -1,4 +1,7 @@
-﻿using Helpers;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
@@ -8,6 +11,7 @@ namespace VehicleEquipment.Locomotion.Encoder
         {
             Left = encoderLeft;
             Right = encoderRight;
+            CollectionInterval = TimeSpan.FromMilliseconds(500);
         }
 
         private Encoder _left;
@@ -22,6 +26,34 @@ namespace VehicleEquipment.Locomotion.Encoder
         {
             get { return _right; }
             set { SetPropertyRaiseSelectively(ref _right, value); }
+        }
+
+        private TimeSpan _collectionInterval;
+        public TimeSpan CollectionInterval
+        {
+            get { return _collectionInterval; }
+            set { SetProperty(ref _collectionInterval, value); }
+        }
+
+        private bool _collectContinously;
+        public bool CollectContinously
+        {
+            get { return _collectContinously; }
+            set
+            {
+                SetProperty(ref _collectContinously, value);
+                if (value)
+                {
+                    Task.Run(() =>
+                    {
+                        while (CollectContinously)
+                        {
+                            CollectAndResetDistanceFromEncoders();
+                            Thread.Sleep(CollectionInterval.Milliseconds);
+                        }
+                    });
+                }
+            }
         }
 
         public void ResetTotalDistanceTraveled()

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
@@ -8,6 +9,9 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         Encoder Left { get; set; }
         Encoder Right { get; set; }
+
+        TimeSpan CollectionInterval { get; set; }
+        bool CollectContinously { get; set; }
 
         void ResetTotalDistanceTraveled();
         void CollectAndResetDistanceFromEncoders();

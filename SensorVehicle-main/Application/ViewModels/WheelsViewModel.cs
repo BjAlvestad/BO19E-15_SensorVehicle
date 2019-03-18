@@ -67,17 +67,6 @@ namespace Application.ViewModels
             }
         }
 
-        private bool _collectEncoderDistanceContinously;
-        public bool CollectEncoderDistanceContinously
-        {
-            get { return _collectEncoderDistanceContinously; }
-            set
-            {
-                SetProperty(ref _collectEncoderDistanceContinously, value);
-                if (TogglePeriodicRaisePropertyChanged == false) TogglePeriodicRaisePropertyChanged = true;
-            }
-        }
-
         private bool _togglePeriodicRaisePropertyChanged;
         public bool TogglePeriodicRaisePropertyChanged
         {
@@ -106,12 +95,6 @@ namespace Application.ViewModels
                     Wheel.SetSpeed(LeftWheel, RightWheel);
                 }
 
-                if (CollectEncoderDistanceContinously)
-                {
-                    Encoders.CollectAndResetDistanceFromEncoders();
-                }
-
-                RaisePropertyChanged(nameof(Wheel));
                 await Task.Delay(UpdateInterval, cancellationToken);
             }
         }

@@ -101,8 +101,11 @@
                 <StackPanel  Grid.Row="0" Grid.Column="4">
                     <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
                     <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
-                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.CollectEncoderDistanceContinously, Mode=TwoWay}" />
-                    <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}" />
+                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
+                    <TextBox Text="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" Description="Collection interval"
+                             Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}"
+                            Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
                     <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
                 </StackPanel>
 
