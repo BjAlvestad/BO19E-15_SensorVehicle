@@ -97,7 +97,7 @@ namespace Application.ViewModels
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
             ApplyWheelSpeedContinously = false;
-            _periodicRaisePropertyChangedToken.Cancel();
+            _periodicRaisePropertyChangedToken?.Cancel();
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }
