@@ -33,7 +33,7 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
                     timeSinceLastRequest = DateTime.Now - _timeAtLastRequestRightWheel;
                     _timeAtLastRequestRightWheel = DateTime.Now;
                 }
-                return timeSinceLastRequest.Milliseconds;
+                return (int)timeSinceLastRequest.TotalMilliseconds;
             }
         }
         private int CmSinceLastRequest
