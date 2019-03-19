@@ -60,40 +60,36 @@
                     <TextBlock Text="Requested [%]:"/>
                     <TextBlock Text="Actual [%]:"/>
 
-                    <TextBlock Text="ENCODER:" FontWeight="Bold" Margin="0, 10, 0, 0"/>
-                    <TextBlock Text="Total distance [cm]:"/>
-                    <TextBlock Text="Collected from:"/>
-                    <TextBlock Text="Last collected at:"/>
-                    <TextBlock Text="Last distance [m]:"/>
-                    <TextBlock Text="Duration: [ms]"/>
+                    <TextBlock Text="ENCODER:" FontWeight="Bold" Margin="0, 30, 0, 0"/>
+                    <TextBlock Text="Total:" FontWeight="Bold" Margin="0, 5, 0, 0" />
+                    <TextBlock Text="Distance [cm]:"/>
+                    <TextBlock Text="Duration:"/>
+                    <TextBlock Text="Last collected:" FontWeight="Bold" Margin="0, 5, 0, 0"/>
+                    <TextBlock Text="Distance [m]:"/>
+                    <TextBlock Text="Duration: [ms]:"/>
                     <TextBlock Text="Velocity (cm/s):"/>
                 </StackPanel>
                 <StackPanel Margin="10, 0">
                     <TextBlock Text="Left:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
                     <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" />
-                    <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
+                    <TextBlock Text="ToDo" Margin="0, 0, 0, 50"/>
 
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalDistanceTravelled, Mode=OneWay}" Margin="0,0,0,0" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalDistanceTravelled, Mode=OneWay}" Margin="0,24,0,0" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}" Margin="0,24,0,0" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TimeAccumulatedForLastRequest, Mode=OneWay}" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}" />
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="Right:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
                     <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" />
-                    <TextBlock Text="ToDo" Margin="0, 0, 0, 30"/>
+                    <TextBlock Text="ToDo" Margin="0, 0, 0, 50"/>
 
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalDistanceTravelled, Mode=OneWay}" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="ToDo" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalDistanceTravelled, Mode=OneWay}" Margin="0,24,0,0" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}" Margin="0,24,0,0" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TimeAccumulatedForLastRequest, Mode=OneWay}" />
-                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay}" />
-                </StackPanel>
-                <StackPanel Margin="10, 30, 0, 0">
-                    <TextBlock Text="Sent at:" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}" />
                 </StackPanel>
             </StackPanel>
 

@@ -9,6 +9,7 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         public DateTime LastRequestTimeStamp { get; set; }
         public int TimeAccumulatedForLastRequest { get; set; }
+        public TimeSpan TotalTime { get; set; }
         public double DistanceAtLastRequest { get; set; }
         public double TotalDistanceTravelled { get; set; }
 
@@ -31,6 +32,7 @@ namespace VehicleEquipment.Locomotion.Encoder
 
                 DistanceAtLastRequest = data.Integers[0];
                 TimeAccumulatedForLastRequest = data.Integers[1];
+                TotalTime += TimeSpan.FromMilliseconds(TimeAccumulatedForLastRequest);
                 TotalDistanceTravelled += DistanceAtLastRequest;
             }
             catch (Exception p)

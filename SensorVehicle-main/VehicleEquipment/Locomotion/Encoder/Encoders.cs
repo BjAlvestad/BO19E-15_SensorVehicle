@@ -79,7 +79,9 @@ namespace VehicleEquipment.Locomotion.Encoder
         public void ResetTotalDistanceTraveled()
         {
             Left.TotalDistanceTravelled = 0;
+            Left.TotalTime = TimeSpan.Zero;
             Right.TotalDistanceTravelled = 0;
+            Right.TotalTime = TimeSpan.Zero;
             RaiseSyncedPropertyChangedSelectively(nameof(Left));
             RaiseSyncedPropertyChangedSelectively(nameof(Right));
         }
