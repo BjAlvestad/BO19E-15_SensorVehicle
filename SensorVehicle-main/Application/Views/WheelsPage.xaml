@@ -113,26 +113,24 @@
             </StackPanel>
 
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
-                <StackPanel  Grid.Row="0" Grid.Column="4">
-                    <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
-                    <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
-                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
-                    <TextBox Text="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" Description="Collection interval"
-                             Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}"
-                            Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
-                    <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
-                </StackPanel>
+            <StackPanel  Grid.Row="0" Grid.Column="4">
+                <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
+                <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
+                <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
+                <TextBox Text="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" Description="Collection interval"
+                            Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}"
+                        Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+                <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
+            </StackPanel>
 
-                <!--ERROR MESSAGE box (displays error messages from )-->
+            <!--ERROR MESSAGE box (displays error messages from )-->
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
                 <TextBlock Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
                            Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
                 <TextBlock Text="{x:Bind ViewModel.Encoders.Message, Mode=OneWay}" TextWrapping="Wrap"
                            Tapped="{x:Bind ViewModel.Encoders.ClearMessage, Mode=OneWay}" />
             </StackPanel>
-
-
         </Grid>
     </Grid>
 </Page>
