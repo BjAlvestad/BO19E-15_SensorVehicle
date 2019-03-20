@@ -51,24 +51,23 @@
             <!--WHEEL AND ENCODER DATA-->
             <StackPanel Grid.Row="0" Grid.Column="2">
                 <!--WHEEL DATA-->
-                <!--TODO: Rewrite to relative panel instead of stack pannel (or some other way of organization that is more flexible than the current one)-->
-                <StackPanel Orientation="Horizontal" >
-                    <StackPanel>
-                        <TextBlock Text="POWER:" FontWeight="Bold" Margin="0, 10, 0, 0"/>
-                        <TextBlock Text="Requested [%]:"/>
-                        <TextBlock Text="Actual [%]:"/>              
-                    </StackPanel>
-                    <StackPanel Margin="10, 0">
-                        <TextBlock Text="Left:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
-                        <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}" />
-                        <TextBlock Text="ToDo" Margin="0, 0, 0, 50"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Text="Right:" FontWeight="Bold" Margin="0, 0, 0, 10"/>
-                        <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}" />
-                        <TextBlock Text="ToDo" Margin="0, 0, 0, 50"/>
-                    </StackPanel>
-                </StackPanel>
+                <RelativePanel Margin="0,0,0,30" Visibility="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock x:Name="WheelHeading"  Text="POWER:" FontWeight="Bold" Margin="0,0,44,0" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"/>
+                    <TextBlock x:Name="LeftWheel" Text="Left" FontWeight="Bold" Margin="30,0" RelativePanel.AlignVerticalCenterWith="WheelHeading" RelativePanel.RightOf="WheelHeading" />
+                    <TextBlock x:Name="RightWheel" Text="Right" FontWeight="Bold" RelativePanel.AlignVerticalCenterWith="WheelHeading" RelativePanel.RightOf="LeftWheel" />
+
+                    <TextBlock x:Name="WheelRequest" Text="Requested [%]:" RelativePanel.Below="WheelHeading" RelativePanel.AlignLeftWith="WheelHeading" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="WheelRequest" RelativePanel.AlignHorizontalCenterWith="LeftWheel" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="WheelRequest" RelativePanel.AlignHorizontalCenterWith="RightWheel" />
+
+                    <TextBlock x:Name="WheelActual" Text="Actual [%]:" RelativePanel.Below="WheelRequest" RelativePanel.AlignLeftWith="WheelHeading" />              
+                    <TextBlock Text="ToDo"
+                               RelativePanel.AlignVerticalCenterWith="WheelActual" RelativePanel.AlignHorizontalCenterWith="LeftWheel" />
+                    <TextBlock Text="ToDo"
+                               RelativePanel.AlignVerticalCenterWith="WheelActual" RelativePanel.AlignHorizontalCenterWith="RightWheel" />
+                </RelativePanel>
 
                 <!--ENCODER DATA-->
                 <RelativePanel Visibility="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" >
