@@ -8,6 +8,8 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         float Left { get; }
 
         float Fwd { get; }
+        float FwdLeft { get; }
+        float FwdRight { get; }
 
         float Right { get; }
 
@@ -22,5 +24,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         string Message { get; }
 
         void ClearMessage();
+
+        bool RefreshUltrasonicContinously { get; set; }
     }
 }

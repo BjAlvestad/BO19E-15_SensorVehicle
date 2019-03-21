@@ -1,42 +1,45 @@
-#include <Servo.h>
 #include <Wire.h>
+#include <Servo.h>
+#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/libraries/Wire/src/Wire.h"
 
 /// Const
-const int right_pwm_pin = 9;
-const int left_pwm_pin = 10;
-const int mode_pin_1 = 2;
-const int mode_pin_2 = 3;
-const int safety_pin = 4;
-const int motor_controller_switch = 5;
+const int pin_pwm_right = 6;
+const int pin_pwm_left = 5;
+const int pin_mode_1 = 11;
+const int pin_mode_2 = 10;
+const int pin_relay_sabertooth = 9;
+
 const int address = 0x20;
 const int size_of_byte_array = 23;
 
-const int data_full_reverse = 28;
-const int data_full_forward = 228;
+const int data_standstill = 0;
+const int data_full_reverse = -100;
+const int data_full_forward = 100;
+
 const int pwm_start_reverse = 1330;
-const int pwm_full_reverse = 1000;
+const int pwm_full_reverse = 1130; // 12 v (1000)
 const int pwm_start_forward = 1600;
-const int pwm_full_forward = 2000;
+const int pwm_full_forward = 1840;  // 12 v (2000)
 const int pwm_standstill = 1500;
 const int ramp_up = 20;
 
 Servo wheels_right;
 Servo wheels_left;
 
+int data_left, data_right;
 int speed_left, speed_right;
-int new_speed_left, new_speed_right;
 
-bool standstill = false;
-bool safe = false;
-bool new_value = false;
-int mode = 3;
 
-//void request_event();
+/// mode
+// 3 = full speed
+// 0 = stop
+int mode = 2;
+
 void receive_event(int x);
-int set_speed(int new_speed, int speed);
 int data_check(int data);
 int mode_check(int data);
-
+void assemble_data_from_vehicle(byte vehicle_byte_array[]);
+void assemble_ints_from_byte_array(long number_of_longs, int start_index, byte array[]);
 int speed_map(int data);
 
 void setup()
@@ -44,44 +47,49 @@ void setup()
 	Serial.begin(9600);
 	Wire.begin(address);
 
-	pinMode(mode_pin_1, INPUT_PULLUP);
-	pinMode(mode_pin_2, INPUT_PULLUP);
-	pinMode(safety_pin, INPUT);
-	pinMode(motor_controller_switch, OUTPUT);
+	pinMode(pin_mode_1, INPUT_PULLUP);
+	pinMode(pin_mode_2, INPUT_PULLUP);
+	pinMode(pin_relay_sabertooth, OUTPUT);
 
-	wheels_right.attach(right_pwm_pin);
-	wheels_left.attach(left_pwm_pin);
-	wheels_left.attach(left_pwm_pin);
+	digitalWrite(pin_relay_sabertooth, LOW);
+
+
+	wheels_right.attach(pin_pwm_right);
+	wheels_left.attach(pin_pwm_left);
 	wheels_left.writeMicroseconds(pwm_standstill);
 	wheels_right.writeMicroseconds(pwm_standstill);
 	Wire.onReceive(receive_event);
-	//Wire.onRequest(request_event);
 
-	Serial.print("MODE: ");
-	mode = 1;
-	Serial.println(mode);
-	Serial.println(digitalRead(safety_pin));
-	
+
+	data_left = data_standstill;
+	data_right = data_standstill;
 	speed_left = pwm_standstill;
 	speed_right = pwm_standstill;
-	new_speed_left = pwm_standstill;
-	new_speed_right = pwm_standstill;
 }
 
 void loop()
 {
-	wheels_right.writeMicroseconds(new_speed_right);
-	wheels_left.writeMicroseconds(new_speed_left);
+	if (data_left==0 && data_right == 0)
+	{
+		digitalWrite(pin_relay_sabertooth, LOW);
+	}
+	else
+	{
+		digitalWrite(pin_relay_sabertooth, HIGH);
+	}
 
-	speed_left = set_speed(new_speed_left, speed_left);
-	speed_right = set_speed(new_speed_right, speed_right);
+	speed_left = speed_map(mode_check(data_left));
+	speed_right = speed_map(mode_check(data_right));
+	
+	wheels_right.writeMicroseconds(speed_right);
+	wheels_left.writeMicroseconds(speed_left);
 
-	/*Serial.print("Left: ");
-	Serial.print(wheels_left.readMicroseconds()); 
-	Serial.print("  Right: ");
-	Serial.println(wheels_right.readMicroseconds());
-	Serial.println(new_speed_left);
-	Serial.println(speed_left);*/
+
+	//Serial.print("Left: ");
+	//Serial.print(wheels_left.readMicroseconds());
+	//Serial.print("  Right: ");
+	//Serial.println(wheels_right.readMicroseconds());
+	//delay(1000);
 }
 
 void receive_event(int x)
@@ -95,11 +103,11 @@ void receive_event(int x)
 		{
 			data[i] = Wire.read();
 		}
-		Serial.print("Element 5: ");
+		/*Serial.print("Element 5: ");
 		Serial.println(data[5]);
 		Serial.print("Element 6: ");
-		Serial.println(data[6]);
-		AssembleDataFromVehicle(data);
+		Serial.println(data[6]);*/
+		assemble_data_from_vehicle(data);
 	}
 }
 
@@ -107,20 +115,14 @@ int speed_map(int data)
 {
 	if (data > 0)
 	{
-		Serial.println(data);
-		data = data;
-		Serial.println(data);
 
-		data = map(data, 0, 100, pwm_start_forward, pwm_full_forward);
-		Serial.println(data);
-
+		data = map(data, data_standstill, data_full_forward, pwm_start_forward, pwm_full_forward);
 		return data;
 	}
 	else if (data < 0)
 	{
 
-		data = data + 100;
-		data = map(data, 100, 0, pwm_start_reverse, pwm_full_reverse);
+		data = map(data, data_standstill, data_full_reverse, pwm_start_reverse, pwm_full_reverse);
 		return data;
 	}
 	else
@@ -129,58 +131,15 @@ int speed_map(int data)
 	}
 }
 
-int set_speed(const int new_speed, int speed)
-{
-
-	if (new_speed != speed)
-	{
-		if (new_speed > pwm_standstill)
-		{
-			// Forward
-			if (new_speed > speed)
-			{
-				// Increase speed
-				speed+= ramp_up;
-			}
-			else
-			{
-				// Decrease speed
-				speed = new_speed;
-			}
-		}
-		else if (new_speed < pwm_standstill)
-		{
-			// Backward
-			if (new_speed < speed)
-			{
-				// Increase speed
-				speed-=ramp_up;
-			}
-			else
-			{
-				// Decrease speed
-				speed = new_speed;
-			}
-		}
-		else
-		{
-			speed = pwm_standstill;
-			standstill = true;
-		}
-	}
-
-	return speed;
-}
-
 int data_check(const int data)
 {
-	if (data < -100)
+	if (data < data_full_reverse)
 	{
-		return  -100;
+		return  data_full_reverse;
 	}
-	else if (data > 100)
+	else if (data > data_full_forward)
 	{
-		return 100;
+		return data_full_forward;
 	}
 	else
 	{
@@ -190,69 +149,83 @@ int data_check(const int data)
 
 int mode_check(int data)
 {
-	//data = data - 128;
-	data = data / mode;
-	//data = data + 128;
-	return data;
+	/*Serial.print("mode_check - -  data:  ");
+	Serial.print(data);
+	Serial.print("    pin 1:  ");
+	Serial.print(digitalRead(pin_mode_1));
+	Serial.print("    pin 2:  ");
+	Serial.println(digitalRead(pin_mode_2));*/
+
+	if (!digitalRead(pin_mode_1) && !digitalRead(pin_mode_2) )
+	{
+		mode = 0;
+		return 0;
+	}
+	else if (!digitalRead(pin_mode_1) && digitalRead(pin_mode_2))
+	{
+		mode = 1;
+		data = data / 3;
+		return data;
+	}
+	else if (digitalRead(pin_mode_1) && !digitalRead(pin_mode_2))
+	{
+		mode = 2;
+		data = data / 2;
+		return data;
+	}
+	else if (digitalRead(pin_mode_1) && digitalRead(pin_mode_2))
+	{
+		mode = 3;
+		return data;
+	}
+	return 0;
 }
 
-void AssembleDataFromVehicle(byte vehicleByteArray[])
+void assemble_data_from_vehicle(byte vehicle_byte_array[])
 {
-	int address = vehicleByteArray[0];
-	int code = vehicleByteArray[1];
-	int numberOfLongs = vehicleByteArray[2];
-	int emptyBytes = 3;
+	int address = vehicle_byte_array[0];
+	int code = vehicle_byte_array[1];
+	const int number_of_longs = vehicle_byte_array[2];
+	const int empty_bytes = 3;
 	Serial.print("NumOfLongs: ");
-	Serial.println(numberOfLongs);
-	AssembleIntsFromByteArray(numberOfLongs, emptyBytes, vehicleByteArray);
+	Serial.println(number_of_longs);
+	assemble_ints_from_byte_array(number_of_longs, empty_bytes, vehicle_byte_array);
 }
 
-void AssembleIntsFromByteArray(long numberOfLongs, int startIndex, byte array[])
+void assemble_ints_from_byte_array(const long number_of_longs, const int start_index, byte array[])
 {
 	Serial.println("Ouside if");
-	if (size_of_byte_array >= (sizeof(long)*numberOfLongs + startIndex)) 
+	if (size_of_byte_array >= (sizeof(long)*number_of_longs + start_index))
 	{
 		Serial.println("inside if");
-		const int bitsInLong = sizeof(long) * 8;
+		const int bits_in_long = sizeof(long) * 8;
 		long longs[2];
 
-		for (int i = 0; i < numberOfLongs; i++)
+		for (int i = 0; i < number_of_longs; i++)
 		{
-			int assembledLong = 0;
-			int shiftByLong = sizeof(long) * i;
+			int assembled_long = 0;
+			const int shift_by_long = sizeof(long) * i;
 
 			for (int j = 1; j <= sizeof(long); j++)
 			{
-				assembledLong |= array[startIndex - 1 + j + shiftByLong] << (bitsInLong - 8 * j);
+				assembled_long |= array[start_index - 1 + j + shift_by_long] << (bits_in_long - 8 * j);
 			}
-			longs[i] = assembledLong;
+			longs[i] = assembled_long;
 		}
-		Serial.print("Long[0]: ");
+		/*Serial.print("Long[0]: ");
 		Serial.println(longs[0]);
 		Serial.print("Long[1]: ");
-		Serial.println(longs[1]);
-		int data_left = data_check(longs[0]);  // Between 28 and 228;
-		int data_right = data_check(longs[1]);
-		Serial.println("Etter data_check: ");
+		Serial.println(longs[1]);*/
+
+
+		data_left = data_check(longs[0]);  // Between -100 and 100;
+		data_right = data_check(longs[1]);
+
+
+		/*Serial.println("Etter data_check: ");
 		Serial.println(data_left);
 		Serial.println(data_right);
-		Serial.println("---------");
-
-
-		data_left = mode_check(data_left);  // Divide value with mode
-		data_right = mode_check(data_right);
-		Serial.println("Etter mode_check: ");
-		Serial.println(data_left);
-		Serial.println(data_right);
-		Serial.println("---------");
-
-		Serial.println("new_speed_left: ");
-		Serial.println(new_speed_left);
-		Serial.println("---------");
-		Serial.println("new_speed_right: ");
-		Serial.println(new_speed_left);
-		Serial.println("---------");
-		new_speed_left = speed_map(data_left);
-		new_speed_right = speed_map(data_right);
-	}	
+		Serial.println("---------");*/
+			   		
+	}
 }

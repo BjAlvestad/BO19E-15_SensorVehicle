@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
@@ -36,15 +38,28 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             private set { SetPropertyRaiseSelectively(ref _timeStamp, value); }
         }
 
-        private float _fwd;
-        public float Fwd
+        public float Fwd => Math.Min(FwdLeft, FwdRight);
+
+        private float _fwdLeft;
+        public float FwdLeft
         {
             get
             {
                 UpdateDistanceProperties();
-                return _fwd;
+                return _fwdLeft;
             }
-            private set { SetPropertyRaiseSelectively(ref _fwd, value); }
+            private set { SetPropertyRaiseSelectively(ref _fwdLeft, value); }
+        }
+        
+        private float _fwdRight;
+        public float FwdRight
+        {
+            get
+            {
+                UpdateDistanceProperties();
+                return _fwdRight;
+            }
+            private set { SetPropertyRaiseSelectively(ref _fwdRight, value); }
         }
 
         private float _left;
@@ -88,6 +103,28 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             Message = "";
             HasUnacknowledgedError = false;
         }
+        
+        //TODO: This property should be removed once pin-interrupt on new distance data available has been set up (Allready connected and implemented on microcontroller side - GPIO5 on SBC)
+        private bool _refreshUltrasonicContinously;
+        public bool RefreshUltrasonicContinously
+        {
+            get { return _refreshUltrasonicContinously; }
+            set
+            {
+                SetProperty(ref _refreshUltrasonicContinously, value);
+                if (value)
+                {
+                    Task.Run(() =>
+                    {
+                        while (RefreshUltrasonicContinously)
+                        {
+                            UpdateDistanceProperties();
+                            Thread.Sleep(PermissableDistanceAge.Milliseconds / 2);
+                        }
+                    });
+                }
+            }
+        }
 
         private void UpdateDistanceProperties()
         {
@@ -98,7 +135,8 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                 if (HasUnacknowledgedError)
                 {
                     Left = float.NaN;
-                    Fwd = float.NaN;
+                    FwdLeft = float.NaN;
+                    FwdRight = float.NaN;
                     Right = float.NaN;
                     return;
                 }
@@ -108,8 +146,9 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                     VehicleDataPacket data = _vehicleCommunication.Read();
 
                     Left = data.Integers[0] / 100f;
-                    Fwd = data.Integers[1] / 100f;
+                    FwdRight = data.Integers[1] / 100f;
                     Right = data.Integers[2] / 100f;
+                    FwdLeft = data.Integers[3] / 100f;
 
                     TimeStamp = DateTime.Now;
                 }

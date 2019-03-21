@@ -37,9 +37,9 @@ namespace SimulatorUwpXaml
         public static float RawPixelsPerViewPixel { get; private set; }
 
         public static float ScaleToHighDPI(float f)
-        { 
+        {
             f *= RawPixelsPerViewPixel;
-            return f;
+            return (float)Math.Round(f, 1);
         }
     }
 }

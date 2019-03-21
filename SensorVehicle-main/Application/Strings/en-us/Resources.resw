@@ -134,7 +134,7 @@
     <comment>No selection text for StudentLogic</comment>
   </data>
   <data name="Shell_StudentLogic.Content" xml:space="preserve">
-    <value>StudentLogic</value>
+    <value>Student Logic</value>
     <comment>Navigation view item name for StudentLogic</comment>
   </data>
   <data name="ExampleLogic_NoSelection.Text" xml:space="preserve">
@@ -142,11 +142,11 @@
     <comment>No selection text for ExampleLogic</comment>
   </data>
   <data name="Shell_ExampleLogic.Content" xml:space="preserve">
-    <value>ExampleLogic</value>
+    <value>Example Logic</value>
     <comment>Navigation view item name for ExampleLogic</comment>
   </data>
   <data name="Shell_EquipmentOverview.Content" xml:space="preserve">
-    <value>EquipmentOverview</value>
+    <value>Equipment Overview</value>
     <comment>Navigation view item name for EquipmentOverview</comment>
   </data>
   <data name="Shell_Wheels.Content" xml:space="preserve">

@@ -3,6 +3,7 @@ using Windows.ApplicationModel.Core;
 using Windows.System;
 using Windows.UI.Xaml;
 using Communication;
+using Prism.Unity.Windows;
 using Prism.Windows.Mvvm;
 
 namespace Application.ViewModels
@@ -33,7 +34,7 @@ namespace Application.ViewModels
             RaisePropertyChanged(nameof(Power));
         }
 
-        public Visibility VisibleIfRunningOnIoT => Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT" ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility VisibleIfRunningOnIoT => ((App) PrismUnityApplication.Current).IsRunningOnPhysicalCar ? Visibility.Visible : Visibility.Collapsed;
 
         public void ExitApplication()
         {

@@ -31,11 +31,11 @@ namespace SimulatorUwpXaml
 
         public float RateOfTurn { get; set; }
 
-        public void Update (float elapsedTimeSinceLastUpdate)
+        public void Update (float elapsedTimeSinceLastUpdate, bool noObstruction)
         {
             if (Picking2D.IsPickedUpForMove(this))
             {
-                Position = Picking2D.MouseLocation();
+                Position = Picking2D.MouseLocationInWorld();
             }
             else if (Picking2D.IsPickedUpForRotate(this))
             {
@@ -43,7 +43,7 @@ namespace SimulatorUwpXaml
             }
             else
             {
-                Move(elapsedTimeSinceLastUpdate);           
+                if(noObstruction) Move(elapsedTimeSinceLastUpdate);
             }
         }
 

@@ -21,6 +21,10 @@ namespace SimulatorUwpXaml
         {
             _mountingPlatform = mountingPlatform;
             DistanceReadings = new List<float>();
+            for (int i = 0; i < 360; i++)
+            {
+                DistanceReadings.Add(float.NaN);
+            }
         }
 
         public float Fwd
@@ -36,13 +40,13 @@ namespace SimulatorUwpXaml
         public float Aft => DistanceReadings.GetRange(165, 30).Min();
         public float Left => DistanceReadings.GetRange(255, 30).Min();
 
-        public void Update360(List<BoundingBox> boundaries)
+        public void Update360(List<BoundingBox> boundaries, float scale)
         {
-            DistanceReadings = GetLidarReading(boundaries);
+            DistanceReadings = GetLidarReading(boundaries, scale);
             DistanceReadingAge = DateTime.Now;
         }
 
-        private List<float> GetLidarReading(List<BoundingBox> boundaries)
+        private List<float> GetLidarReading(List<BoundingBox> boundaries, float scale)
         {
             List<float> lidarReadings = new List<float>();
             Vector3 lidarPosition3D = new Vector3(_mountingPlatform.Position, 0);
@@ -60,7 +64,7 @@ namespace SimulatorUwpXaml
                         distanceToClosestWall = distanceToWall;
                     }
                 }
-                lidarReadings.Add(distanceToClosestWall ?? float.NaN);
+                lidarReadings.Add((distanceToClosestWall/100/scale) ?? float.NaN);
             }
 
             return lidarReadings;

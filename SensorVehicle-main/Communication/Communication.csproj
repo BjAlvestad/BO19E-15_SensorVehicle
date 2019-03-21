@@ -126,6 +126,10 @@
     <Compile Include="MockCommunication\MockVehicleCommunication.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Simulator\SimulatedLidarPacketReceiver.cs" />
+    <Compile Include="Simulator\SimulatedPower.cs" />
+    <Compile Include="Simulator\SimulatedVehicleCommunication.cs" />
+    <Compile Include="Simulator\SimulatorAppServiceClient.cs" />
     <Compile Include="Vehicle\Power.cs" />
     <Compile Include="Vehicle\PowerPin.cs" />
     <Compile Include="Vehicle\VehicleCommunication.cs" />

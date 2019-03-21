@@ -33,12 +33,13 @@
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
 
-            <winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
+            <!--TEMP commented out until the student logic gets implemented-->
+            <!--<winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
                                       Visibility="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7BE;"/>
                 </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
+            </winui:NavigationViewItem>-->
 
             <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
                                       Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
