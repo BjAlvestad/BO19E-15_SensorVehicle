@@ -17,19 +17,8 @@ namespace VehicleEquipment.Locomotion.Encoder
             CollectionInterval = 500;
         }
 
-        private Encoder _left;
-        public Encoder Left
-        {
-            get { return _left; }
-            set { SetPropertyRaiseSelectively(ref _left, value); }
-        }
-
-        private Encoder _right;
-        public Encoder Right
-        {
-            get { return _right; }
-            set { SetPropertyRaiseSelectively(ref _right, value); }
-        }
+        public Encoder Left { get; }
+        public Encoder Right { get; }
 
         private int _collectionInterval;
         public int CollectionInterval

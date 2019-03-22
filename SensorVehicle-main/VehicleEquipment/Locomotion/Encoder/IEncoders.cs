@@ -7,8 +7,8 @@ namespace VehicleEquipment.Locomotion.Encoder
     {
         bool RaiseNotificationForSelective { get; set; }
 
-        Encoder Left { get; set; }
-        Encoder Right { get; set; }
+        Encoder Left { get; }
+        Encoder Right { get; }
 
         int CollectionInterval { get; set; }
         bool CollectContinously { get; set; }
