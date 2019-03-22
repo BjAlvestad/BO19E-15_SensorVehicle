@@ -91,7 +91,7 @@
 
                     <TextBlock x:Name="LastText" Text="Last collected:" FontWeight="Bold" Margin="0, 5, 0, 0" RelativePanel.Below="TotalDurationText" RelativePanel.AlignLeftWith="EncoderHeading"/>
 
-                    <TextBlock x:Name="LastDistanceText"  Text="Distance [m]:" RelativePanel.Below="LastText" RelativePanel.AlignLeftWith="LastText" />
+                    <TextBlock x:Name="LastDistanceText"  Text="Distance [cm]:" RelativePanel.Below="LastText" RelativePanel.AlignLeftWith="LastText" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}"
                                RelativePanel.AlignVerticalCenterWith="LastDistanceText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}"
