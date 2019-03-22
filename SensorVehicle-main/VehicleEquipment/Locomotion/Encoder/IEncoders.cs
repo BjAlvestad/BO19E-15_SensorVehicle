@@ -10,7 +10,7 @@ namespace VehicleEquipment.Locomotion.Encoder
         Encoder Left { get; set; }
         Encoder Right { get; set; }
 
-        TimeSpan CollectionInterval { get; set; }
+        int CollectionInterval { get; set; }
         bool CollectContinously { get; set; }
 
         bool HasUnacknowledgedError { get; }

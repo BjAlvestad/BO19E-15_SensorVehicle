@@ -7,11 +7,13 @@ namespace VehicleEquipment.Locomotion.Encoder
 {
     public class Encoders : ThreadSafeNotifyPropertyChanged, IEncoders
     {
+        private const int MinimumCollectionIntervalInMilliseconds = 50;
+
         public Encoders(Encoder encoderLeft, Encoder encoderRight)
         {
             Left = encoderLeft;
             Right = encoderRight;
-            CollectionInterval = TimeSpan.FromMilliseconds(500);
+            CollectionInterval = 500;
         }
 
         private Encoder _left;
@@ -28,11 +30,15 @@ namespace VehicleEquipment.Locomotion.Encoder
             set { SetPropertyRaiseSelectively(ref _right, value); }
         }
 
-        private TimeSpan _collectionInterval;
-        public TimeSpan CollectionInterval
+        private int _collectionInterval;
+        public int CollectionInterval
         {
             get { return _collectionInterval; }
-            set { SetProperty(ref _collectionInterval, value); }
+            set
+            {
+                int newCollectionInterval = value > MinimumCollectionIntervalInMilliseconds ? value : MinimumCollectionIntervalInMilliseconds;
+                SetProperty(ref _collectionInterval, newCollectionInterval);
+            }
         }
 
         private bool _collectContinously;
@@ -49,7 +55,7 @@ namespace VehicleEquipment.Locomotion.Encoder
                         while (CollectContinously)
                         {
                             CollectAndResetDistanceFromEncoders();
-                            Thread.Sleep(CollectionInterval.Milliseconds);
+                            Thread.Sleep(CollectionInterval);
                         }
                     });
                 }
