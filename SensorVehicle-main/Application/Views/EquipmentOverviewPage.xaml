@@ -93,9 +93,42 @@
                 </RelativePanel>
 
                 <!--ENCODER-->
-                <RelativePanel Visibility="{x:Bind ViewModel.Encoder.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <RelativePanel Visibility="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock x:Name="EncoderTitle" Text="Encoder" FontSize="24" FontWeight="Bold" Margin="0, 10, 0, 0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True" />
-                    <TextBlock Text="ToBeDone" RelativePanel.Below="EncoderTitle" RelativePanel.AlignHorizontalCenterWith="EncoderTitle"/>
+
+                    <TextBlock x:Name="EncoderSide" Margin="60,0" RelativePanel.Below="EncoderTitle" RelativePanel.LeftOf="EncoderTitle"/>
+                    <TextBlock x:Name="LeftEncoder" Text="Left" FontWeight="Bold" Margin="30,0" RelativePanel.Below="EncoderTitle" RelativePanel.AlignRightWith="EncoderTitle" />
+                    <TextBlock x:Name="RightEncoder" Text="Right" FontWeight="Bold" RelativePanel.Below="EncoderTitle" RelativePanel.RightOf="LeftEncoder" />
+
+                    <TextBlock x:Name="TotalDistanceText" Text="Total Distance [cm]:" Padding="0,0,5,0" RelativePanel.Below="LeftEncoder" RelativePanel.LeftOf="LeftEncoder"/>
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalDistanceTravelled, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDistanceText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalDistanceTravelled, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDistanceText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="TotalDurationText" Text="Total Duration [ms]:" Padding="0,0,5,0" RelativePanel.Below="TotalDistanceText" RelativePanel.LeftOf="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDurationText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDurationText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="LastDistanceText"  Text="Last Distance [cm]:" Padding="0,0,10,0" RelativePanel.Below="TotalDurationText" RelativePanel.LeftOf="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDistanceText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDistanceText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="LastDurationText" Text="Last Duration: [ms]:" Padding="0,0,6,0" RelativePanel.Below="LastDistanceText" RelativePanel.LeftOf="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TimeAccumulatedForLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDurationText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TimeAccumulatedForLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDurationText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="VelocityText" Text="Avg. Velocity (cm/s):"  RelativePanel.Below="LastDurationText" RelativePanel.LeftOf="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
+                               RelativePanel.AlignVerticalCenterWith="VelocityText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
+                               RelativePanel.AlignVerticalCenterWith="VelocityText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
                 </RelativePanel>
             </StackPanel>
             
@@ -107,7 +140,7 @@
                               Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Wheels" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Power.Wheels, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <ToggleSwitch Header="Encoder" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Encoder.RaiseNotificationForSelective, Mode=TwoWay}"
+                <ToggleSwitch Header="Encoder" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Power.Encoder, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
         </Grid>

@@ -30,7 +30,7 @@ namespace Communication.Simulator
             valuesToSend.Add("NUM_OF_INTS", data.Length);
             valuesToSend.Add("DATA", data);
 
-            _simulatorCommunication.SendMessageAsync(valuesToSend);
+            _simulatorCommunication.SendMessageAsync(valuesToSend);  //BUG: Since this async task is not awaited, it will swallow any exception. E.g. a failed write for setting wheel speed will never throw exception in Wheel classes TryCatch block.
         }
 
         public VehicleDataPacket Read()

@@ -21,7 +21,7 @@ namespace ExampleLogic
         }
 
         // Any inteface/class registered as a container may be added to the constructor without any further actions
-        public ExampleLogicService(IWheel wheels, IEncoder encoder, ILidarDistance lidar, IUltrasonic ultrasonic)
+        public ExampleLogicService(IWheel wheels, IEncoders encoders, ILidarDistance lidar, IUltrasonic ultrasonic)
         {
             ExampleLogics = new ObservableCollection<ExampleLogicBase>
             {

@@ -13,15 +13,15 @@ namespace Application.ViewModels
     {
         private CancellationTokenSource _periodicRaisePropertyChangedToken;
 
-        public WheelsViewModel(IWheel wheel, IEncoder encoder)
+        public WheelsViewModel(IWheel wheel, IEncoders encoders)
         {
             Wheel = wheel;
-            Encoder = encoder;
+            Encoders = encoders;
         }
 
         public IWheel Wheel { get; set; }
 
-        public IEncoder Encoder { get; private set; }
+        public IEncoders Encoders { get; private set; }
 
         private TimeSpan _updateInterval;
         public TimeSpan UpdateInterval
@@ -62,33 +62,11 @@ namespace Application.ViewModels
             get { return _applyWheelSpeedContinously; }
             set
             {
-                SetProperty(ref _applyWheelSpeedContinously, value);
-                if (TogglePeriodicRaisePropertyChanged == false) TogglePeriodicRaisePropertyChanged = true;
-            }
-        }
-
-        private bool _collectEncoderDistanceContinously;
-        public bool CollectEncoderDistanceContinously
-        {
-            get { return _collectEncoderDistanceContinously; }
-            set
-            {
-                SetProperty(ref _collectEncoderDistanceContinously, value);
-                if (TogglePeriodicRaisePropertyChanged == false) TogglePeriodicRaisePropertyChanged = true;
-            }
-        }
-
-        private bool _togglePeriodicRaisePropertyChanged;
-        public bool TogglePeriodicRaisePropertyChanged
-        {
-            get { return _togglePeriodicRaisePropertyChanged; }
-            set
-            {
-                bool valueChanged = SetProperty(ref _togglePeriodicRaisePropertyChanged, value);
+                bool valueChanged = SetProperty(ref _applyWheelSpeedContinously, value);
                 if (value && valueChanged)
                 {
                     _periodicRaisePropertyChangedToken = new CancellationTokenSource();
-                    PeriodicRaisePropertyChangedAsync(_periodicRaisePropertyChangedToken.Token);
+                    PeriodicApplyNewWheelSpeed(_periodicRaisePropertyChangedToken.Token);
                 }
                 else if(valueChanged)
                 {
@@ -97,22 +75,13 @@ namespace Application.ViewModels
             }
         }
 
-        private async Task PeriodicRaisePropertyChangedAsync(CancellationToken cancellationToken)
+        //TODO: Consider removing PeriodicApplyNewWheelSpeed and simplifying ApplyWheelSpeedContinously to be a pure boolean. A method subscribed to the property changed notification of the sliders (properties they are bound to) can set the new speed IF ApplyWheelSpeedContinously is true. DateTime/TimeSpan can be used in the if-check to only raise at certain intervals if desired.
+        private async Task PeriodicApplyNewWheelSpeed(CancellationToken cancellationToken)
         {
             while (true)
             {
-                if (ApplyWheelSpeedContinously)
-                {
-                    Wheel.SetSpeed(LeftWheel, RightWheel);
-                }
+                Wheel.SetSpeed(LeftWheel, RightWheel);
 
-                if (CollectEncoderDistanceContinously)
-                {
-                    Encoder.CollectAndResetDistanceFromEncoder();
-                }
-
-                RaisePropertyChanged(nameof(Wheel));
-                RaisePropertyChanged(nameof(Encoder));
                 await Task.Delay(UpdateInterval, cancellationToken);
             }
         }
@@ -128,7 +97,7 @@ namespace Application.ViewModels
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
             ApplyWheelSpeedContinously = false;
-            _periodicRaisePropertyChangedToken.Cancel();
+            _periodicRaisePropertyChangedToken?.Cancel();
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }
