@@ -5,17 +5,18 @@ namespace VehicleEquipment.Locomotion.Encoder
 {
     public class Encoder
     {
-        private readonly IVehicleCommunication _vehicleCommunication ;
+        private readonly IVehicleCommunication _vehicleCommunication;
+        private readonly object _velocityCalcLock = new object();
 
-        public DateTime LastRequestTimeStamp { get; set; }
-        public int TimeAccumulatedForLastRequest { get; set; }
-        public TimeSpan TotalTime { get; set; }
-        public double DistanceAtLastRequest { get; set; }
-        public double TotalDistanceTravelled { get; set; }
+        public DateTime LastRequestTimeStamp { get; private set; }
+        public int TimeAccumulatedForLastRequest { get; private set; }
+        public TimeSpan TotalTime { get; private set; }
+        public double DistanceAtLastRequest { get; private set; }
+        public double TotalDistanceTravelled { get; private set; }
 
-        public double AvgVel => (DistanceAtLastRequest) / (TimeAccumulatedForLastRequest / 1000f); //Cm per sekund
+        public double AvgVel { get; private set; } //Cm per sekund
 
-        public string Message { get; set; }
+        public string Message { get; private set; }
 
         public Encoder(IVehicleCommunication comWithEncoder)
         {
@@ -30,8 +31,13 @@ namespace VehicleEquipment.Locomotion.Encoder
 
                 Message = $"Message from micro controller: {data.Code}";
 
-                DistanceAtLastRequest = data.Integers[0];
-                TimeAccumulatedForLastRequest = data.Integers[1];
+                lock (_velocityCalcLock)
+                {
+                    DistanceAtLastRequest = data.Integers[0];
+                    TimeAccumulatedForLastRequest = data.Integers[1];
+                    AvgVel = DistanceAtLastRequest / (TimeAccumulatedForLastRequest / 1000f);
+                }
+
                 TotalTime += TimeSpan.FromMilliseconds(TimeAccumulatedForLastRequest);
                 TotalDistanceTravelled += DistanceAtLastRequest;
             }
@@ -45,6 +51,12 @@ namespace VehicleEquipment.Locomotion.Encoder
 
             LastRequestTimeStamp = DateTime.Now;
             return DistanceAtLastRequest;
+        }
+
+        public void ResetTotalDistanceTraveled()
+        {
+            TotalDistanceTravelled = 0;
+            TotalTime = TimeSpan.Zero;
         }
 
         //TODO: Consider changeing names of properties
