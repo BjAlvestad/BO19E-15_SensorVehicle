@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Helpers;
@@ -41,6 +42,8 @@ namespace VehicleEquipment.Locomotion.Encoder
             }
         }
 
+        //TODO: Standardise CollectContinously code over all the classes that utilizes similar mechanichs (find out what would be the best solution first).
+        private CancellationTokenSource _collectorTokenSource;
         private bool _collectContinously;
         public bool CollectContinously
         {
@@ -50,14 +53,26 @@ namespace VehicleEquipment.Locomotion.Encoder
                 SetProperty(ref _collectContinously, value);
                 if (value)
                 {
-                    Task.Run(() =>
+                    _collectorTokenSource = new CancellationTokenSource();
+                    Task.Run(async () =>
                     {
-                        while (CollectContinously)
+                        try
                         {
-                            CollectAndResetDistanceFromEncoders();
-                            Thread.Sleep(CollectionInterval);
+                            while (CollectContinously)
+                            {
+                                CollectAndResetDistanceFromEncoders();
+                                await Task.Delay(CollectionInterval, _collectorTokenSource.Token);
+                            }
                         }
-                    });
+                        catch (TaskCanceledException tce)
+                        {
+                            Debug.WriteLine("Encoder collection cancelled...");
+                        }
+                    }, _collectorTokenSource.Token);
+                }
+                else
+                {
+                    _collectorTokenSource?.Cancel();
                 }
             }
         }
