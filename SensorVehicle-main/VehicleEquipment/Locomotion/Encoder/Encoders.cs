@@ -39,15 +39,18 @@ namespace VehicleEquipment.Locomotion.Encoder
             get { return _collectContinously; }
             set
             {
-                SetProperty(ref _collectContinously, value);
-                if (value)
+                if (value == _collectContinously) return;
+
+                _collectContinously = value;
+
+                if (value && _collectorTokenSource == null)
                 {
                     _collectorTokenSource = new CancellationTokenSource();
                     Task.Run(async () =>
                     {
                         try
                         {
-                            while (CollectContinously)
+                            while (_collectContinously)
                             {
                                 CollectAndResetDistanceFromEncoders();
                                 await Task.Delay(CollectionInterval, _collectorTokenSource.Token);
@@ -62,7 +65,10 @@ namespace VehicleEquipment.Locomotion.Encoder
                 else
                 {
                     _collectorTokenSource?.Cancel();
+                    _collectorTokenSource = null;
                 }
+
+                RaiseSyncedPropertyChanged();
             }
         }
 
