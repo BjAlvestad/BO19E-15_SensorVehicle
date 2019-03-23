@@ -38,5 +38,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType);
         List<float> GetDistancesInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
+        List<HorizontalPoint> GetHorizontalPointsInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
     }
 }

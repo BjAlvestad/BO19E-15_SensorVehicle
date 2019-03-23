@@ -204,23 +204,38 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             if (Distances == null || (!Distances.ContainsKey(verticalAngle))) return new List<float>(){float.NaN};
 
             List<float> distancesInRange = new List<float>();
+            List<HorizontalPoint> horizontalPointsInRange = GetHorizontalPointsInRange(fromAngle, toAngle, verticalAngle);
+
+            foreach (HorizontalPoint point in horizontalPointsInRange)
+            {
+                distancesInRange.Add(point.Distance);
+            }
+
+            return distancesInRange;
+        }
+
+        public List<HorizontalPoint> GetHorizontalPointsInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle)
+        {
+            if (Distances == null || (!Distances.ContainsKey(verticalAngle))) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
+
+            List<HorizontalPoint> pointsInRange = new List<HorizontalPoint>();
             bool angleSpansZero = fromAngle > toAngle;
 
             int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);  //BUG: Will return if no values in left sector when (measurement spanns zero)
-            if (startIndex == -1) return new List<float>(){float.NaN};
+            if (startIndex == -1) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
 
             //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
             if (angleSpansZero)
             {
                 for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
                 {
-                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
+                    pointsInRange.Add(Distances[verticalAngle][i]);
                 }
 
                 int endIndex = Distances[verticalAngle].FindIndex(point2 => point2.Angle > toAngle);
                 for (int i = 0; i < endIndex; i++)
                 {
-                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
+                    pointsInRange.Add(Distances[verticalAngle][i]);
                 }
             }
             else
@@ -230,12 +245,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (point.Angle < toAngle && i < Distances[verticalAngle].Count)
                 {
                     point = Distances[verticalAngle][i];
-                    distancesInRange.Add(point.Distance);
+                    pointsInRange.Add(point);
                     ++i;
                 }
             }
 
-            return distancesInRange;
+            return pointsInRange;
         }
 
         private float PerformCalculation(List<float> values, CalculationType calculationType)
