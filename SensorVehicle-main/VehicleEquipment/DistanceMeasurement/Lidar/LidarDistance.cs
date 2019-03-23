@@ -329,7 +329,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             {
                 Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
                 HasUnacknowledgedError = true;
-                StopCollector();
+                RunCollector = false;
             }
         }
     }
