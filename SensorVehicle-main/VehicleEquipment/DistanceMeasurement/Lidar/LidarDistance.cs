@@ -221,15 +221,17 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             List<HorizontalPoint> pointsInRange = new List<HorizontalPoint>();
             bool angleSpansZero = fromAngle > toAngle;
 
-            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);  //BUG: Will return if no values in left sector when (measurement spanns zero)
-            if (startIndex == -1) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
+            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
 
             //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
             if (angleSpansZero)
             {
-                for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
+                if (startIndex != -1)
                 {
-                    pointsInRange.Add(Distances[verticalAngle][i]);
+                    for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
+                    {
+                        pointsInRange.Add(Distances[verticalAngle][i]);
+                    }
                 }
 
                 int endIndex = Distances[verticalAngle].FindIndex(point2 => point2.Angle > toAngle);
@@ -240,6 +242,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
             else
             {
+                if (startIndex == -1) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
+
                 int i = startIndex;
                 HorizontalPoint point = Distances[verticalAngle][i];
                 while (point.Angle < toAngle && i < Distances[verticalAngle].Count)
