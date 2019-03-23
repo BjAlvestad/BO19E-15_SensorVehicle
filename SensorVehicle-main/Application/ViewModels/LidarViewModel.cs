@@ -81,7 +81,7 @@ namespace Application.ViewModels
             set { SetProperty(ref _toAngle, value); }
         }
 
-        public List<float> DistancesInRange => Lidar.GetDistancesInRange(FromAngle, ToAngle, Lidar.DefaultVerticalAngle);
+        public List<HorizontalPoint> HorizontalPointsInRange => Lidar.GetHorizontalPointsInRange(FromAngle, ToAngle, Lidar.DefaultVerticalAngle);
 
         private bool _autocalculate;
         public bool Autocalculate
@@ -94,7 +94,7 @@ namespace Application.ViewModels
         {
             if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
 
-            RaisePropertyChanged(nameof(DistancesInRange));
+            RaisePropertyChanged(nameof(HorizontalPointsInRange));
             if (!Autocalculate) return;
 
             float fwd = Lidar.Fwd;

@@ -76,7 +76,7 @@
                 <RelativePanel>
                     <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
                     <TextBox x:Name="ToAngleBox" Text="{x:Bind ViewModel.ToAngle, Mode=TwoWay}" Description="To" RelativePanel.AlignRightWithPanel="True"/>
-                    <ListView ItemsSource="{x:Bind ViewModel.DistancesInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
+                    <ListView ItemsSource="{x:Bind ViewModel.HorizontalPointsInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
                 </RelativePanel>
             </StackPanel>
             <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"

@@ -37,5 +37,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             //return Math.Sign(other.Angle - Angle);
             return Math.Sign(Angle - other.Angle);
         }
+
+        public override string ToString()
+        {
+            // VLP16 manual states a horizontal angular resolution of 0.1-0.4 degrees, and a Distance accuracy of +/-3 cm.
+            // For that reason we have chosen to limit angle to one decimal, and distance to two decimals.
+            return $"{Angle:F1}\u00B0:\t {Distance:F2}m";
+        }
     }
 }
