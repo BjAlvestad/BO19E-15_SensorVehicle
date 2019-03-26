@@ -85,7 +85,7 @@ namespace Helpers
                 {
                     double currentChannelDistance = firstChannelInBlockDistance + ChannelDeltaDistance * channel;
 
-                    ushort value = Convert.ToUInt16(Math.Min((currentChannelDistance / 2)*1000, 50000));
+                    ushort value = Convert.ToUInt16(Math.Min((currentChannelDistance / 2)*1000, 50000));  //BUG: If blockStartDistance received is NaN, then convetion will throw exception. Add Try-Catch either here or probably better in GenerateDataPacket. Decide what to do in catch-block.
 
                     _dataPacket.Add((byte) (value & 0b0000_0000_1111_1111));
                     _dataPacket.Add((byte)(value >> 8));
