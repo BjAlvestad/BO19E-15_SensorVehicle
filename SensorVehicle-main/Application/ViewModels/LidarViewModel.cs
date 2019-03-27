@@ -85,11 +85,11 @@ namespace Application.ViewModels
             set { SetProperty(ref _horizontalPointsInRange, value); }
         }
 
-        private bool _autocalculate;
-        public bool Autocalculate
+        private bool _autoCalculateDirections;
+        public bool AutoCalculateDirections
         {
-            get { return _autocalculate; }
-            set { SetProperty(ref _autocalculate, value); }
+            get { return _autoCalculateDirections; }
+            set { SetProperty(ref _autoCalculateDirections, value); }
         }
 
         private bool _calculateHorizontalPoints;
@@ -103,7 +103,7 @@ namespace Application.ViewModels
         {
             if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
 
-            if (Autocalculate)
+            if (AutoCalculateDirections)
             {
                 Task.Run(() =>
                 {

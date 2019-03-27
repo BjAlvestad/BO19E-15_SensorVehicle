@@ -61,7 +61,8 @@
             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"
                            Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <RelativePanel>
-                    <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
+                    <ToggleSwitch x:Name="DirectionAutoCollectSwitch" OffContent="Passive directions&#x0a;(updates from control logic)" OnContent="Auto-calculating directions&#x0a;(increases workload)" FontSize="10" IsOn="{x:Bind ViewModel.AutoCalculateDirections, Mode=TwoWay}" />
+                    <TextBlock x:Name="FwdText"  Text="Forward" RelativePanel.AlignHorizontalCenterWith="DirectionAutoCollectSwitch" RelativePanel.Below="DirectionAutoCollectSwitch"/>
                     <TextBlock x:Name="FwdValue" Text="{x:Bind ViewModel.Lidar.Fwd, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F2}'}"
                                RelativePanel.Below="FwdText" RelativePanel.AlignHorizontalCenterWith="FwdText"/>
 
@@ -103,8 +104,6 @@
                               Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Collect' can remain on (but hidden) when 'Power' is switched off -->
                 <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <ToggleSwitch Header="Autocalculate" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Autocalculate, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->
