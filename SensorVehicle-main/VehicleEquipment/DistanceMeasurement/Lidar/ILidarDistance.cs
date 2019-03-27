@@ -22,6 +22,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         void StartCollector();
         void StopCollector();
 
+        HorizontalPoint LargestDistance { get; }
         float Fwd { get; }
         float Left { get; }
         float Right { get; }

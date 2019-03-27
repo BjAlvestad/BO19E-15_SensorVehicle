@@ -10,6 +10,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
     public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance
     {
+        private bool _largestDistanceHasBeenCalculated;
         private bool _fwdHasBeenCalculated;
         private bool _leftHasBeenCalculated;
         private bool _rightHasBeenCalculated;
@@ -118,6 +119,20 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
                 if(value) StartCollector();
                 else StopCollector();
+            }
+        }
+
+        private HorizontalPoint _largestDistance;
+        public HorizontalPoint LargestDistance
+        {
+            get
+            {
+                if (_largestDistanceHasBeenCalculated) return _largestDistance;
+                if(Distances == null || !Distances.ContainsKey(DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
+
+                _largestDistanceHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _largestDistance, Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First());
+                return _largestDistance;
             }
         }
 
@@ -313,6 +328,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
                     Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, MinRange);
+                    _largestDistanceHasBeenCalculated = false;
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
