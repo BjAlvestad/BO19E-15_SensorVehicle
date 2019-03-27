@@ -10,6 +10,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
     public class LidarDistance : ThreadSafeNotifyPropertyChanged, ILidarDistance
     {
+        private bool _largestDistanceHasBeenCalculated;
         private bool _fwdHasBeenCalculated;
         private bool _leftHasBeenCalculated;
         private bool _rightHasBeenCalculated;
@@ -27,8 +28,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             DefaultCalculationType = CalculationType.Max; //TEMP
             DefaultVerticalAngle = verticalAngles[0];
 
-            MinRange = 0.3f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
-            MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
+            MinRange = 1.0;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
+            MaxRange = 100.0;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
 
             NumberOfCycles = 3;
 
@@ -38,16 +39,16 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
-        private float _minRange;
-        public float MinRange
+        private double _minRange;
+        public double MinRange
         {
             get { return _minRange; }
             set { SetProperty(ref _minRange, value);  }
         }
 
         //TODO: MaxRange is currently not in use. To be put in use or removed.
-        private float _maxRange;
-        public float MaxRange
+        private double _maxRange;
+        public double MaxRange
         {
             get { return _maxRange; }
             set { SetProperty(ref _maxRange, value); }
@@ -118,6 +119,20 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
                 if(value) StartCollector();
                 else StopCollector();
+            }
+        }
+
+        private HorizontalPoint _largestDistance;
+        public HorizontalPoint LargestDistance
+        {
+            get
+            {
+                if (_largestDistanceHasBeenCalculated) return _largestDistance;
+                if(Distances == null || !Distances.ContainsKey(DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
+
+                _largestDistanceHasBeenCalculated = true;
+                SetPropertyRaiseSelectively(ref _largestDistance, Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First());
+                return _largestDistance;
             }
         }
 
@@ -204,38 +219,57 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             if (Distances == null || (!Distances.ContainsKey(verticalAngle))) return new List<float>(){float.NaN};
 
             List<float> distancesInRange = new List<float>();
+            List<HorizontalPoint> horizontalPointsInRange = GetHorizontalPointsInRange(fromAngle, toAngle, verticalAngle);
+
+            foreach (HorizontalPoint point in horizontalPointsInRange)
+            {
+                distancesInRange.Add(point.Distance);
+            }
+
+            return distancesInRange;
+        }
+
+        public List<HorizontalPoint> GetHorizontalPointsInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle)
+        {
+            if (Distances == null || (!Distances.ContainsKey(verticalAngle))) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
+
+            List<HorizontalPoint> pointsInRange = new List<HorizontalPoint>();
             bool angleSpansZero = fromAngle > toAngle;
 
-            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);  //BUG: Will return if no values in left sector when (measurement spanns zero)
-            if (startIndex == -1) return new List<float>(){float.NaN};
+            int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
 
             //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
             if (angleSpansZero)
             {
-                for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
+                if (startIndex != -1)
                 {
-                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
+                    for (int i = startIndex; i < Distances[verticalAngle].Count; i++)
+                    {
+                        pointsInRange.Add(Distances[verticalAngle][i]);
+                    }
                 }
 
                 int endIndex = Distances[verticalAngle].FindIndex(point2 => point2.Angle > toAngle);
                 for (int i = 0; i < endIndex; i++)
                 {
-                    distancesInRange.Add(Distances[verticalAngle][i].Distance);
+                    pointsInRange.Add(Distances[verticalAngle][i]);
                 }
             }
             else
             {
+                if (startIndex == -1) return new List<HorizontalPoint>(){new HorizontalPoint(0, float.NaN)};
+
                 int i = startIndex;
                 HorizontalPoint point = Distances[verticalAngle][i];
                 while (point.Angle < toAngle && i < Distances[verticalAngle].Count)
                 {
                     point = Distances[verticalAngle][i];
-                    distancesInRange.Add(point.Distance);
+                    pointsInRange.Add(point);
                     ++i;
                 }
             }
 
-            return distancesInRange;
+            return pointsInRange;
         }
 
         private float PerformCalculation(List<float> values, CalculationType calculationType)
@@ -251,7 +285,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 case CalculationType.Mean:
                     return values.Average(); 
                 case CalculationType.Median:
-                    values.Sort();  //BUG: This returns the distance of the median angle (not the median distance). Change the sort to sort by distance.
+                    values.Sort();
                     return values[values.Count / 2];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(calculationType), calculationType, null);
@@ -293,7 +327,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (true)
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, MinRange);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, (float)MinRange);
+                    _largestDistanceHasBeenCalculated = false;
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
@@ -314,7 +349,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             {
                 Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
                 HasUnacknowledgedError = true;
-                StopCollector();
+                RunCollector = false;
             }
         }
     }

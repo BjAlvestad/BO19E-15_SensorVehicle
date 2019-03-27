@@ -14,14 +14,15 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         bool RunCollector { get; set; }
 
-        float MinRange { get; set; }
-        float MaxRange { get; set; }
+        double MinRange { get; set; }
+        double MaxRange { get; set; }
 
         void ClearMessage();
 
         void StartCollector();
         void StopCollector();
 
+        HorizontalPoint LargestDistance { get; }
         float Fwd { get; }
         float Left { get; }
         float Right { get; }
@@ -38,5 +39,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType);
         List<float> GetDistancesInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
+        List<HorizontalPoint> GetHorizontalPointsInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
     }
 }
