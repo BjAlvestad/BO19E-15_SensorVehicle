@@ -17,9 +17,9 @@
                 Place your content here.-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition Width="0.02*" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition Width="0.02*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -80,11 +80,17 @@
                     <TextBlock Text="Collector is not running!" Foreground="Red" RelativePanel.AlignHorizontalCenterWith="LastReadingTimeText" RelativePanel.Below="LastReadingTimeText" FontWeight="ExtraBold"
                                Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
                 </RelativePanel>
-                <RelativePanel>
-                    <TextBox Text="{x:Bind ViewModel.FromAngle, Mode=TwoWay}" Description="From" RelativePanel.LeftOf="ToAngleBox"/>
-                    <TextBox x:Name="ToAngleBox" Text="{x:Bind ViewModel.ToAngle, Mode=TwoWay}" Description="To" RelativePanel.AlignRightWithPanel="True"/>
-                    <ListView ItemsSource="{x:Bind ViewModel.HorizontalPointsInRange, Mode=OneWay}" RelativePanel.Below="ToAngleBox" RelativePanel.AlignRightWith="ToAngleBox"/>
-                </RelativePanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <ToggleSwitch IsOn="{x:Bind ViewModel.CalculateHorizontalPoints, Mode=TwoWay}" OnContent="Calculating points" OffContent="Point calc. stopped" />
+                        <TextBlock Text="{x:Bind ViewModel.SelectedAngleRange, Mode=OneWay}" />
+                        <TextBlock Text="Beam opening:" FontSize="10" />
+                        <Slider Value="{x:Bind ViewModel.BeamOpeningForAnglesInRange, Mode=TwoWay}" Orientation="Horizontal" Minimum="2" Maximum="10" StepFrequency="2" MinWidth="100" />
+                        <TextBlock Text="Center point:" FontSize="10" />
+                        <Slider Value="{x:Bind ViewModel.CenterForAnglesInRange, Mode=TwoWay}" Orientation="Horizontal" Minimum="0" Maximum="360" StepFrequency="10" MinWidth="100" />
+                            <ListView ItemsSource="{x:Bind ViewModel.HorizontalPointsInRange, Mode=OneWay}" />
+                    </StackPanel>
+                </ScrollViewer>
             </StackPanel>
             <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap" HorizontalAlignment="Center"
                        Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"

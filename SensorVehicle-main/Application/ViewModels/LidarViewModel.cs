@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Data;
 using Communication;
 using Prism.Windows.Mvvm;
@@ -15,8 +16,8 @@ namespace Application.ViewModels
         {
             Lidar = lidar;
             Power = power;
-            FromAngle = 255;
-            ToAngle = 285;
+            CenterForAnglesInRange = 0;
+            BeamOpeningForAnglesInRange = 2;
             CalculationTypes = new List<CalculationType>(Enum.GetValues(typeof(CalculationType)).Cast<CalculationType>());
             VerticalAngles = new List<VerticalAngle>(Enum.GetValues(typeof(VerticalAngle)).Cast<VerticalAngle>());
             ActiveVerticalAngles = new List<VerticalAngle>();
@@ -65,23 +66,24 @@ namespace Application.ViewModels
             Lidar.DefaultVerticalAngle = SelectedActiveVerticalAngle;
         }
 
-        private int _fromAngle;
-        public int FromAngle
-        {
-            get { return _fromAngle; }
-            set { SetProperty(ref _fromAngle, value); }
-        }
+        public int CenterForAnglesInRange { get; set; }
+        public int BeamOpeningForAnglesInRange { get; set; }
 
-        private int _toAngle;
         private VerticalAngle _selectedActiveVerticalAngle;
 
-        public int ToAngle
+        private string _selectedAngleRange;
+        public string SelectedAngleRange
         {
-            get { return _toAngle; }
-            set { SetProperty(ref _toAngle, value); }
+            get { return _selectedAngleRange; }
+            set { SetProperty(ref _selectedAngleRange, value); }
         }
 
-        public List<HorizontalPoint> HorizontalPointsInRange => Lidar.GetHorizontalPointsInRange(FromAngle, ToAngle, Lidar.DefaultVerticalAngle);
+        private List<HorizontalPoint> _horizontalPointsInRange;
+        public List<HorizontalPoint> HorizontalPointsInRange
+        {
+            get { return _horizontalPointsInRange; }
+            set { SetProperty(ref _horizontalPointsInRange, value); }
+        }
 
         private bool _autocalculate;
         public bool Autocalculate
@@ -90,16 +92,37 @@ namespace Application.ViewModels
             set { SetProperty(ref _autocalculate, value); }
         }
 
-        private void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private bool _calculateHorizontalPoints;
+        public bool CalculateHorizontalPoints
+        {
+            get { return _calculateHorizontalPoints; }
+            set { SetProperty(ref _calculateHorizontalPoints, value); }
+        }
+
+        private async void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
 
-            RaisePropertyChanged(nameof(HorizontalPointsInRange));
-            if (!Autocalculate) return;
+            if (Autocalculate)
+            {
+                Task.Run(() =>
+                {
+                    float fwd = Lidar.Fwd;
+                    float left = Lidar.Left;
+                    float right = Lidar.Right;
+                });
+            }
 
-            float fwd = Lidar.Fwd;
-            float left = Lidar.Left;
-            float right = Lidar.Right;
+            if (CalculateHorizontalPoints)
+            {
+                float fromAngle = CenterForAnglesInRange - BeamOpeningForAnglesInRange / 2;
+                float toAngle = CenterForAnglesInRange + BeamOpeningForAnglesInRange / 2;
+                if (fromAngle < 0) fromAngle += 360;
+                if (toAngle > 360) fromAngle -= 360;
+
+                SelectedAngleRange = $"From {fromAngle} to {toAngle}";
+                HorizontalPointsInRange = await Task.Run(() => Lidar.GetHorizontalPointsInRange(fromAngle, toAngle, Lidar.DefaultVerticalAngle));
+            }
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
