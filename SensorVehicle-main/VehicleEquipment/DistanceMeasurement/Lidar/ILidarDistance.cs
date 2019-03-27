@@ -14,8 +14,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         bool RunCollector { get; set; }
 
-        float MinRange { get; set; }
-        float MaxRange { get; set; }
+        double MinRange { get; set; }
+        double MaxRange { get; set; }
 
         void ClearMessage();
 

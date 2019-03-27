@@ -28,8 +28,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             DefaultCalculationType = CalculationType.Max; //TEMP
             DefaultVerticalAngle = verticalAngles[0];
 
-            MinRange = 0.3f;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
-            MaxRange = 100.0f;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
+            MinRange = 1.0;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
+            MaxRange = 100.0;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
 
             NumberOfCycles = 3;
 
@@ -39,16 +39,16 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
-        private float _minRange;
-        public float MinRange
+        private double _minRange;
+        public double MinRange
         {
             get { return _minRange; }
             set { SetProperty(ref _minRange, value);  }
         }
 
         //TODO: MaxRange is currently not in use. To be put in use or removed.
-        private float _maxRange;
-        public float MaxRange
+        private double _maxRange;
+        public double MaxRange
         {
             get { return _maxRange; }
             set { SetProperty(ref _maxRange, value); }
@@ -327,7 +327,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 while (true)
                 {
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, MinRange);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, (float)MinRange);
                     _largestDistanceHasBeenCalculated = false;
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;

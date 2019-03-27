@@ -47,14 +47,41 @@
                         <TextBlock Text="Default &#x0a;calc type:" />
                         <TextBlock Text="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=OneWay}"/>
                         <ComboBox ItemsSource="{x:Bind ViewModel.CalculationTypes}" SelectedItem="{x:Bind ViewModel.Lidar.DefaultCalculationType, Mode=TwoWay}" />
+
                         <TextBlock Text="Collection &#x0a;cycles:" />
-                        <TextBox Text="{x:Bind ViewModel.Lidar.NumberOfCycles, Mode=TwoWay}"/>
+                        <ComboBox SelectedItem="{x:Bind ViewModel.Lidar.NumberOfCycles, Mode=TwoWay}" >
+                            <x:Int32>1</x:Int32>
+                            <x:Int32>2</x:Int32>
+                            <x:Int32>3</x:Int32>
+                            <x:Int32>4</x:Int32>
+                            <x:Int32>5</x:Int32>
+                        </ComboBox>
+
                         <TextBlock Text="Beam width:" />
-                        <TextBox Text="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}"/>
+                        <ComboBox IsEditable="True" SelectedItem="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}" >
+                            <!--BUG: This combobox is editable. If user enters invalid data, it will cause exception. Use TextSubmitted event or some other alternative for robustness (see https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/combo-box) -->
+                            <x:Int32>1</x:Int32>
+                            <x:Int32>5</x:Int32>
+                            <x:Int32>10</x:Int32>
+                            <x:Int32>15</x:Int32>
+                            <x:Int32>30</x:Int32>
+                            <x:Int32>45</x:Int32>
+                            <x:Int32>90</x:Int32>
+                        </ComboBox>
+
                         <TextBlock Text="MinRange:" />
-                        <TextBox Text="{x:Bind ViewModel.Lidar.MinRange, Mode=TwoWay}"/>
+                        <ComboBox SelectedItem="{x:Bind ViewModel.Lidar.MinRange, Mode=TwoWay}" >
+                            <!--TODO: Make combobox editable and robust. Fix issue where 0.7 gets displayed as long number (0.69.....) when combobox is editable -->
+                            <!--Official minimum range is 1.0m (Ref. manual). See https://github.com/ros-drivers/velodyne/issues/61 for a discussion on alternative minimum ranges for VLP-16.-->
+                            <x:Double>0.1</x:Double>
+                            <x:Double>0.3</x:Double>
+                            <x:Double>0.5</x:Double>
+                            <x:Double>0.7</x:Double>
+                            <x:Double>1</x:Double>
+                        </ComboBox>
+
                         <TextBlock Text="MaxRange:" />
-                        <TextBox Text="{x:Bind ViewModel.Lidar.MaxRange, Mode=TwoWay}"/>
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.MaxRange, Mode=TwoWay}"/>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
