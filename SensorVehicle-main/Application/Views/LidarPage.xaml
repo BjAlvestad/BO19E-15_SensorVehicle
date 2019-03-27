@@ -83,6 +83,11 @@
                     <TextBlock Text="Collector is not running!&#x0a;Will not receive new data." Foreground="Red" RelativePanel.AlignHorizontalCenterWith="LastReadingTimeText" RelativePanel.Below="LastReadingTimeText" FontWeight="ExtraBold"
                                Visibility="{x:Bind ViewModel.Lidar.RunCollector, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
                 </RelativePanel>
+                <StackPanel Margin="0,20,0,0">
+                    <ToggleSwitch Header="Auto-calculate 'Largest Distance' toggle" OffContent="Passive 'Largest Distance'&#x0a;(updates from control logic)" OnContent="Auto-calculating &#x0a;(increases workload)" FontSize="10" IsOn="{x:Bind ViewModel.AutoCalculateLargestDistance, Mode=TwoWay}" />
+                    <TextBlock Text="Point with largest distance:" FontWeight="SemiBold" />
+                    <TextBlock Text="{x:Bind ViewModel.Lidar.LargestDistance, Mode=OneWay}" />
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="2"
                         Visibility="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">

@@ -92,6 +92,13 @@ namespace Application.ViewModels
             set { SetProperty(ref _autoCalculateDirections, value); }
         }
 
+        private bool _autoCalculateLargestDistance;
+        public bool AutoCalculateLargestDistance
+        {
+            get { return _autoCalculateLargestDistance; }
+            set { SetProperty(ref _autoCalculateLargestDistance, value); }
+        }
+
         private bool _calculateHorizontalPoints;
         public bool CalculateHorizontalPoints
         {
@@ -111,6 +118,12 @@ namespace Application.ViewModels
                     float left = Lidar.Left;
                     float right = Lidar.Right;
                 });
+            }
+
+            if (AutoCalculateLargestDistance)
+            {
+                HorizontalPoint point = Lidar.LargestDistance;
+                //TODO: check if running this on UI-thread causes freezing (on weaker hardware). If it does: wrap in Task.Run. If it doesn't, then check AutoCalcDirections, and HorizontalPoints, if they also run ok on UI thread.
             }
 
             if (CalculateHorizontalPoints)
