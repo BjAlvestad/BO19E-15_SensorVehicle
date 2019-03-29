@@ -37,7 +37,7 @@ namespace ExampleLogic.L1_CenterCorridor
             Debug.WriteLine($"Ran Initialize() method in {Details.Title}");
         }
 
-        public override void Run()
+        public override void Run(CancellationToken cancellationToken)
         {
             float distanceLeft = _ultrasonic.Left;
             float distanceRight = _ultrasonic.Right;

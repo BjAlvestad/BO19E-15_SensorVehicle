@@ -35,7 +35,7 @@ namespace ExampleLogic.L1_CenterCorridor
 
         }
 
-        public override void Run()
+        public override void Run(CancellationToken cancellationToken)
         {
             if (_ultrasonic.Fwd < 0.5)
             {

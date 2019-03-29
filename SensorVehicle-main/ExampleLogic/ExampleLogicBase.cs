@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Helpers;
 using VehicleEquipment.Locomotion.Wheels;
@@ -8,6 +9,7 @@ namespace ExampleLogic
     public abstract class ExampleLogicBase : ThreadSafeNotifyPropertyChanged
     {
         private IWheel _wheel;
+        private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
         /// Contains the information that will be displayed in the GUI. 
@@ -35,7 +37,7 @@ namespace ExampleLogic
         }
 
         public abstract void Initialize();
-        public abstract void Run();
+        public abstract void Run(CancellationToken cancellationToken);
 
         public void ClearMessage()
         {
@@ -56,12 +58,18 @@ namespace ExampleLogic
                 {
                     StartControlLogicTask();
                 }
+                else
+                {
+                    _cancellationTokenSource?.Cancel();
+                }
+
                 RaiseSyncedPropertyChanged();
             }
         }
 
         private void StartControlLogicTask()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
                 if (HasUnacknowledgedError) return;
@@ -69,9 +77,9 @@ namespace ExampleLogic
                 try
                 {
                     Initialize();
-                    while (RunExampleLogic)
+                    while (RunExampleLogic && !_cancellationTokenSource.IsCancellationRequested)
                     {
-                        Run();
+                        Run(_cancellationTokenSource.Token);
                     }
                     _wheel.SetSpeed(0, 0);
                 }
@@ -82,7 +90,7 @@ namespace ExampleLogic
                     ErrorMessage = $"CONTROL LOGIC ERROR - '{Details.Title}' generated the following exception:\n{e.Message}";
                     _wheel.SetSpeed(0, 0);
                 }
-            });
+            }, _cancellationTokenSource.Token);
         }
     }
 }
