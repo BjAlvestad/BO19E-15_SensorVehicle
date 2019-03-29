@@ -37,6 +37,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; }
         DateTime LastUpdate { get; }
 
+        HorizontalPoint LargestDistanceInRange(float fromAngle = 260, float toAngle = 100);
+
         float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType);
         List<float> GetDistancesInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
         List<HorizontalPoint> GetHorizontalPointsInRange(float fromAngle, float toAngle, VerticalAngle verticalAngle);
