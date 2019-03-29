@@ -31,7 +31,8 @@ namespace ExampleLogic
                 new CenterCorridorMain(wheels, ultrasonic),
                 new CenterCorridorNoStopMain(wheels, ultrasonic),
                 new RightHandSearchMain(wheels, ultrasonic),
-                new DriveToLargestDistanceWithoutGyro(wheels, lidar)
+                new TurnToLargestDistance(wheels, lidar),
+                new SteerBlindlyToLargestDistance(wheels, lidar)
             };
         }
     }

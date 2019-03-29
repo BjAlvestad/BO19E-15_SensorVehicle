@@ -13,21 +13,22 @@ using VehicleEquipment.Locomotion.Wheels;
 
 namespace ExampleLogic.L3_DriveToLargestDistance
 {
-    public class DriveToLargestDistanceWithoutGyro : ExampleLogicBase
+    public class TurnToLargestDistance : ExampleLogicBase
     {
         private IWheel _wheels;
         private ILidarDistance _lidar;
 
-        public DriveToLargestDistanceWithoutGyro(IWheel wheel, ILidarDistance lidar) : base(wheel)
+        public TurnToLargestDistance(IWheel wheel, ILidarDistance lidar) : base(wheel)
         {
             Details = new ExampleLogicDetails
             {
-                Title = "L3 - Drive to largest distance",
+                Title = "L3a - Turns to the greatest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Robotics",
+                SuitableForSubjects = "Simple code usage demo",
 
-                Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
-                              "This control logic does NOT utilize any gyro."
+                Description = "Uses LIDAR to detect largest distance, and turns towards it." +
+                              "You can use this as inspiration for part of your own control logic." +
+                              "If you use a Gyro, you can simplify this code."
             };
 
             _wheels = wheel;
@@ -40,31 +41,35 @@ namespace ExampleLogic.L3_DriveToLargestDistance
         {
             _lidar.RunCollector = true;
             _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
+            _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);
+            _lidar.DefaultVerticalAngle = VerticalAngle.Up1;
+            _lidar.MinRange = 0.5;
+            _lidar.DefaultCalculationType = CalculationType.Min;
         }
 
         public override void Run(CancellationToken cancellationToken)
         {
             const int rotateLimit = 60;
-            if (_lidar.LargestDistance.Angle > rotateLimit && _lidar.LargestDistance.Angle < 360 - rotateLimit) TurnTowardsLargestDistance(cancellationToken);
-            else SteerTowardsLargestDistance(100);
+
+            float angleToLargestDistance = _lidar.LargestDistance.Angle;
+
+            if (float.IsNaN(angleToLargestDistance))  //TODO: Make LIDAR class throw exception when calling methods (or when accessing Distance) when power is off, or collector not running.
+            {
+                _wheels.Stop();
+                Debug.WriteLine("STOPPED due to no LIDAR distance found!\nIs LIDAR powered on, and collector running?", "ControlLogic");
+                Thread.Sleep(2000);
+            }
+            else if (angleToLargestDistance > rotateLimit && angleToLargestDistance < 360 - rotateLimit)
+            {
+                TurnTowardsLargestDistance(cancellationToken);
+            }
 
             Thread.Sleep(50);
-        }
-
-        private void SteerTowardsLargestDistance(int baseSpeed)
-        {
-            float angleDeviation = _lidar.LargestDistance.Angle;
-
-            int leftSpeedReduction = angleDeviation > 180 ? 360 - (int)angleDeviation : 0;
-            int rightSpeedReduction = angleDeviation < 180 ? (int)angleDeviation : 0;
-
-            _wheels.SetSpeed(baseSpeed - leftSpeedReduction, baseSpeed - rightSpeedReduction);
         }
 
         private void TurnTowardsLargestDistance(CancellationToken cancellationToken)
         {
             const float errorMargin = 5;
-            DateTime lastPause = DateTime.Now;
             DateTime lastCommand = DateTime.Now;
 
             while (!IsPointingTowardsLargestDistance(errorMargin) && !cancellationToken.IsCancellationRequested)
@@ -72,19 +77,11 @@ namespace ExampleLogic.L3_DriveToLargestDistance
                 float angle = _lidar.LargestDistance.Angle;
                 bool gettingCloseToTarget = angle < 5 * errorMargin || angle > (360 - angle) * 5;
 
-                //if (gettingCloseToTarget && (_lidar.LastUpdate - lastCommand) < TimeSpan.FromMilliseconds(600))
-                //{
-                //    lastPause = DateTime.Now;
-                //    _wheels.Stop();
-                //    Thread.Sleep(300);
-                //}
                 if (_lidar.LastUpdate > lastCommand)
                 {
-                    RotateTowardsLargestDistance(angle, gettingCloseToTarget ? 30 : 100);
+                    RotateTowardsLargestDistance(angle, gettingCloseToTarget ? 40 : 100); // power 30 is not enough to turn on 3 battery lines - getting close to 2 (is ok on full battery / fresh 3 lines)
                     lastCommand = DateTime.Now;
                 }
-
-
             }
 
             _wheels.Stop();
@@ -101,14 +98,8 @@ namespace ExampleLogic.L3_DriveToLargestDistance
 
         private void RotateTowardsLargestDistance(float angle, int turnSpeed)
         {
-            if (angle < 180)
-            {
-                 _wheels.TurnRight(turnSpeed);
-            }
-            else
-            {
-                _wheels.TurnLeft(turnSpeed);
-            }
+            if (angle < 180) _wheels.TurnRight(turnSpeed);
+            else _wheels.TurnLeft(turnSpeed);
         }
     }
 }
