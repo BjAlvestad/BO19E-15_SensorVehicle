@@ -44,11 +44,21 @@ namespace ExampleLogic.L3_DriveToLargestDistance
 
         public override void Run(CancellationToken cancellationToken)
         {
-            //BUG: If user puts an infinite loop inside here, that method will not abort even if control logic is stopped
+            const int rotateLimit = 60;
+            if (_lidar.LargestDistance.Angle > rotateLimit && _lidar.LargestDistance.Angle < 360 - rotateLimit) TurnTowardsLargestDistance(cancellationToken);
+            else SteerTowardsLargestDistance(100);
 
-            if(_lidar.LargestDistance.Angle > 10) TurnTowardsLargestDistance(cancellationToken);
+            Thread.Sleep(50);
+        }
 
-            Thread.Sleep(500);
+        private void SteerTowardsLargestDistance(int baseSpeed)
+        {
+            float angleDeviation = _lidar.LargestDistance.Angle;
+
+            int leftSpeedReduction = angleDeviation > 180 ? 360 - (int)angleDeviation : 0;
+            int rightSpeedReduction = angleDeviation < 180 ? (int)angleDeviation : 0;
+
+            _wheels.SetSpeed(baseSpeed - leftSpeedReduction, baseSpeed - rightSpeedReduction);
         }
 
         private void TurnTowardsLargestDistance(CancellationToken cancellationToken)
