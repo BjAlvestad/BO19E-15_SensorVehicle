@@ -1,0 +1,145 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Wheels;
+
+namespace ExampleLogic.L3_DriveToLargestDistance
+{
+    public class DriveToLargestDistance : ExampleLogicBase
+    {
+        private IWheel _wheels;
+        private ILidarDistance _lidar;
+        private IUltrasonic _ultrasonic;
+
+        #region Description
+        public DriveToLargestDistance(IWheel wheel, ILidarDistance lidar, IUltrasonic ultrasonic) : base(wheel)
+        {
+            Details = new ExampleLogicDetails
+            {
+                Title = "L3c - Drive to largest distance",
+                Author = "BO19-E15",
+                SuitableForSubjects = "Robotics",
+
+                Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
+                              "It also uses Ultrasound to keep distance from wall."
+            };
+
+            _wheels = wheel;
+            _lidar = lidar;
+            _ultrasonic = ultrasonic;
+        }
+
+        public override ExampleLogicDetails Details { get; }
+        #endregion
+
+        #region Initialization_RunsOnceWhenControlLogicStarts
+        public override void Initialize()
+        {
+            _lidar.RunCollector = true;
+            _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
+            _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);
+            _lidar.DefaultVerticalAngle = VerticalAngle.Up1;
+            _lidar.MinRange = 0.5;
+        }
+        #endregion
+
+        #region ControlLogic 
+
+        private const float clearanceLimitFwd = 0.3f;
+        private const float sideClearanceLimitLow = 0.7f;
+        private const float sideClearanceLimitLowLow = 0.2f;
+        private const int BaseSpeed = 100;
+        private int _speedLeft;
+        private int _speedRight;
+        public override void Run(CancellationToken cancellationToken)
+        {
+            float angleToLargestDistance = _lidar.LargestDistanceInRange(260, 100).Angle;
+
+            if (float.IsNaN(angleToLargestDistance))
+            {
+                _wheels.Stop();
+                Debug.WriteLine("STOPPED due to no LIDAR distance found in range!", "ControlLogic");
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                _speedLeft = BaseSpeed;
+                _speedRight = BaseSpeed;
+
+                CompensateSpeedTowardsAngle(angleToLargestDistance);
+
+                CompensateSpeedFromSideClearance();
+
+                if (_ultrasonic.Fwd < clearanceLimitFwd)
+                {
+                    Debug.WriteLine("Emergency steer Fwd started.", "ControlLogic");
+                    EmergencySteerFromObstacleInFront(1f, 50, cancellationToken);
+                    Debug.WriteLine("Emergency steer Fwd completed.", "ControlLogic");
+                }
+                else
+                {
+                    _wheels.SetSpeed(_speedLeft, _speedRight);
+                }
+            }
+
+            Thread.Sleep(50);
+        }
+
+        private void EmergencySteerFromObstacleInFront(float desiredClearance, int rotationPowerPercentage, CancellationToken cancellationToken)
+        {
+            DateTime startedRotationAt = DateTime.Now;
+            bool rightHasLargestDistance = _ultrasonic.Right > _ultrasonic.Left;
+            while (_ultrasonic.Fwd < desiredClearance && !cancellationToken.IsCancellationRequested)
+            {
+                if(rightHasLargestDistance) _wheels.TurnRight(rotationPowerPercentage);
+                else _wheels.TurnLeft(rotationPowerPercentage);
+
+                Thread.Sleep(50);
+
+                if (startedRotationAt - DateTime.Now > TimeSpan.FromSeconds(5))
+                {
+                    _wheels.Stop();
+                    Thread.Sleep(2000);
+                }
+            }
+
+            _wheels.Stop();
+        }
+
+        private void CompensateSpeedFromSideClearance()
+        {
+            const float requiredClearanceOnOppositeSide = sideClearanceLimitLowLow + 0.3f;
+            int desiredSpeedDifference = (int)((Math.Abs(_ultrasonic.Left - _ultrasonic.Right) / 4) * 100);
+
+            if ((_ultrasonic.Left < sideClearanceLimitLow && _ultrasonic.Right > requiredClearanceOnOppositeSide) || _ultrasonic.Left < sideClearanceLimitLowLow)
+            {
+                _speedLeft += desiredSpeedDifference;
+                if (_speedLeft > 100)
+                {
+                    _speedRight -= _speedLeft - 100;
+                }
+            }
+            else if((_ultrasonic.Left > requiredClearanceOnOppositeSide && _ultrasonic.Right < sideClearanceLimitLow) || _ultrasonic.Right < sideClearanceLimitLowLow)
+            {
+                _speedRight += desiredSpeedDifference;
+                if (_speedRight > 100)
+                {
+                    _speedLeft -= _speedRight - 100;
+                }
+            }
+        }
+
+        private void CompensateSpeedTowardsAngle(float angleDeviation)
+        {
+            int leftSpeedReduction = angleDeviation > 180 ? 360 - (int)angleDeviation : 0;
+            int rightSpeedReduction = angleDeviation < 180 ? (int)angleDeviation : 0;
+
+            _speedLeft -= leftSpeedReduction;
+            _speedRight -= rightSpeedReduction;
+        }
+
+        #endregion
+    }
+}
