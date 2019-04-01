@@ -47,7 +47,7 @@ namespace ExampleLogic.L3_DriveToLargestDistance
 
         #region ControlLogic 
 
-        private const float clearanceLimitFwd = 0.3f;
+        private const float clearanceLimitFwd = 0.5f; // Med 0.5 kjører den ikke over tråskådler. Men det gjør den med 0.3. Juster UL sensorer oppover.
         private const float sideClearanceLimitLow = 0.7f;
         private const float sideClearanceLimitLowLow = 0.2f;
         private const int BaseSpeed = 100;
@@ -90,7 +90,7 @@ namespace ExampleLogic.L3_DriveToLargestDistance
         private void EmergencySteerFromObstacleInFront(float desiredClearance, int rotationPowerPercentage, CancellationToken cancellationToken)
         {
             DateTime startedRotationAt = DateTime.Now;
-            bool rightHasLargestDistance = _ultrasonic.Right > _ultrasonic.Left;
+            bool rightHasLargestDistance = _lidar.LargestDistanceInRange(260, 100).Angle < 180;
             while (_ultrasonic.Fwd < desiredClearance && !cancellationToken.IsCancellationRequested)
             {
                 if(rightHasLargestDistance) _wheels.TurnRight(rotationPowerPercentage);
