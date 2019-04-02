@@ -200,6 +200,22 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
+        public HorizontalPoint LargestDistanceInRange(float fromAngle, float toAngle)
+        {
+            if(Distances == null || !Distances.ContainsKey(DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
+
+            bool angleSpansZero = fromAngle > toAngle;
+            if (angleSpansZero)
+            {
+                return Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle < toAngle || i.Angle > fromAngle));
+            }
+            else
+            {
+                return Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle > fromAngle && i.Angle < toAngle));
+            }
+            //TODO: Check what happens if there is no available distance in range
+        }
+
         public float GetDistance(float fromAngle, float toAngle)
         {
             return GetDistance(fromAngle, toAngle, DefaultVerticalAngle, DefaultCalculationType);

@@ -17,6 +17,7 @@ namespace Application.ViewModels
         {
             Wheel = wheel;
             Encoders = encoders;
+            UpdateInterval = TimeSpan.FromMilliseconds(300);
         }
 
         public IWheel Wheel { get; set; }
@@ -51,9 +52,12 @@ namespace Application.ViewModels
 
         public void StopWheels()
         {
-            LeftWheel = 0;
-            RightWheel = 0;
-            Wheel.SetSpeed(LeftWheel, RightWheel, onlySendIfValuesChanged: false);
+            if (ApplyWheelSpeedContinously)
+            {
+                LeftWheel = 0;
+                RightWheel = 0;
+            }
+            Wheel.SetSpeed(0, 0, onlySendIfValuesChanged: false);
         }
 
         private bool _applyWheelSpeedContinously;
@@ -91,7 +95,6 @@ namespace Application.ViewModels
             base.OnNavigatedTo(e, viewModelState);
             LeftWheel = Wheel.CurrentSpeedLeft;
             RightWheel = Wheel.CurrentSpeedRight;
-            UpdateInterval = TimeSpan.FromMilliseconds(300);
         }
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)

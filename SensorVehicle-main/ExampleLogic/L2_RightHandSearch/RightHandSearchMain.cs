@@ -36,7 +36,7 @@ namespace ExampleLogic.L2_RightHandSearch
             Debug.WriteLine($"Ran Initialize() method in {Details.Title}");
         }
 
-        public override void Run()
+        public override void Run(CancellationToken cancellationToken)
         {
             ++i;
             Debug.WriteLine($"Run() method in {Details.Title} is on iteration no. {i}. Sleeping for {i} milli seconds");
