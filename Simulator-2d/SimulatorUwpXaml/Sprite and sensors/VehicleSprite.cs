@@ -77,7 +77,7 @@ namespace SimulatorUwpXaml
 
         protected override void Move(float elapsedTimeSinceLastUpdate)
         {
-            Drive2(elapsedTimeSinceLastUpdate);
+            Drive4(elapsedTimeSinceLastUpdate);
         }
 
         #region First attempt at Drive methods
@@ -167,5 +167,71 @@ namespace SimulatorUwpXaml
             //position = displacedPosition;
         }
         #endregion
+
+        public void Drive4(float elapsedTimeSinceLastUpdate)
+        {
+            float averagePower = CalculateLinearVelocity();
+
+            int speedInner = Math.Min(SpeedLeftWheel, SpeedRightWheel);
+            int speedOuter = Math.Max(SpeedLeftWheel, SpeedRightWheel);
+            float angularVelocity = CalculateAngularVelocity(speedInner, speedOuter, averagePower);
+
+            const int speedScale = 68;
+            float linearSpeed = speedScale / TimePerMeter(averagePower) * Math.Sign(averagePower);
+
+            Angle += (float)(elapsedTimeSinceLastUpdate * angularVelocity);  // theta = omega * tid
+            Position += new Vector2(elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Cos(Angle), elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Sin(Angle));
+        }
+
+        private float CalculateLinearVelocity()
+        {
+            return (SpeedLeftWheel + SpeedRightWheel) / 2f;
+        }
+
+        private float CalculateAngularVelocity(int speedInner, int speedOuter, float linearVelocity)
+        {
+            if (speedInner == speedOuter) return 0;
+            int direction = SpeedLeftWheel < SpeedRightWheel ? -1 : 1;
+
+            return (float)(2*Math.PI / TimeForFullRotation(speedOuter - speedInner) * direction);
+        }
+
+        private float CalculateTurnRadius(float speedInner, float speedOuter)
+        {
+            return (_wheelBase * speedInner) / (speedOuter - speedInner) / 3;
+        }
+
+        private double TimeForFullRotation(int speedDifferance) // Calculated based on data when rotating on the spot
+        {
+            const double a = 46863230;
+            const double b = 2.655837;
+            const double c = 0.2627988;
+            const double d = 2.089203;
+
+            double pl4Regression = d + (a - b) / (1 + Math.Pow(speedDifferance / c, b));  // Symmetrical sigmoidal regression (for rotation on-the-spot).
+
+            return (float) pl4Regression;
+            //return 2126233 + (2.863412 - 2126233) / (1 + Math.Pow(speedDifferance / 4291.27, 3.70461));  // Regression with the data in wrong order
+        }
+
+        private double TimeForFullRotationWithMovement(int speedDifferance)
+        {
+            //TODO: Add additional formula for rotation not on the spot.
+            return 0;
+        }
+
+        private float TimePerMeter(float linearWheelPower) // Calculated based on speed in a straight line
+        {
+            const double a = 416.5587;
+            const double b = 1.097031;
+            const double c = 8.717592;
+            const double d = -8.155351;
+
+            float absoluteLinearWheelPower = Math.Abs(linearWheelPower);
+            double pl4Regression = d + (a - b) / (1 + Math.Pow(absoluteLinearWheelPower / c, b));  // Symmetrical sigmoidal regression (for rotation on-the-spot).
+
+            return (float) pl4Regression / 10;
+            //return 2126233 + (2.863412 - 2126233) / (1 + Math.Pow(speedDifferance / 4291.27, 3.70461));  // Regression with the data in wrong order
+        }
     }
 }
