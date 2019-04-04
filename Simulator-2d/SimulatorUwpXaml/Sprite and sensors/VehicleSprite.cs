@@ -193,7 +193,9 @@ namespace SimulatorUwpXaml
             if (speedInner == speedOuter) return 0;
             int direction = SpeedLeftWheel < SpeedRightWheel ? -1 : 1;
 
-            return (float)(2*Math.PI / TimeForFullRotation(speedOuter - speedInner) * direction);
+            double timeForFullRotation = (speedOuter != -speedInner) ? TimeForFullRotationWithMovement(speedOuter - speedInner) : TimeForFullRotationOnTheSpot(speedOuter - speedInner);
+
+            return (float)(2*Math.PI / timeForFullRotation * direction);
         }
 
         private float CalculateTurnRadius(float speedInner, float speedOuter)
@@ -201,7 +203,7 @@ namespace SimulatorUwpXaml
             return (_wheelBase * speedInner) / (speedOuter - speedInner) / 3;
         }
 
-        private double TimeForFullRotation(int speedDifferance) // Calculated based on data when rotating on the spot
+        private double TimeForFullRotationOnTheSpot(int speedDifferance) // Calculated based on data when rotating on the spot
         {
             const double a = 46863230;
             const double b = 2.655837;
@@ -216,8 +218,7 @@ namespace SimulatorUwpXaml
 
         private double TimeForFullRotationWithMovement(int speedDifferance)
         {
-            //TODO: Add additional formula for rotation not on the spot.
-            return 0;
+            return 2103.6 * Math.Pow(speedDifferance, -1.258);
         }
 
         private float TimePerMeter(float linearWheelPower) // Calculated based on speed in a straight line
