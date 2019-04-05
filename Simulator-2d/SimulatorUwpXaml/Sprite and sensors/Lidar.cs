@@ -12,6 +12,7 @@ namespace SimulatorUwpXaml
 {
     public class Lidar
     {
+        private const int HalfBeamOpening = 1;
         private readonly SpriteClass _mountingPlatform;
 
         public List<float> DistanceReadings { get; private set; }
@@ -31,14 +32,26 @@ namespace SimulatorUwpXaml
         {
             get
             {
-                float min = DistanceReadings.GetRange(0, 15).Min();
-                float min2 = DistanceReadings.GetRange(DistanceReadings.Count - 15, 15).Min();
+                float min = DistanceReadings.GetRange(0, HalfBeamOpening).Min();
+                float min2 = DistanceReadings.GetRange(DistanceReadings.Count - HalfBeamOpening, HalfBeamOpening).Min();
                 return Math.Min(min, min2);
             }
         }
-        public float Right => DistanceReadings.GetRange(75, 30).Min();
-        public float Aft => DistanceReadings.GetRange(165, 30).Min();
-        public float Left => DistanceReadings.GetRange(255, 30).Min();
+        public float Right => DistanceReadings.GetRange(90 - HalfBeamOpening, HalfBeamOpening * 2).Min();
+        public float Aft => DistanceReadings.GetRange(180 - HalfBeamOpening, HalfBeamOpening * 2).Min();
+        public float Left => DistanceReadings.GetRange(270 - HalfBeamOpening, HalfBeamOpening * 2).Min();
+
+        public float GetSmallestDistanceInRange(int from, int to)
+        {
+            if (from < 0) from += 360;
+            bool rangeSpansZero = from > to;
+
+            if(!rangeSpansZero) return DistanceReadings.GetRange(from, to - from).Min();
+
+            float leftSector = DistanceReadings.GetRange(from, DistanceReadings.Count - from).Min();
+            float rightSector = DistanceReadings.GetRange(0, to).Min();
+            return Math.Min(leftSector, rightSector);
+        }
 
         public void Update360(List<BoundingBox> boundaries, float scale)
         {
