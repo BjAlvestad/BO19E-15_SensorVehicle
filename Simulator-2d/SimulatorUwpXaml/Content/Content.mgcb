@@ -58,7 +58,7 @@
 /processorParam:TextureFormat=Color
 /build:Maps/TestTileset.png
 
-#begin SpriteImages/car_red.png
+#begin SpriteImages/SensorVehicle_Prototype2-300x316.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -68,5 +68,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:SpriteImages/car_red.png
+/build:SpriteImages/SensorVehicle_Prototype2-300x316.png
 
