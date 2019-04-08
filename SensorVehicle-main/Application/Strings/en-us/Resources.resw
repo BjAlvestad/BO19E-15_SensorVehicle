@@ -118,15 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppDisplayName" xml:space="preserve">
-    <value>Application</value>
+    <value>Sensor Vehicle Main App</value>
     <comment>Application display name</comment>
   </data>
   <data name="AppDescription" xml:space="preserve">
-    <value>Application</value>
+    <value>Main application for the HVL sensor vehicle. 
+Program can run locally on PC (against simulator) or on the physical sensor vehicle.</value>
     <comment>Application description</comment>
   </data>
   <data name="Shell_Info.Content" xml:space="preserve">
-    <value>Info</value>
+    <value>Information</value>
     <comment>Navigation view item name for Info</comment>
   </data>
   <data name="StudentLogic_NoSelection.Text" xml:space="preserve">
@@ -138,7 +139,7 @@
     <comment>Navigation view item name for StudentLogic</comment>
   </data>
   <data name="ExampleLogic_NoSelection.Text" xml:space="preserve">
-    <value>Select an item from the list.</value>
+    <value>Select a control logic from the list.</value>
     <comment>No selection text for ExampleLogic</comment>
   </data>
   <data name="Shell_ExampleLogic.Content" xml:space="preserve">
@@ -150,7 +151,7 @@
     <comment>Navigation view item name for EquipmentOverview</comment>
   </data>
   <data name="Shell_Wheels.Content" xml:space="preserve">
-    <value>Wheels</value>
+    <value>Wheels and Encoders</value>
     <comment>Navigation view item name for Wheels</comment>
   </data>
   <data name="Shell_Lidar.Content" xml:space="preserve">
