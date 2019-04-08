@@ -57,8 +57,9 @@ namespace SimulatorUwpXaml
 
             _simulatorMap = new SimulatorMap(Content, mapName: "4B-corridores.tmx", scale: Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
-            Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/car_red");
-            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPI(0.205f * GlobalScale));
+            Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/SensorVehicle_Prototype2-300x316");
+            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPIWithoutRounding(0.1f * GlobalScale));
+
             _vehicle.Position = new Vector2(150, 150);
 
             _lidar = new Lidar(_vehicle);

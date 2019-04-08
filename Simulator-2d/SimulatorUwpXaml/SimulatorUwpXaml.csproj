@@ -119,6 +119,7 @@
     <Compile Include="Map and boundaries\SimulatorMap.cs" />
     <Compile Include="Sprite and sensors\Lidar.cs" />
     <Compile Include="Sprite and sensors\Picking2D.cs" />
+    <Compile Include="Sprite and sensors\RegressionType.cs" />
     <Compile Include="Sprite and sensors\SpriteClass.cs" />
     <Compile Include="Sprite and sensors\VehicleSprite.cs" />
     <Compile Include="Map and boundaries\Tile.cs" />

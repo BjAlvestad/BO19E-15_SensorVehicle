@@ -1,13 +1,6 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 
 namespace SimulatorUwpXaml
@@ -17,12 +10,13 @@ namespace SimulatorUwpXaml
         private int _speedLeftWheel;
         private int _speedRightWheel;
         private float _angle;
-        private readonly float _wheelBase;
 
         public VehicleSprite(GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale) : base(graphicsDevice, spriteTexture, scale)
         {
-            _wheelBase = spriteTexture.Height * scale;
+            CarPhysicsRegressionType = RegressionType.SymmetricalSigmoidalPl4;
         }
+
+        public RegressionType CarPhysicsRegressionType { get; set; }
 
         /// <summary>
         /// Angle in radians (clockwise rotation). 0 rad is towards right.
@@ -77,94 +71,85 @@ namespace SimulatorUwpXaml
 
         protected override void Move(float elapsedTimeSinceLastUpdate)
         {
-            Drive2(elapsedTimeSinceLastUpdate);
-        }
+            float averagePower = CalculateLinearVelocity();
 
-        #region First attempt at Drive methods
-        private void Drive(float elapsedTimeSinceLastUpdate)    // BUG: Formlene er ikke korrekt enda mtp fysikk
-        {
-            float linearVelocity = (SpeedLeftWheel + SpeedRightWheel)/2f;  // ??? vet ikke om det kan regnes ut slik
+            int speedInner = Math.Min(SpeedLeftWheel, SpeedRightWheel);
+            int speedOuter = Math.Max(SpeedLeftWheel, SpeedRightWheel);
+            float angularVelocity = CalculateAngularVelocity(speedInner, speedOuter, averagePower);
 
-            PhysicsTurn(SpeedLeftWheel, SpeedRightWheel, linearVelocity);
+            const int speedScale = 68;
+            float linearSpeed = speedScale / TimePerMeter(averagePower) * Math.Sign(averagePower);
 
-            if (linearVelocity > 0.000001 || linearVelocity < 0.000001)
-            {
-                PhysicsLinearMove(linearVelocity);
-            }          
-        }
-
-        private void PhysicsTurn(int speedLeft, int speedRight, float linearVelocity)
-        {
-            float turnRadius = (_wheelBase * linearVelocity) / (speedLeft - speedRight);  // d*SpeedInner / (SpeedOuter - SpeedInner)
-
-            float angularVelocity = linearVelocity / turnRadius;
-
-            float angleToTurn = (linearVelocity / turnRadius); // Skulle også vært med tid
-
-            if (float.IsNaN(angleToTurn))
-            {
-                angleToTurn = -0.01f * Math.Abs(speedLeft);
-            }
-
-            Angle += angleToTurn;
-        }
-
-        private void PhysicsLinearMove(float linearVelocity)    // BUG : Bil beveger seg ikke når vi har ulikt fortegn på beltehastighetene.
-        {  
-            Vector2 directionToDrive = new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle));
-            Position = float.IsNaN(Angle) ? Position : Position + directionToDrive * linearVelocity;
-        }
-        #endregion
-
-        #region Second attempt at drive methods
-        public void Drive2(float elapsedTimeSinceLastUpdate)
-        {
-            //const float velocityFactor = 0.025f;
-            const float maxAngularVelocity = 5f;
-
-            SpeedLeftWheel = Math.Abs(SpeedLeftWheel) > 100 ? Math.Sign(SpeedLeftWheel) * 100 : SpeedLeftWheel;
-            SpeedRightWheel = Math.Abs(SpeedRightWheel) > 100 ? Math.Sign(SpeedRightWheel) * 100 : SpeedRightWheel;
-
-            //speedLeft *= velocityFactor;
-            //speedRight *= velocityFactor;
-
-            float linearVelocity = (SpeedLeftWheel + SpeedRightWheel) / 2f;  // ??? vet ikke om det kan regnes ut slik
-            float angularVelocity = 0;
-
-            if (SpeedLeftWheel != SpeedRightWheel)
-            {
-                float turnRadius = (_wheelBase * linearVelocity) / (SpeedLeftWheel - SpeedRightWheel);  // d*SpeedInner / (SpeedOuter - SpeedInner)
-                angularVelocity = linearVelocity / turnRadius;
-                if (angularVelocity > maxAngularVelocity || float.IsNaN(angularVelocity))
-                {
-                    angularVelocity = maxAngularVelocity;
-                }
-            }
-
-            // BUG: Denne if setningen er for å prøve å fikse når vi har turn-radius 0 (snur "on the spot)"
-            //if (Math.Abs(speedLeft + speedRight) < 0.0000000000000000001)
-            //{
-            //    float combinedSpeed = (speedLeft - speedRight);
-            //    angularVelocity = Math.Abs(combinedSpeed) > maxAngularVelocity ? Math.Sign(combinedSpeed) * maxAngularVelocity : combinedSpeed;
-            //}
-
-           
             Angle += (float)(elapsedTimeSinceLastUpdate * angularVelocity);  // theta = omega * tid
+            Position += new Vector2(elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Cos(Angle), elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Sin(Angle));
+        }
 
-            Position += new Vector2(elapsedTimeSinceLastUpdate * linearVelocity * (float)Math.Cos(Angle), elapsedTimeSinceLastUpdate * linearVelocity * (float)Math.Sin(Angle));
+        #region VehiclePhysics
+        private float CalculateLinearVelocity()
+        {
+            return (SpeedLeftWheel + SpeedRightWheel) / 2f;
+        }
 
-            
-            //Vector2 displacedPosition = position;
-            //if (float.IsInfinity(turnRadius))
-            //{
-            //    position += new Vector2(linearVelocity * (float)Math.Cos(angle), linearVelocity * (float)Math.Sin(angle));
-            //}
-            //else
-            //{
-            //    position = new Vector2(turnRadius * (float)Math.Cos(angle), turnRadius * (float)Math.Sin(angle));
-            //}
+        private float CalculateAngularVelocity(int speedInner, int speedOuter, float linearVelocity)
+        {
+            if (speedInner == speedOuter) return 0;
+            int direction = SpeedLeftWheel < SpeedRightWheel ? -1 : 1;
 
-            //position = displacedPosition;
+            double timeForFullRotation = (speedOuter != -speedInner) ? TimeForFullRotationWithMovement(speedOuter - speedInner) : TimeForFullRotationOnTheSpot(speedOuter - speedInner);
+
+            return (float)(2*Math.PI / timeForFullRotation * direction);
+        }
+
+        private double TimeForFullRotationOnTheSpot(int speedDifferance) // Calculated based on data when rotating on the spot
+        {
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return SymmetricalSigmoidalPl4(speedDifferance, 46863230, 2.655837, 0.2627988, 2.089203);  // R^2 = 0.9994
+                case RegressionType.Power:
+                    return Power(speedDifferance, 51362, -1.86);  // R^2: 0.9931
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private double TimeForFullRotationWithMovement(int speedDifferance)
+        {
+            //TODO: improve formula with more measurements from the car - must be done in large space
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return SymmetricalSigmoidalPl4(speedDifferance, 35582790, 1.822818, 0.01529213, 2.08377);  // R^2: 0.9912
+                case RegressionType.Power:
+                    return Power(speedDifferance, 2103.6, -1.258);  // R^2: 0.9551
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private float TimePerMeter(float linearWheelPower) // Calculated based on speed in a straight line
+        {
+            float absoluteLinearWheelPower = Math.Abs(linearWheelPower);
+
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return (float) SymmetricalSigmoidalPl4(absoluteLinearWheelPower, 416.5587, 1.097031, 8.717592, -8.155351) / 10;  // R^2 = 0.9999
+                case RegressionType.Power:
+                    return (float) Power(absoluteLinearWheelPower, 3235.5, -1.1) / 10;  // R^2: 0.9942
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static double SymmetricalSigmoidalPl4(double variable, double a, double b, double c, double d)
+        {
+            return d + (a - b) / (1 + Math.Pow(variable / c, b));
+        }
+
+        private static double Power(double variable, double a, double b)
+        {
+            return a * Math.Pow(variable, b);
         }
         #endregion
     }
