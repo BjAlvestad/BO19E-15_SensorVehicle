@@ -13,8 +13,10 @@ namespace SimulatorUwpXaml
 
         public VehicleSprite(GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale) : base(graphicsDevice, spriteTexture, scale)
         {
-
+            CarPhysicsRegressionType = RegressionType.SymmetricalSigmoidalPl4;
         }
+
+        public RegressionType CarPhysicsRegressionType { get; set; }
 
         /// <summary>
         /// Angle in radians (clockwise rotation). 0 rad is towards right.
@@ -82,6 +84,7 @@ namespace SimulatorUwpXaml
             Position += new Vector2(elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Cos(Angle), elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Sin(Angle));
         }
 
+        #region VehiclePhysics
         private float CalculateLinearVelocity()
         {
             return (SpeedLeftWheel + SpeedRightWheel) / 2f;
@@ -99,34 +102,55 @@ namespace SimulatorUwpXaml
 
         private double TimeForFullRotationOnTheSpot(int speedDifferance) // Calculated based on data when rotating on the spot
         {
-            const double a = 46863230;
-            const double b = 2.655837;
-            const double c = 0.2627988;
-            const double d = 2.089203;
-
-            double pl4Regression = d + (a - b) / (1 + Math.Pow(speedDifferance / c, b));  // Symmetrical sigmoidal regression (for rotation on-the-spot).
-
-            return (float) pl4Regression;
-            //return 2126233 + (2.863412 - 2126233) / (1 + Math.Pow(speedDifferance / 4291.27, 3.70461));  // Regression with the data in wrong order
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return SymmetricalSigmoidalPl4(speedDifferance, 46863230, 2.655837, 0.2627988, 2.089203);  // R^2 = 0.9994
+                case RegressionType.Power:
+                    return Power(speedDifferance, 51362, -1.86);  // R^2: 0.9931
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private double TimeForFullRotationWithMovement(int speedDifferance)
         {
-            return 2103.6 * Math.Pow(speedDifferance, -1.258);  // R^2: 0.9551 (TODO: improve formula with more measurements from the car - must be done in large space)
+            //TODO: improve formula with more measurements from the car - must be done in large space
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return SymmetricalSigmoidalPl4(speedDifferance, 35582790, 1.822818, 0.01529213, 2.08377);  // R^2: 0.9912
+                case RegressionType.Power:
+                    return Power(speedDifferance, 2103.6, -1.258);  // R^2: 0.9551
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private float TimePerMeter(float linearWheelPower) // Calculated based on speed in a straight line
         {
-            const double a = 416.5587;
-            const double b = 1.097031;
-            const double c = 8.717592;
-            const double d = -8.155351;
-
             float absoluteLinearWheelPower = Math.Abs(linearWheelPower);
-            double pl4Regression = d + (a - b) / (1 + Math.Pow(absoluteLinearWheelPower / c, b));  // Symmetrical sigmoidal regression (for rotation on-the-spot).
 
-            return (float) pl4Regression / 10;
-            //return 2126233 + (2.863412 - 2126233) / (1 + Math.Pow(speedDifferance / 4291.27, 3.70461));  // Regression with the data in wrong order
+            switch (CarPhysicsRegressionType)
+            {
+                case RegressionType.SymmetricalSigmoidalPl4:
+                    return (float) SymmetricalSigmoidalPl4(absoluteLinearWheelPower, 416.5587, 1.097031, 8.717592, -8.155351) / 10;  // R^2 = 0.9999
+                case RegressionType.Power:
+                    return (float) Power(absoluteLinearWheelPower, 3235.5, -1.1) / 10;  // R^2: 0.9942
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+
+        private static double SymmetricalSigmoidalPl4(double variable, double a, double b, double c, double d)
+        {
+            return d + (a - b) / (1 + Math.Pow(variable / c, b));
+        }
+
+        private static double Power(double variable, double a, double b)
+        {
+            return a * Math.Pow(variable, b);
+        }
+        #endregion
     }
 }
