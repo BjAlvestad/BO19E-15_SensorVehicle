@@ -12,5 +12,6 @@
         public const string LidarPage = "Lidar";
         public const string UltrasonicPage = "Ultrasonic";
         public const string PowerPage = "Power";
+        public const string SettingsPage = "Settings";
     }
 }
