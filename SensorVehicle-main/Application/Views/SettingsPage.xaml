@@ -73,7 +73,7 @@
                     Style="{ThemeResource BodyTextBlockStyle}" />
 
                 <HyperlinkButton
-                    x:Uid="Settings_PrivacyTermsLink" 
+                    x:Uid="Settings_GitHubRepoLink" 
                     Margin="{StaticResource XSmallTopMargin}" />
             </StackPanel>
         </StackPanel>
