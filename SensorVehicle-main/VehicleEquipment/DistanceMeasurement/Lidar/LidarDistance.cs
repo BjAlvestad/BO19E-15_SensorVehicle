@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _aftHasBeenCalculated;
         private readonly ILidarPacketReceiver _packetReceiver;
         private CancellationTokenSource _collectorCancelToken;
+        private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
@@ -59,6 +61,20 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         {
             get { return _lastUpdate; }
             private set { SetProperty(ref _lastUpdate, value); }
+        }
+
+        private long _lastCollectionDuration;
+        public long LastCollectionDuration
+        {
+            get { return _lastCollectionDuration; }
+            private set { SetPropertyRaiseSelectively(ref _lastCollectionDuration, value); }
+        }
+
+        private long _lastDataInterpretationDuration;
+        public long LastDataInterpretationDuration
+        {
+            get { return _lastDataInterpretationDuration; }
+            private set { SetPropertyRaiseSelectively(ref _lastDataInterpretationDuration, value); }
         }
 
         public bool IsCollectorRunning { get; private set; }
@@ -342,13 +358,21 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             {
                 while (true)
                 {
+                    _collectionCycleStopwatch.Start();
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
+                    LastCollectionDuration = _collectionCycleStopwatch.ElapsedMilliseconds;
+
+                    _collectionCycleStopwatch.Restart();
                     Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, (float)MinRange);
+                    LastDataInterpretationDuration = _collectionCycleStopwatch.ElapsedMilliseconds;
+                    _collectionCycleStopwatch.Reset();
+
                     _largestDistanceHasBeenCalculated = false;
                     _fwdHasBeenCalculated = false;
                     _leftHasBeenCalculated = false;
                     _rightHasBeenCalculated = false;
                     _aftHasBeenCalculated = false;
+
                     LastUpdate = DateTime.Now;
 
                     await Task.Delay(timeToWaitAfterUpdate, cancellationToken);
