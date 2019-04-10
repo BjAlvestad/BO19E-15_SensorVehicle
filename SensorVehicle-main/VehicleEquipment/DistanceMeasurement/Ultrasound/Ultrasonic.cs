@@ -8,26 +8,26 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public class Ultrasonic : ThreadSafeNotifyPropertyChanged, IUltrasonic
     {
-        public readonly TimeSpan MinimumSensorRequestsInterval = TimeSpan.FromMilliseconds(30);
+        public readonly int MinimumSensorRequestsInterval = 30;
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
 
         public Ultrasonic(IVehicleCommunication comWithUltrasonic)
         {
             _vehicleCommunication = comWithUltrasonic;
-            PermissableDistanceAge = TimeSpan.FromMilliseconds(300);
+            PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
             Message = "";
         }
 
-        private TimeSpan _permissableDistanceAge;
-        public TimeSpan PermissableDistanceAge // Consider namechange. Suggestions:  DistanceExpirationLimit  SensorDataExpirationLimit  PermissableSensorDataAge    SensorDataRequestInterval  RequestNewSensorDataLimit
+        private int _permissableDistanceAge;
+        public int PermissableDistanceAge //TODO: Consider name change. Suggestions:  DistanceExpirationLimit  SensorDataExpirationLimit  PermissableSensorDataAge    SensorDataRequestInterval  RequestNewSensorDataLimit
         {
             get => _permissableDistanceAge;
             set
             {
-                _permissableDistanceAge = (value > MinimumSensorRequestsInterval) ? value : MinimumSensorRequestsInterval;
-                RaiseSyncedPropertyChanged();
+                int newPermissableDistanceAge = (value > MinimumSensorRequestsInterval) ? value : MinimumSensorRequestsInterval;
+                SetProperty(ref _permissableDistanceAge, newPermissableDistanceAge);
             }
         }
 
@@ -119,7 +119,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                         while (RefreshUltrasonicContinously)
                         {
                             UpdateDistanceProperties();
-                            Thread.Sleep(PermissableDistanceAge.Milliseconds / 2);
+                            Thread.Sleep(PermissableDistanceAge / 2);
                         }
                     });
                 }
@@ -130,7 +130,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         {
             lock (DistanceUpdateSyncLock)
             {
-                if (DateTime.Now - TimeStamp <= PermissableDistanceAge) return;
+                if ((DateTime.Now - TimeStamp).TotalMilliseconds <= PermissableDistanceAge) return;
 
                 if (HasUnacknowledgedError)
                 {

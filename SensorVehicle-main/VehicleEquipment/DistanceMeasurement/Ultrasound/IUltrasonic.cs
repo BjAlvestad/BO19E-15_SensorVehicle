@@ -15,7 +15,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
         DateTime TimeStamp { get; }
 
-        TimeSpan PermissableDistanceAge { get; set; }
+        int PermissableDistanceAge { get; set; }
 
         bool RaiseNotificationForSelective { get; set; }
 
