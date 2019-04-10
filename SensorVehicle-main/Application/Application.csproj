@@ -127,6 +127,7 @@
     <Compile Include="Helpers\SettingsStorageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Constants\PageTokens.cs" />
+    <Compile Include="Services\ThemeSelectorService.cs" />
     <Compile Include="ViewModels\EquipmentOverviewViewModel.cs" />
     <Compile Include="ViewModels\ExampleLogicViewModel.cs" />
     <Compile Include="ViewModels\InfoViewModel.cs" />
