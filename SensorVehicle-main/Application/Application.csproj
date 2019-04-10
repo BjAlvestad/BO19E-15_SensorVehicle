@@ -133,6 +133,7 @@
     <Compile Include="ViewModels\InfoViewModel.cs" />
     <Compile Include="ViewModels\LidarViewModel.cs" />
     <Compile Include="ViewModels\PowerViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\StudentLogicViewModel.cs" />
     <Compile Include="ViewModels\UltrasonicViewModel.cs" />
@@ -154,6 +155,9 @@
     </Compile>
     <Compile Include="Views\PowerPage.xaml.cs">
       <DependentUpon>PowerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
@@ -215,6 +219,10 @@
     <Page Include="Views\PowerPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
