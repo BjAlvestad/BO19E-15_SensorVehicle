@@ -17,15 +17,15 @@ namespace Application.ViewModels
         {
             Wheel = wheel;
             Encoders = encoders;
-            UpdateInterval = TimeSpan.FromMilliseconds(300);
+            UpdateInterval = 300;
         }
 
         public IWheel Wheel { get; set; }
 
         public IEncoders Encoders { get; private set; }
 
-        private TimeSpan _updateInterval;
-        public TimeSpan UpdateInterval
+        private int _updateInterval;
+        public int UpdateInterval
         {
             get { return _updateInterval; }
             set { SetProperty(ref _updateInterval, value); }

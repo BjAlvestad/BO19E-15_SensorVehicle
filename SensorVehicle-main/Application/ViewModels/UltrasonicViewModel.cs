@@ -18,20 +18,5 @@ namespace Application.ViewModels
 
         public IUltrasonic Ultrasonic { get; set; }
         public IPower Power { get; set; }
-
-        public string PermissableDistanceAge
-        {
-            get { return Ultrasonic.PermissableDistanceAge.Milliseconds.ToString(); }
-            set
-            {
-                if (Int32.TryParse(value, out int inputValue))
-                {
-                    int validInputValue = (inputValue > 1000) ? 999 : inputValue;
-                    Ultrasonic.PermissableDistanceAge = TimeSpan.FromMilliseconds(validInputValue);
-                }
-
-                RaisePropertyChanged();  
-            }
-        }
     }
 }

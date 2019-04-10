@@ -39,11 +39,23 @@
                     </StackPanel>
 
                     <StackPanel RelativePanel.Below="StopWheelButton" RelativePanel.RightOf="SliderPanel">
-                        <ToggleSwitch Header="Apply wheelspeed" OffContent="On button click" OnContent="Automatically" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
-                        <Button Content="Apply new wheelspeed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"
+                        <ToggleSwitch Header="Auto-apply speed toggle" Margin="0,10" OffContent="Manual" OnContent="Automatic" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                        <Button Content="Apply new speed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"
                                 Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
-                        <TextBox Text="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" Description="Update interval"
-                                 Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <StackPanel Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Update interval:" FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox SelectedItem="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" >
+                                    <x:Int32>50</x:Int32>
+                                    <x:Int32>100</x:Int32>
+                                    <x:Int32>300</x:Int32>
+                                    <x:Int32>500</x:Int32>
+                                    <x:Int32>1000</x:Int32>
+                                    <x:Int32>5000</x:Int32>
+                                </ComboBox>
+                                <TextBlock Text="ms" Margin="10,0"  VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                 </RelativePanel>
             </StackPanel>
@@ -103,7 +115,7 @@
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TimeAccumulatedForLastRequest, Mode=OneWay}"
                                RelativePanel.AlignVerticalCenterWith="LastDurationText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
 
-                    <TextBlock x:Name="VelocityText" Text="Velocity (cm/s):"  RelativePanel.Below="LastDurationText" RelativePanel.AlignLeftWith="LastText" />
+                    <TextBlock x:Name="VelocityText" Text="Velocity [cm/s]:"  RelativePanel.Below="LastDurationText" RelativePanel.AlignLeftWith="LastText" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
                                RelativePanel.AlignVerticalCenterWith="VelocityText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
                     <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
@@ -116,11 +128,23 @@
                 <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
                 <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
                 <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
-                <TextBox Text="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" Description="Collection interval"
-                            Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <StackPanel Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Collection interval:" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox SelectedItem="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" >
+                            <x:Int32>50</x:Int32>
+                            <x:Int32>100</x:Int32>
+                            <x:Int32>300</x:Int32>
+                            <x:Int32>500</x:Int32>
+                            <x:Int32>1000</x:Int32>
+                            <x:Int32>10000</x:Int32>
+                        </ComboBox>
+                        <TextBlock Text="ms" Margin="10,0"  VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
                 <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}"
                         Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
-                <Button Content="Reset total &#x0a;distance travled" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
+                <Button Content="Reset total &#x0a;distance travled" Margin="0,10" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->

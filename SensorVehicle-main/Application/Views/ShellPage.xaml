@@ -21,15 +21,17 @@
         IsSettingsVisible="False"
         Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
         <winui:NavigationView.MenuItems>
-            <!--
-            TODO WTS: Change the symbols for each item as appropriate for your app
-            More on Segoe UI Symbol icons: https://docs.microsoft.com/windows/uwp/style/segoe-ui-symbol-font
-            Or to use an IconElement instead of a Symbol see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/projectTypes/navigationpane.md
-            Edit String/en-US/Resources.resw: Add a menu item title for each page
-            -->
             <winui:NavigationViewItem x:Uid="Shell_Info" helpers:NavHelper.NavigateTo="Info">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE946;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
+                                      Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEBDA;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
 
@@ -41,17 +43,9 @@
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>-->
 
-            <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
-                                      Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
-                <winui:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE71D;"/>
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-
             <winui:NavigationViewItem x:Uid="Shell_EquipmentOverview" helpers:NavHelper.NavigateTo="EquipmentOverview">
                 <winui:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE772;"/>
+                    <FontIcon Glyph="&#xEC47;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
 
@@ -62,8 +56,6 @@
                     <FontIcon Glyph="&#xEA3A;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
-
-            <!--TODO: Create separate page for Encoder (currently it is combined on the Wheels Page)-->
 
             <winui:NavigationViewItem x:Uid="Shell_Lidar" helpers:NavHelper.NavigateTo="Lidar"
                                       Background="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"

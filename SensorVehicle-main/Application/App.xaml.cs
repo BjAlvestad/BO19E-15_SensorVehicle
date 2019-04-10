@@ -81,7 +81,6 @@ namespace Application
                 encoderRightCommunication = new SimulatedVehicleCommunication(Device.EncoderRight, _simulatorAppServiceClient);
                 wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
                 Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
-                // TODO: Configure for communication against simulator (after SimulatedVehicleEquipment class is created)
             }
             else // Connect up against mock/random data instead of simulator
             {
@@ -154,28 +153,8 @@ namespace Application
 
         private async Task<bool> LaunchSimulator()
         {
-            var success = await Windows.System.Launcher.LaunchUriAsync(_simulatorUri);
+            var success = await Launcher.LaunchUriAsync(_simulatorUri);
             return success;
         }
-
-        //TODO: Hvis denne ikke brukes, s[ slett den
-        //private async Task EnsureConnected()
-        //{
-        //    var retryDelay = 10000;
-        //    await Task.Delay(retryDelay);
-        //    while (!_connection.IsConnected)
-        //    {
-        //        try
-        //        {
-        //            await _connection.Open();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            // note ensure MessageRelay is deployed by right clicking on UwpMessageRelay.MessageRelay and selecting "Deploy"
-        //            string MessageResultsText = $"Unable to connect to siren of shame engine. Retrying in {(retryDelay / 1000)} seconds...";
-        //            await Task.Delay(retryDelay);
-        //        }
-        //    }
-        //}
     }
 }

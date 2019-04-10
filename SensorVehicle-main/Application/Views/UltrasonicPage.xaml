@@ -31,7 +31,18 @@
             <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
             <RelativePanel Grid.Row="0" Grid.Column="0" >
                 <TextBlock x:Name="PermissableAgeText" Text="Permissable distance age: "/>
-                <TextBox Text="{x:Bind ViewModel.PermissableDistanceAge, Mode=TwoWay}" RelativePanel.Below="PermissableAgeText" RelativePanel.AlignRightWith="PermissableAgeText"  Description="milliseconds"/>
+                <StackPanel Orientation="Horizontal" RelativePanel.Below="PermissableAgeText" RelativePanel.AlignLeftWith="PermissableAgeText">
+                    <ComboBox SelectedItem="{x:Bind ViewModel.Ultrasonic.PermissableDistanceAge, Mode=TwoWay}" >
+                        <x:Int32>50</x:Int32>
+                        <x:Int32>100</x:Int32>
+                        <x:Int32>150</x:Int32>
+                        <x:Int32>200</x:Int32>
+                        <x:Int32>300</x:Int32>
+                        <x:Int32>500</x:Int32>
+                        <x:Int32>1000</x:Int32>
+                    </ComboBox>
+                    <TextBlock Text="ms" Margin="10,0"  VerticalAlignment="Center" />
+                </StackPanel>
             </RelativePanel>
 
             <!--DISPLAY SENSOR DATA box (contains properties that only raises NotifyPropertyChanged selectively)-->
