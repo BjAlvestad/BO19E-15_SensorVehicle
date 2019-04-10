@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:svconverters="using:Application.Converters"
     xmlns:prismUnity="using:Prism.Unity.Windows"
-    RequestedTheme="Light">
+    RequestedTheme="Dark">
 
     <prismUnity:PrismUnityApplication.Resources>
         <ResourceDictionary>
