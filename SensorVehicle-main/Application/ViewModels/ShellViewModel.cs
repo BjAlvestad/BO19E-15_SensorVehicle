@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 
 using Application.Helpers;
+using Application.Views;
 
 using Prism.Commands;
 using Prism.Windows.Mvvm;
@@ -81,6 +82,12 @@ namespace Application.ViewModels
 
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
         {
+            if (args.IsSettingsInvoked)
+            {
+                _navigationService.Navigate("Settings", null);
+                return;
+            }
+
             var item = _navigationView.MenuItems
                             .OfType<WinUI.NavigationViewItem>()
                             .First(menuItem => (string)menuItem.Content == (string)args.InvokedItem);
@@ -91,6 +98,12 @@ namespace Application.ViewModels
         private void Frame_Navigated(object sender, NavigationEventArgs e)
         {
             IsBackEnabled = _navigationService.CanGoBack();
+            if (e.SourcePageType == typeof(SettingsPage))
+            {
+                Selected = _navigationView.SettingsItem as WinUI.NavigationViewItem;
+                return;
+            }
+
             Selected = _navigationView.MenuItems
                             .OfType<WinUI.NavigationViewItem>()
                             .FirstOrDefault(menuItem => IsMenuItemForPageType(menuItem, e.SourcePageType));
