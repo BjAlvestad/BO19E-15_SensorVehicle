@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Application.Core.Models;
-
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ExampleLogic;
