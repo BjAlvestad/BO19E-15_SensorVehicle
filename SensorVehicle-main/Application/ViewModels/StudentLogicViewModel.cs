@@ -5,60 +5,65 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using Application.Core.Models;
-using Application.Core.Services;
-
 using Prism.Commands;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using StudentLogic;
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Wheels;
 
 namespace Application.ViewModels
 {
     public class StudentLogicViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ISampleDataService _sampleDataService;
+        private readonly StudentLogicService _studentLogicService;
+        private readonly IWheel _wheel;
+        private readonly ILidarDistance _lidarDistance;
+        private readonly IUltrasonic _ultrasonic;
 
-        public StudentLogicViewModel(INavigationService navigationServiceInstance, ISampleDataService sampleDataServiceInstance)
+        public StudentLogicViewModel(INavigationService navigationServiceInstance, StudentLogicService studentLogicServiceInstance, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
         {
             _navigationService = navigationServiceInstance;
-            _sampleDataService = sampleDataServiceInstance;
+            _studentLogicService = studentLogicServiceInstance;
+            _wheel = wheel;
+            _lidarDistance = lidarDistance;
+            _ultrasonic = ultrasonic;
         }
 
-        private SampleOrder _selected;
+        private StudentLogicBase _selected;
 
-        public SampleOrder Selected
+        public StudentLogicBase Selected
         {
             get => _selected;
-            set => SetProperty(ref _selected, value);
+            set
+            {
+                if (Selected == null || Selected.RunStudentLogic == false)
+                {
+                    SetProperty(ref _selected, value);
+                    _studentLogicService.ActiveStudentLogic = value;
+                }
+                else
+                {
+                    RaisePropertyChanged(nameof(Selected));
+                }
+            }
         }
 
-        public ObservableCollection<SampleOrder> SampleItems { get; } = new ObservableCollection<SampleOrder>();
+        public ObservableCollection<StudentLogicBase> StudentLogics { get; } = new ObservableCollection<StudentLogicBase>();
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             base.OnNavigatedTo(e, viewModelState);
-            await LoadDataAsync();
-        }
-
-        public async Task LoadDataAsync()
-        {
-            SampleItems.Clear();
-
-            var data = await _sampleDataService.GetSampleModelDataAsync();
-
-            foreach (var item in data)
-            {
-                SampleItems.Add(item);
-            }
         }
 
         public void SetDefaultSelection()
         {
-            Selected = SampleItems.FirstOrDefault();
+            Selected = _studentLogicService.ActiveStudentLogic ?? StudentLogics.FirstOrDefault();
         }
     }
 }

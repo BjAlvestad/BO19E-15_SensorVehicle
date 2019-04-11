@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Threading.Tasks;
 
-using Application.Core.Services;
 using Application.Views;
 
 using Microsoft.Practices.Unity;
@@ -22,6 +21,7 @@ using Communication.MockCommunication;
 using Communication.Simulator;
 using Communication.Vehicle;
 using ExampleLogic;
+using StudentLogic;
 using VehicleEquipment;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -56,8 +56,8 @@ namespace Application
             // register a singleton using Container.RegisterType<IInterface, Type>(new ContainerControlledLifetimeManager());
             base.ConfigureContainer();
             Container.RegisterInstance<IResourceLoader>(new ResourceLoaderAdapter(new ResourceLoader()));
-            Container.RegisterType<ISampleDataService, SampleDataService>();  //TEMP: Remove after StudentLogic and ExampleLogic pages has been changed
             Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<StudentLogic.StudentLogicService>(new ContainerControlledLifetimeManager());
 
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;

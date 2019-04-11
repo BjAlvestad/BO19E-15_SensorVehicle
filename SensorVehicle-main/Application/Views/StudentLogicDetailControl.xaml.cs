@@ -1,21 +1,20 @@
 ﻿using System;
 
-using Application.Core.Models;
-
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using StudentLogic;
 
 namespace Application.Views
 {
     public sealed partial class StudentLogicDetailControl : UserControl
     {
-        public SampleOrder MasterMenuItem
+        public StudentLogicBase MasterMenuItem
         {
-            get { return GetValue(MasterMenuItemProperty) as SampleOrder; }
+            get { return GetValue(MasterMenuItemProperty) as StudentLogicBase; }
             set { SetValue(MasterMenuItemProperty, value); }
         }
 
-        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(SampleOrder), typeof(StudentLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
+        public static readonly DependencyProperty MasterMenuItemProperty = DependencyProperty.Register("MasterMenuItem", typeof(StudentLogicBase), typeof(StudentLogicDetailControl), new PropertyMetadata(null, OnMasterMenuItemPropertyChanged));
 
         public StudentLogicDetailControl()
         {
