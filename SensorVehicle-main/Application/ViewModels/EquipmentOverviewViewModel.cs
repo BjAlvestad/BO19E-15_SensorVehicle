@@ -4,6 +4,7 @@ using Communication;
 using ExampleLogic;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
+using StudentLogic;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -13,7 +14,7 @@ namespace Application.ViewModels
 {
     public class EquipmentOverviewViewModel : ViewModelBase
     {
-        public EquipmentOverviewViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic)
+        public EquipmentOverviewViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
         {
             Ultrasonic = ultrasonic;
             Lidar = lidar;
@@ -21,6 +22,7 @@ namespace Application.ViewModels
             Encoders = encoders;
             Power = power;
             ExampleLogic = exampleLogic;
+            StudentLogic = studentLogic;
         }
 
         public IUltrasonic Ultrasonic { get; set; }
@@ -29,6 +31,7 @@ namespace Application.ViewModels
         public IEncoders Encoders { get; set; }
         public IPower Power { get; set; }
         public ExampleLogicService ExampleLogic { get; set; }
+        public StudentLogicService StudentLogic { get; set; }
 
         private bool _autoCalculateLidarDistance;
         public bool AutoCalculateLidarDistance
@@ -40,6 +43,7 @@ namespace Application.ViewModels
         public void StopWheels()
         {
             if (ExampleLogic.ActiveExampleLogic != null) ExampleLogic.ActiveExampleLogic.RunExampleLogic = false;
+            if (StudentLogic.ActiveStudentLogic != null) StudentLogic.ActiveStudentLogic.RunStudentLogic = false;
 
             Wheel.SetSpeed(leftValue: 0, rightValue: 0, onlySendIfValuesChanged: false);
         }
