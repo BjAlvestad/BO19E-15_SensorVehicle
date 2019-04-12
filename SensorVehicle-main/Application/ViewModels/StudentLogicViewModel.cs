@@ -30,6 +30,7 @@ namespace Application.ViewModels
         {
             _navigationService = navigationServiceInstance;
             _studentLogicService = studentLogicServiceInstance;
+            StudentLogics = studentLogicServiceInstance.StudentLogics;
             _wheel = wheel;
             _lidarDistance = lidarDistance;
             _ultrasonic = ultrasonic;
@@ -54,7 +55,7 @@ namespace Application.ViewModels
             }
         }
 
-        public ObservableCollection<StudentLogicBase> StudentLogics { get; } = new ObservableCollection<StudentLogicBase>();
+        public ObservableCollection<StudentLogicBase> StudentLogics { get; }
 
         public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {

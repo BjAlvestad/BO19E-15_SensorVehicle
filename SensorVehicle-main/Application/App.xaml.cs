@@ -57,7 +57,7 @@ namespace Application
             base.ConfigureContainer();
             Container.RegisterInstance<IResourceLoader>(new ResourceLoaderAdapter(new ResourceLoader()));
             Container.RegisterType<ExampleLogicService>(new ContainerControlledLifetimeManager());
-            Container.RegisterType<StudentLogic.StudentLogicService>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<StudentLogicService>(new ContainerControlledLifetimeManager());
 
             ILidarPacketReceiver lidarPacketReceiver;
             IVehicleCommunication ultrasonicCommunication;
