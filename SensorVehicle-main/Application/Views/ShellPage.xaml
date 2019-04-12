@@ -29,7 +29,8 @@
 
             <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
                                       Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
+                                      Visibility="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEBDA;"/>
                 </winui:NavigationViewItem.Icon>
