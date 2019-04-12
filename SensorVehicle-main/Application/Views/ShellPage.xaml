@@ -37,6 +37,8 @@
             </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
+                                      Background="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
                                       Visibility="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7BE;"/>
