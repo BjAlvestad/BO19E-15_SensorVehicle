@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Helpers;
+
+using StudentLogic.CodeSnippetExamples;
+
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -25,7 +28,7 @@ namespace StudentLogic
             {
                 // Child classes instatiated in the StudentLogics collection will automatically appear in the GUI
                 // Pass the sensors to be used as arguments (the ones specified in the constructor of the child class).
-                
+                new SteerBlindlyToLargestDistance(wheels, lidar)
             };
         }
     }
