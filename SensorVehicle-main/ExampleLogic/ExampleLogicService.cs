@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using ExampleLogic.L1_CenterCorridor;
-using ExampleLogic.L3_DriveToLargestDistance;
+using ExampleLogic.AutonomyLogics;
+using ExampleLogic.ConceptLogics;
 using Helpers;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -27,8 +27,7 @@ namespace ExampleLogic
             {
                 // Child classes instatiated in the ExampleLogics collection will automatically appear in the GUI
                 // Pass the sensors to be used as arguments (the ones specified in the constructor of the child class).
-                new CenterCorridorMain(wheels, ultrasonic),
-                new CenterCorridorNoStopMain(wheels, ultrasonic),
+                new CrossConnectedProportionalFeedback(wheels, ultrasonic),
                 new TurnToLargestDistance(wheels, lidar),
                 new DriveToLargestDistance(wheels, lidar, ultrasonic)
             };

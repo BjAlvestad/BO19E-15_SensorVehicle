@@ -3,25 +3,27 @@ using System.Threading;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Wheels;
 
-namespace ExampleLogic.L1_CenterCorridor
+namespace ExampleLogic.ConceptLogics
 {
-    public class CenterCorridorNoStopMain : ExampleLogicBase
+    public class CrossConnectedProportionalFeedback : ExampleLogicBase
     {
         private readonly IWheel _wheels;
         private readonly IUltrasonic _ultrasonic;
 
-        public CenterCorridorNoStopMain(IWheel wheel, IUltrasonic ultrasonic) : base(wheel)
+        public CrossConnectedProportionalFeedback(IWheel wheel, IUltrasonic ultrasonic) : base(wheel)
         {
             Details = new ExampleLogicDetails()
             {
-                Title = "L1b - Keep Center of Coridor \n\t(rotate on block)",
+                Title = "Cross-connected P-feedback",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Control systems",
+                SuitableForSubjects = "P-feedback (limitation) demo",
 
-                Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to steer towards the center of the corridor.\n" +
-                              "The left wheel speed is controlled by the distance from the right ultrasound sensor.\n" +
-                              "The right wheel speed is controlled by the distance from the left ultrasound sensor.\n" +
-                              "Overall speed is affected by distance in front. When meeting opstruction, the car will turn until no obstruction"
+                Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to steer away from the closest wall.\n" +
+                              "The left wheel speed is controlled by the distance from the right ultrasound sensor, and vice versa for other side.\n" +
+                              "When meeting obstruction in front, the car will turn (after a short pause) until no obstruction.\n" +
+                              "Demo suggestion:\n" +
+                              "Observe how just a simple proportional feedback kan give some limited control of the vehicle.\n" +
+                              "Try sending the car at an steep angle towards the wall, and observe how it oscillates, and is unable to stay in the middle of the corridor."
             };
             
             _wheels = wheel;
@@ -39,7 +41,9 @@ namespace ExampleLogic.L1_CenterCorridor
         {
             if (_ultrasonic.Fwd < 0.5)
             {
-               RotateAwayFromObstruction(desiredFrontalClearance: 1.0f, rotationSpeedPercentage: 50);
+                _wheels.Stop();
+                Thread.Sleep(500);
+               RotateAwayFromObstruction(cancellationToken, desiredFrontalClearance: 1.0f, rotationSpeedPercentage: 50);
             }
             else
             {
@@ -67,13 +71,14 @@ namespace ExampleLogic.L1_CenterCorridor
         /// <summary>
         /// Rotates away from obstruction
         /// </summary>
+        /// <param name="cancellationToken">Used to exit loop if control logic stop is requested</param>
         /// <param name="desiredFrontalClearance">Distance required in front for it to stop rotating (in meters)</param>
         /// <param name="rotationSpeedPercentage">Value between -100 and +100</param>
-        private void RotateAwayFromObstruction(float desiredFrontalClearance, int rotationSpeedPercentage)
+        private void RotateAwayFromObstruction(CancellationToken cancellationToken, float desiredFrontalClearance, int rotationSpeedPercentage)
         {
             DateTime startedRotationAt = DateTime.Now;
             bool rightHasLargestDistance = _ultrasonic.Right > _ultrasonic.Left;
-            while (_ultrasonic.Fwd < desiredFrontalClearance)
+            while (_ultrasonic.Fwd < desiredFrontalClearance && !cancellationToken.IsCancellationRequested)
             {
                 if(rightHasLargestDistance) _wheels.TurnRight(rotationSpeedPercentage);
                 else _wheels.TurnLeft(rotationSpeedPercentage);
