@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Application.Helpers;
@@ -10,13 +11,24 @@ using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel;
+using Windows.System;
 using Windows.UI.Xaml;
+
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Encoder;
+using VehicleEquipment.Locomotion.Wheels;
 
 namespace Application.ViewModels
 {
     // For help see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/pages/settings.md
     public class SettingsViewModel : ViewModelBase
     {
+        private IUltrasonic _ultrasonic;
+        private ILidarDistance _lidar;
+        private IWheel _wheel;
+        private IEncoders _encoders;
+
         private ElementTheme _elementTheme = ThemeSelectorService.Theme;
 
         public ElementTheme ElementTheme
@@ -55,8 +67,48 @@ namespace Application.ViewModels
             }
         }
 
-        public SettingsViewModel()
+        private bool _runAsyncSocketServer;
+        public bool RunAsyncSocketServer
         {
+            get { return _runAsyncSocketServer; }
+            set
+            {
+                //TODO: Implement Async Socket Server functionality (start on true, and stop on false)
+                if (value)
+                {
+                    if (RunSocketServer) RunSocketServer = false;
+                }
+                SetProperty(ref _runAsyncSocketServer, value);
+            }
+        }
+
+        private bool _runSocketServer;
+        public bool RunSocketServer
+        {
+            get { return _runSocketServer; }
+            set
+            {
+                //TODO: Implement Socket Server functionality (start on true, and stop on false)
+                if (value)
+                {
+                    if (RunAsyncSocketServer) RunAsyncSocketServer = false;
+                }
+                SetProperty(ref _runSocketServer, value);
+            }
+        }
+
+        public SettingsViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders)
+        {
+            _ultrasonic = ultrasonic;
+            _lidar = lidar;
+            _wheel = wheel;
+            _encoders = encoders;
+        }
+
+        public async Task LaunchExtraFunctions()
+        {
+            Uri extraFunctionsUri = new Uri("hvl-sensorvehicle-extras:");
+            bool success = await Launcher.LaunchUriAsync(extraFunctionsUri);
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
