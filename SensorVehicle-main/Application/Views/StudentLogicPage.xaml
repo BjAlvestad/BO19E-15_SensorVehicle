@@ -94,7 +94,7 @@
             DetailsTemplate="{StaticResource DetailsTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
             BorderBrush="Transparent"
-            MasterHeader="MasterDetail"
+            MasterHeader="Student Logics"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
             BackButtonBehavior="Automatic"
             MasterHeaderTemplate="{StaticResource MinimalMasterHeaderTemplate}"/>
