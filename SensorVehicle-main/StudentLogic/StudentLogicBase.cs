@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Helpers;
 using VehicleEquipment.Locomotion.Wheels;
 
-namespace ExampleLogic
+namespace StudentLogic
 {
-    public abstract class ExampleLogicBase : ThreadSafeNotifyPropertyChanged
+    public abstract class StudentLogicBase : ThreadSafeNotifyPropertyChanged
     {
         private IWheel _wheel;
         private CancellationTokenSource _cancellationTokenSource;
@@ -15,8 +15,9 @@ namespace ExampleLogic
         /// Contains the information that will be displayed in the GUI. 
         /// It should be initialized, and all its fields set to your desired values in the constructor of the child-class.
         /// </summary>
-        public abstract ExampleLogicDetails Details { get; }
+        public abstract StudentLogicDescription Details { get; }
 
+        //TODO: Consider moving all error related properties out to separate class (with an instance in every model). Add new error message display to all models.
         private bool _hasUnacknowledgedError;
         public bool HasUnacknowledgedError
         {
@@ -45,7 +46,7 @@ namespace ExampleLogic
             set { SetProperty(ref _showErrorDetails, value); }
         }
 
-        protected ExampleLogicBase(IWheel wheel)
+        protected StudentLogicBase(IWheel wheel)
         {
             _wheel = wheel;
         }
@@ -59,15 +60,15 @@ namespace ExampleLogic
             HasUnacknowledgedError = false;
         }
 
-        private bool _runExampleLogic;
-        public bool RunExampleLogic
+        private bool _runStudentLogic;
+        public bool RunStudentLogic
         {
-            get { return _runExampleLogic; }
+            get { return _runStudentLogic; }
             set
             {
-                if (value == _runExampleLogic) return;
+                if (value == _runStudentLogic) return;
 
-                _runExampleLogic = value;
+                _runStudentLogic = value;
                 if (value)
                 {
                     StartControlLogicTask();
@@ -88,14 +89,14 @@ namespace ExampleLogic
             {
                 if (HasUnacknowledgedError)
                 {
-                    RunExampleLogic = false;
+                    RunStudentLogic = false;
                     return;
                 }
 
                 try
                 {
                     Initialize();
-                    while (RunExampleLogic && !_cancellationTokenSource.IsCancellationRequested)
+                    while (RunStudentLogic && !_cancellationTokenSource.IsCancellationRequested)
                     {
                         Run(_cancellationTokenSource.Token);
                     }
@@ -103,7 +104,7 @@ namespace ExampleLogic
                 }
                 catch (Exception e)
                 {
-                    RunExampleLogic = false;
+                    RunStudentLogic = false;
                     HasUnacknowledgedError = true;
                     ErrorMessage = e.Message;
                     ErrorMessageDetails = e.ToString();

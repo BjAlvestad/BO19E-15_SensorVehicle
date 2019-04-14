@@ -29,19 +29,21 @@
 
             <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
                                       Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
+                                      Visibility="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEBDA;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
 
-            <!--TEMP commented out until the student logic gets implemented-->
-            <!--<winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
+            <winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
+                                      Background="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
                                       Visibility="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7BE;"/>
                 </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>-->
+            </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_EquipmentOverview" helpers:NavHelper.NavigateTo="EquipmentOverview">
                 <winui:NavigationViewItem.Icon>

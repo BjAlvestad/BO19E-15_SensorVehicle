@@ -3,9 +3,9 @@ using System.Threading;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.Locomotion.Wheels;
 
-namespace ExampleLogic.L3_DriveToLargestDistance
+namespace StudentLogic.CodeSnippetExamples
 {
-    public class SteerBlindlyToLargestDistance : ExampleLogicBase
+    public class SteerBlindlyToLargestDistance : StudentLogicBase
     {
         private IWheel _wheels;
         private ILidarDistance _lidar;
@@ -13,13 +13,12 @@ namespace ExampleLogic.L3_DriveToLargestDistance
         #region Description
         public SteerBlindlyToLargestDistance(IWheel wheel, ILidarDistance lidar) : base(wheel)
         {
-            Details = new ExampleLogicDetails
+            Details = new StudentLogicDescription
             {
-                Title = "L3b - Steer to greatest distance",
+                Title = "LIDAR - Steer to greatest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Simple code usage demo",
 
-                Description = "Uses LIDAR to detect largest distance, and steers towards it (without gyro).\n" +
+                Description = "Uses LIDAR to detect largest distance in front sector, and steers towards it (without gyro).\n" +
                               "NB: " +
                               "Does not check for obstructions on side (or in front)." +
                               "Will steer blindly towards greatest distance"
@@ -29,7 +28,7 @@ namespace ExampleLogic.L3_DriveToLargestDistance
             _lidar = lidar;
         }
 
-        public override ExampleLogicDetails Details { get; }
+        public override StudentLogicDescription Details { get; }
         #endregion
 
         #region Initialization_RunsOnceWhenControlLogicStarts

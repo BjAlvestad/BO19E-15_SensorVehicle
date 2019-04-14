@@ -28,7 +28,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="1" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center">
                     <TextBlock Text="{x:Bind Details.Title}" Style="{ThemeResource ListTitleStyle}"/>
-                    <TextBlock Text="{x:Bind Details.SuitableForSubjects}" Style="{StaticResource ListSubTitleStyle}"/>
+                    <TextBlock Text="{x:Bind Details.DemoType}" Style="{StaticResource ListSubTitleStyle}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -94,7 +94,8 @@
             DetailsTemplate="{StaticResource DetailsTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
             BorderBrush="Transparent"
-            MasterHeader="MasterDetail"
+            MasterHeader="Demo Logics"
+            MasterPaneWidth="250"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
             BackButtonBehavior="Automatic"
             MasterHeaderTemplate="{StaticResource MinimalMasterHeaderTemplate}"/>

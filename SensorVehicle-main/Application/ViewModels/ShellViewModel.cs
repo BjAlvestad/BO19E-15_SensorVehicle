@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Navigation;
 
 using Communication;
 using ExampleLogic;
+using StudentLogic;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -31,8 +32,8 @@ namespace Application.ViewModels
         private WinUI.NavigationViewItem _selected;
 
         #region ControlLogicPropertiesForVisibilityBinding
-        //TODO: Add StudentLogic here (and perform required changes in ShellPage) once that class/library has been properly implemented
         public ExampleLogicService ExampleLogic { get; }
+        public StudentLogicService StudentLogic { get; }
         #endregion
 
         #region SensorPropertiesForColorBinding
@@ -57,7 +58,7 @@ namespace Application.ViewModels
             set { SetProperty(ref _selected, value); }
         }
 
-        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic)
+        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
         {
             _navigationService = navigationServiceInstance;
             Lidar = lidar;
@@ -66,6 +67,7 @@ namespace Application.ViewModels
             Encoders = encoders;
             Power = power;
             ExampleLogic = exampleLogic;
+            StudentLogic = studentLogic;
             ItemInvokedCommand = new DelegateCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked);
         }
 

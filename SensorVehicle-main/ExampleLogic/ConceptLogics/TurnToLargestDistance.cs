@@ -1,17 +1,10 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.Locomotion.Wheels;
 
-namespace ExampleLogic.L3_DriveToLargestDistance
+namespace ExampleLogic.ConceptLogics
 {
     public class TurnToLargestDistance : ExampleLogicBase
     {
@@ -22,13 +15,14 @@ namespace ExampleLogic.L3_DriveToLargestDistance
         {
             Details = new ExampleLogicDetails
             {
-                Title = "L3a - Turns to the greatest distance",
+                Title = "Turn towards greatest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Simple code usage demo",
+                DemoType = "Sensor update time demo",
 
-                Description = "Uses LIDAR to detect largest distance, and turns towards it." +
-                              "You can use this as inspiration for part of your own control logic." +
-                              "If you use a Gyro, you can simplify this code."
+                Description = "Uses LIDAR to detect largest distance, and turns towards it.\n" +
+                              "This code does NOT utilize any gyro.\n" +
+                              "Demo suggestion:\n" +
+                              "Try changing collection cycles on the LIDAR page while control logic is running, and observe how this affects the vehicles ability to point towards the correct heading."
             };
 
             _wheels = wheel;

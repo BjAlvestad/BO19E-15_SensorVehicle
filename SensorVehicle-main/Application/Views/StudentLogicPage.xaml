@@ -8,9 +8,9 @@
     xmlns:prismMvvm="using:Prism.Windows.Mvvm"
     prismMvvm:ViewModelLocator.AutoWireViewModel="True" 
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:model="using:Application.Core.Models"
     xmlns:views="using:Application.Views"
     xmlns:behaviors="using:Application.Behaviors"
+    xmlns:studentLogic="using:StudentLogic"
     behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
@@ -20,16 +20,15 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <DataTemplate x:Key="ItemTemplate" x:DataType="model:SampleOrder">
+        <DataTemplate x:Key="ItemTemplate" x:DataType="studentLogic:StudentLogicBase">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <FontIcon Grid.Column="0" FontSize="32" Glyph="{x:Bind Symbol}" VerticalAlignment="Center" />
                 <StackPanel Grid.Column="1" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center">
-                    <TextBlock Text="{x:Bind Company}" Style="{ThemeResource ListTitleStyle}"/>
-                    <TextBlock Text="{x:Bind Status}" Style="{StaticResource ListSubTitleStyle}"/>
+                    <TextBlock Text="{x:Bind Details.Title}" Style="{ThemeResource ListTitleStyle}"/>
+                    <TextBlock Text="{x:Bind Details.Author}" Style="{StaticResource ListSubTitleStyle}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -89,13 +88,14 @@
             </VisualStateManager.VisualStateGroups>
         <controls:MasterDetailsView
             x:Name="MasterDetailsViewControl"
-            ItemsSource="{x:Bind ViewModel.SampleItems}"
+            ItemsSource="{x:Bind ViewModel.StudentLogics}"
             SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
             ItemTemplate="{StaticResource ItemTemplate}"
             DetailsTemplate="{StaticResource DetailsTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
             BorderBrush="Transparent"
-            MasterHeader="MasterDetail"
+            MasterHeader="Student Logics"
+            MasterPaneWidth="260"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
             BackButtonBehavior="Automatic"
             MasterHeaderTemplate="{StaticResource MinimalMasterHeaderTemplate}"/>

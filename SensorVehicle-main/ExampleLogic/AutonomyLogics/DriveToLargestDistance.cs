@@ -5,7 +5,7 @@ using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Wheels;
 
-namespace ExampleLogic.L3_DriveToLargestDistance
+namespace ExampleLogic.AutonomyLogics
 {
     public class DriveToLargestDistance : ExampleLogicBase
     {
@@ -18,12 +18,13 @@ namespace ExampleLogic.L3_DriveToLargestDistance
         {
             Details = new ExampleLogicDetails
             {
-                Title = "L3c - Drive to largest distance",
+                Title = "Drive to largest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Robotics",
+                DemoType = "AUTONOMY DEMO (simple)",
 
                 Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
-                              "It also uses Ultrasound to keep distance from wall."
+                              "It also uses Ultrasound to keep distance from wall.\n" +
+                              "Will turn away from any obstructions in front."
             };
 
             _wheels = wheel;

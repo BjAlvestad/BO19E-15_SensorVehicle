@@ -5,9 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using Application.Core.Models;
-using Application.Core.Services;
-
 using Prism.Commands;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
