@@ -15,8 +15,21 @@
     </Page.Resources>
 
     <Grid Margin="{StaticResource MediumLeftRightMargin}">
-        <StackPanel
-            x:Name="ContentArea">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--THEME SELECTOR-->
+        <StackPanel Grid.Column="0" Grid.Row="0">
             <TextBlock
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -58,7 +71,10 @@
                     </RadioButton>
                 </StackPanel>
             </StackPanel>
+        </StackPanel>
 
+        <!--ABOUT THIS APPLICATION-->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2">
             <TextBlock
                     x:Uid="Settings_About"
                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
