@@ -31,6 +31,20 @@ namespace ExampleLogic
             private set { SetProperty(ref _errorMessage, value); }
         }
 
+        private string _errorMessageDetails;
+        public string ErrorMessageDetails
+        {
+            get { return _errorMessageDetails; }
+            private set { SetProperty(ref _errorMessageDetails, value); }
+        }
+
+        private bool _showErrorDetails;
+        public bool ShowErrorDetails
+        {
+            get { return _showErrorDetails; }
+            set { SetProperty(ref _showErrorDetails, value); }
+        }
+
         protected ExampleLogicBase(IWheel wheel)
         {
             _wheel = wheel;
@@ -91,7 +105,8 @@ namespace ExampleLogic
                 {
                     RunExampleLogic = false;
                     HasUnacknowledgedError = true;
-                    ErrorMessage = $"CONTROL LOGIC ERROR - '{Details.Title}' generated the following exception:\n{e.Message}";
+                    ErrorMessage = e.Message;
+                    ErrorMessageDetails = e.ToString();
                     _wheel.SetSpeed(0, 0);
                 }
             }, _cancellationTokenSource.Token);

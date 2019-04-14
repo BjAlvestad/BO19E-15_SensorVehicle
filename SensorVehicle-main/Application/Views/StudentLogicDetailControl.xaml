@@ -21,17 +21,24 @@
                     Text="{x:Bind MasterMenuItem.Details.Title, Mode=OneWay}"
                     Style="{ThemeResource TitleTextBlockStyle}" />
             </StackPanel>
+            <StackPanel Padding="0,15,0,0" Visibility="{x:Bind MasterMenuItem.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red"/>
+                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessage, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                           Visibility="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessageDetails, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                           Visibility="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Details" IsChecked="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=TwoWay}" />
+                    <Button Content="Clear error" Click="{x:Bind MasterMenuItem.ClearMessage, Mode=OneWay}" />
+                </StackPanel>
+            </StackPanel>
             <StackPanel Padding="0,15,0,0">
                 <TextBlock Text="Author" Style="{StaticResource DetailSubTitleStyle}"/>
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Author, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
                 <TextBlock Text="Description" Style="{StaticResource DetailSubTitleStyle}" Margin="{StaticResource SmallTopMargin}"/>
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Description, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunStudentLogic, Mode=TwoWay}" />
-                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessage, Mode=OneWay}" TextWrapping="Wrap"
-                           Tapped="{x:Bind MasterMenuItem.ClearMessage, Mode=OneWay}"/>
-            </StackPanel>
+            <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunStudentLogic, Mode=TwoWay}"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

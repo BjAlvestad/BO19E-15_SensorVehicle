@@ -17,6 +17,7 @@ namespace StudentLogic
         /// </summary>
         public abstract StudentLogicDescription Details { get; }
 
+        //TODO: Consider moving all error related properties out to separate class (with an instance in every model). Add new error message display to all models.
         private bool _hasUnacknowledgedError;
         public bool HasUnacknowledgedError
         {
@@ -29,6 +30,20 @@ namespace StudentLogic
         {
             get { return _errorMessage; }
             private set { SetProperty(ref _errorMessage, value); }
+        }
+
+        private string _errorMessageDetails;
+        public string ErrorMessageDetails
+        {
+            get { return _errorMessageDetails; }
+            private set { SetProperty(ref _errorMessageDetails, value); }
+        }
+
+        private bool _showErrorDetails;
+        public bool ShowErrorDetails
+        {
+            get { return _showErrorDetails; }
+            set { SetProperty(ref _showErrorDetails, value); }
         }
 
         protected StudentLogicBase(IWheel wheel)
@@ -91,7 +106,8 @@ namespace StudentLogic
                 {
                     RunStudentLogic = false;
                     HasUnacknowledgedError = true;
-                    ErrorMessage = $"CONTROL LOGIC ERROR - '{Details.Title}' generated the following exception:\n{e.Message}";
+                    ErrorMessage = e.Message;
+                    ErrorMessageDetails = e.ToString();
                     _wheel.SetSpeed(0, 0);
                 }
             }, _cancellationTokenSource.Token);
