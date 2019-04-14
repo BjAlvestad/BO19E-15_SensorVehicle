@@ -20,7 +20,7 @@ namespace ExampleLogic.AutonomyLogics
             {
                 Title = "Drive to largest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "AUTONOMY DEMO (simple)",
+                DemoType = "AUTONOMY DEMO (simple)",
 
                 Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
                               "It also uses Ultrasound to keep distance from wall.\n" +

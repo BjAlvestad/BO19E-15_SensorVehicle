@@ -24,8 +24,8 @@
             <StackPanel Name="block" Padding="0,15,0,0">
                 <TextBlock Text="Author" Style="{StaticResource DetailSubTitleStyle}"/>
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Author, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
-                <TextBlock Text="Suitable for subjects" Style="{StaticResource DetailSubTitleStyle}" Margin="{StaticResource SmallTopMargin}"/>
-                <TextBlock Text="{x:Bind MasterMenuItem.Details.SuitableForSubjects, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
+                <TextBlock Text="Demo type" Style="{StaticResource DetailSubTitleStyle}" Margin="{StaticResource SmallTopMargin}"/>
+                <TextBlock Text="{x:Bind MasterMenuItem.Details.DemoType, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
                 <TextBlock Text="Description" Style="{StaticResource DetailSubTitleStyle}" Margin="{StaticResource SmallTopMargin}"/>
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Description, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
             </StackPanel>

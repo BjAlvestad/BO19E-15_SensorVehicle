@@ -16,7 +16,7 @@ namespace ExampleLogic.ConceptLogics
             {
                 Title = "Cross-connected P-feedback",
                 Author = "BO19-E15",
-                SuitableForSubjects = "P-feedback (limitation) demo",
+                DemoType = "P-feedback (limitation) demo",
 
                 Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to steer away from the closest wall.\n" +
                               "The left wheel speed is controlled by the distance from the right ultrasound sensor, and vice versa for other side.\n" +

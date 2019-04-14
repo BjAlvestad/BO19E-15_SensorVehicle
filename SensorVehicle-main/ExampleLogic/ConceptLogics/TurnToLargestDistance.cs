@@ -17,7 +17,7 @@ namespace ExampleLogic.ConceptLogics
             {
                 Title = "Turn towards greatest distance",
                 Author = "BO19-E15",
-                SuitableForSubjects = "Sensor update time demo",
+                DemoType = "Sensor update time demo",
 
                 Description = "Uses LIDAR to detect largest distance, and turns towards it.\n" +
                               "This code does NOT utilize any gyro.\n" +
