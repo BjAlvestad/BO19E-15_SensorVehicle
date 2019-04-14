@@ -72,7 +72,11 @@ namespace ExampleLogic
             _cancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
-                if (HasUnacknowledgedError) return;
+                if (HasUnacknowledgedError)
+                {
+                    RunExampleLogic = false;
+                    return;
+                }
 
                 try
                 {

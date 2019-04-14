@@ -72,7 +72,11 @@ namespace StudentLogic
             _cancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
-                if (HasUnacknowledgedError) return;
+                if (HasUnacknowledgedError)
+                {
+                    RunStudentLogic = false;
+                    return;
+                }
 
                 try
                 {
