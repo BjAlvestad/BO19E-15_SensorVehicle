@@ -17,8 +17,10 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             _vehicleCommunication = comWithUltrasonic;
             PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
-            Message = "";
+            Error = new Error();
         }
+
+        public Error Error { get; }
 
         private int _permissableDistanceAge;
         public int PermissableDistanceAge //TODO: Consider name change. Suggestions:  DistanceExpirationLimit  SensorDataExpirationLimit  PermissableSensorDataAge    SensorDataRequestInterval  RequestNewSensorDataLimit
@@ -83,26 +85,6 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             }
             private set { SetPropertyRaiseSelectively(ref _right, value); }
         }
-
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
-        }
-
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            private set { SetProperty(ref _message, value); }
-        }
-
-        public void ClearMessage()
-        {
-            Message = "";
-            HasUnacknowledgedError = false;
-        }
         
         //TODO: This property should be removed once pin-interrupt on new distance data available has been set up (Allready connected and implemented on microcontroller side - GPIO5 on SBC)
         private bool _refreshUltrasonicContinously;
@@ -132,7 +114,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             {
                 if ((DateTime.Now - TimeStamp).TotalMilliseconds <= PermissableDistanceAge) return;
 
-                if (HasUnacknowledgedError)
+                if (Error.Unacknowledged)
                 {
                     Left = float.NaN;
                     FwdLeft = float.NaN;
@@ -154,9 +136,9 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                 }
                 catch (Exception e)
                 {
-                    Message += $"ERROR OCCURED WHEN UPDAING DISTANCES: \n{e.Message}\n" +
-                                    "*************************************\n";
-                    HasUnacknowledgedError = true;
+                    Error.Message = e.Message;
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
                 }
             }
         }

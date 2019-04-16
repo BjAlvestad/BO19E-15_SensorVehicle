@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
@@ -19,11 +20,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
         bool RaiseNotificationForSelective { get; set; }
 
-        bool HasUnacknowledgedError { get; }
-
-        string Message { get; }
-
-        void ClearMessage();
+        Error Error { get; }
 
         bool RefreshUltrasonicContinously { get; set; }
     }

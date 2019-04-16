@@ -69,7 +69,7 @@
 
             <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" helpers:NavHelper.NavigateTo="Ultrasonic"
                                       Background="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.Ultrasonic.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                                      BorderBrush="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE957;"/>
                 </winui:NavigationViewItem.Icon>
