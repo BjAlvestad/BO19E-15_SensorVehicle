@@ -80,18 +80,21 @@
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Padding="0,15,0,10"
                         Visibility="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
-                <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
-                           Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
-                <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
-                           Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </ScrollViewer>
                 <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
                     <ToggleButton Content="Details" IsChecked="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=TwoWay}" />
                     <Button Content="Clear error" Click="{x:Bind ViewModel.Ultrasonic.Error.Clear, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
-            <!--TODO: Get some sort of scrolling function so that error text can be scrolled if it is so long that it extends over the entire screen.
-                      Currently it will lay on top of the normal data, so it has to be many lines before this becomes an issue.
-                      But if the text does become to long, then the Details and Clear error buttons will be pushed off screen-->
         </Grid>
     </Grid>
 </Page>
