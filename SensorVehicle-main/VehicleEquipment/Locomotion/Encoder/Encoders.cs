@@ -15,7 +15,10 @@ namespace VehicleEquipment.Locomotion.Encoder
             Left = encoderLeft;
             Right = encoderRight;
             CollectionInterval = 500;
+            Error = new Error();
         }
+
+        public Error Error { get; }
 
         public Encoder Left { get; }
         public Encoder Right { get; }
@@ -72,26 +75,6 @@ namespace VehicleEquipment.Locomotion.Encoder
             }
         }
 
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
-        }
-
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            private set { SetProperty(ref _message, value); }
-        }
-
-        public void ClearMessage()
-        {
-            Message = "";
-            HasUnacknowledgedError = false;
-        }
-
         public void ResetTotalDistanceTraveled()
         {
             Left.ResetTotalDistanceTraveled();
@@ -102,32 +85,49 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         public void CollectAndResetDistanceFromEncoders()
         {
-            if (HasUnacknowledgedError)
+            if (Error.Unacknowledged)
             {
                 CollectContinously = false;
                 return;
             }
 
-            try
-            {
-                Left.CollectAndResetDistanceFromEncoder();
-                RaiseSyncedPropertyChangedSelectively(nameof(Left));
-            }
-            catch (Exception e)
-            {
-                Message += $"ERROR: An exception occured when collecting encoder data from Left Encoder:\n{e.Message}\n\n";
-                HasUnacknowledgedError = true;
-            }
+            Left.CollectAndResetDistanceFromEncoder();
+            RaiseSyncedPropertyChangedSelectively(nameof(Left));
 
-            try
+            Right.CollectAndResetDistanceFromEncoder();
+            RaiseSyncedPropertyChangedSelectively(nameof(Right));
+
+            CheckAndCollectErrors();
+        }
+
+        public void ClearAllEncoderErrors()
+        {
+            Left.Error.Clear();
+            Right.Error.Clear();
+            Error.Clear();
+        }
+
+        private void CheckAndCollectErrors()
+        {
+            if (Left.Error.Unacknowledged && Right.Error.Unacknowledged)
             {
-                Right.CollectAndResetDistanceFromEncoder();
-                RaiseSyncedPropertyChangedSelectively(nameof(Right));
+                Error.Message = $"LEFT ENCODER:\n{Left.Error.Message}\n\n" +
+                                $"RIGHT ENCODER:\n{Right.Error.Message}";
+                Error.DetailedMessage = $"LEFT ENCODER:\n{Left.Error.DetailedMessage}\n\n" +
+                                        $"RIGHT ENCODER:\n{Right.Error.DetailedMessage}";
+                Error.Unacknowledged = true;
             }
-            catch (Exception e)
+            else if (Left.Error.Unacknowledged)
             {
-                Message += $"ERROR: An exception occured when collecting encoder data from Right Encoder:\n{e.Message}\n\n";
-                HasUnacknowledgedError = true;
+                Error.Message = $"LEFT ENCODER:\n{Left.Error.Message}";
+                Error.DetailedMessage = $"LEFT ENCODER:\n{Left.Error.DetailedMessage}";
+                Error.Unacknowledged = true;
+            }
+            else if (Right.Error.Unacknowledged)
+            {
+                Error.Message = $"RIGHT ENCODER:\n{Right.Error.Message}";
+                Error.DetailedMessage = $"RIGHT ENCODER:\n{Right.Error.DetailedMessage}";
+                Error.Unacknowledged = true;
             }
         }
     }

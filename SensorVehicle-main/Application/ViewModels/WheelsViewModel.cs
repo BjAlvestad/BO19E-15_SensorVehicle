@@ -24,6 +24,8 @@ namespace Application.ViewModels
 
         public IEncoders Encoders { get; private set; }
 
+        public bool UnacknowledgedWheelOrEncoderError => Wheel.Error.Unacknowledged || Encoders.Error.Unacknowledged;
+
         private int _updateInterval;
         public int UpdateInterval
         {
@@ -95,13 +97,34 @@ namespace Application.ViewModels
             base.OnNavigatedTo(e, viewModelState);
             LeftWheel = Wheel.CurrentSpeedLeft;
             RightWheel = Wheel.CurrentSpeedRight;
+            Wheel.Error.PropertyChanged += WheelError_PropertyChanged;
+            Encoders.Error.PropertyChanged += EncoderError_PropertyChanged;
+            RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
         }
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
+            Wheel.Error.PropertyChanged -= WheelError_PropertyChanged;
+            Encoders.Error.PropertyChanged -= EncoderError_PropertyChanged;
             ApplyWheelSpeedContinously = false;
             _periodicRaisePropertyChangedToken?.Cancel();
             base.OnNavigatingFrom(e, viewModelState, suspending);
+        }
+
+        private void EncoderError_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Encoders.Error.Unacknowledged))
+            {
+                RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
+            }
+        }
+
+        private void WheelError_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Wheel.Error.Unacknowledged))
+            {
+                RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
+            }
         }
     }
 }

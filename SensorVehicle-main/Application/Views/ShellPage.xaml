@@ -53,7 +53,7 @@
 
             <winui:NavigationViewItem x:Uid="Shell_Wheels" helpers:NavHelper.NavigateTo="Wheels"
                                       Background="{x:Bind ViewModel.Power.Wheels, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.Wheel.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                                      BorderBrush="{x:Bind ViewModel.UnacknowledgedWheelOrEncoderError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEA3A;"/>
                 </winui:NavigationViewItem.Icon>

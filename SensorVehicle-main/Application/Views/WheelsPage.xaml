@@ -147,12 +147,44 @@
                 <Button Content="Reset total &#x0a;distance travled" Margin="0,10" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}" />
             </StackPanel>
 
-            <!--ERROR MESSAGE box (displays error messages from )-->
-            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
-                <TextBlock Text="{x:Bind ViewModel.Wheel.Message, Mode=OneWay}" TextWrapping="Wrap"
-                           Tapped="{x:Bind ViewModel.Wheel.ClearMessage, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind ViewModel.Encoders.Message, Mode=OneWay}" TextWrapping="Wrap"
-                           Tapped="{x:Bind ViewModel.Encoders.ClearMessage, Mode=OneWay}" />
+            <!--ERROR MESSAGE box (displays error messages from Wheel and Encoders)-->
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Padding="0,15,0,10"
+                        Visibility="{x:Bind ViewModel.UnacknowledgedWheelOrEncoderError, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <!--Wheel-->
+                        <StackPanel Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="** WHEEL ERROR **:" FontWeight="SemiBold" Foreground="Red" />
+                            <TextBlock Text="{x:Bind ViewModel.Wheel.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                            <TextBlock Text="{x:Bind ViewModel.Wheel.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="&#x0a;"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        </StackPanel>
+                        <!--Encoder-->
+                        <StackPanel Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="** ENCODERS ERROR **:" FontWeight="SemiBold" Foreground="Red" />
+                            <TextBlock Text="{x:Bind ViewModel.Encoders.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                            <TextBlock Text="{x:Bind ViewModel.Encoders.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Wheel details" IsChecked="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=TwoWay}"
+                                  Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <ToggleButton Content="Encoder details" IsChecked="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=TwoWay}"
+                                  Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Clear Wheel error" Click="{x:Bind ViewModel.Wheel.Error.Clear, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Clear Encoder error" Click="{x:Bind ViewModel.Encoders.ClearAllEncoderErrors, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

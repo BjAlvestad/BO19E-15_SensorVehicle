@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
@@ -17,8 +18,6 @@ namespace VehicleEquipment.Locomotion.Wheels
         void Reverse(int speed);
         void Stop();
 
-        bool HasUnacknowledgedError { get; }
-        string Message { get; }
-        void ClearMessage();
+        Error Error { get; }
     }
 }
