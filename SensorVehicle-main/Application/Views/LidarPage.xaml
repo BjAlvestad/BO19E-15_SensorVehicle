@@ -156,10 +156,24 @@
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->
-            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7"
-                       Text="{x:Bind ViewModel.Lidar.Message, Mode=OneWay}" TextWrapping="Wrap"
-                       Tapped="{x:Bind ViewModel.Lidar.ClearMessage, Mode=OneWay}" />
-
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Padding="0,15,0,10"
+                        Visibility="{x:Bind ViewModel.Lidar.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Details" IsChecked="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=TwoWay}" />
+                    <Button Content="Clear error" Click="{x:Bind ViewModel.Lidar.Error.Clear, Mode=OneWay}" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

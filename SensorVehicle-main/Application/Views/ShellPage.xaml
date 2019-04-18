@@ -61,7 +61,7 @@
 
             <winui:NavigationViewItem x:Uid="Shell_Lidar" helpers:NavHelper.NavigateTo="Lidar"
                                       Background="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
-                                      BorderBrush="{x:Bind ViewModel.Lidar.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                                      BorderBrush="{x:Bind ViewModel.Lidar.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7C0;"/>
                 </winui:NavigationViewItem.Icon>
