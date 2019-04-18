@@ -13,7 +13,9 @@ using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.System;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Communication;
@@ -100,6 +102,9 @@ namespace Application
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
+            ApplicationView.PreferredLaunchViewSize = new Size(800, 480);
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
             await LaunchApplicationAsync(PageTokens.InfoPage, null);
             if (RunAgainstSimulatorInsteadOfMock && !IsRunningOnPhysicalCar)
             {
