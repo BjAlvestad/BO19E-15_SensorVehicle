@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.Locomotion.Wheels;
@@ -47,13 +48,15 @@ namespace StudentLogic.CodeSnippetExamples
 
         public override void Run(CancellationToken cancellationToken)
         {
+            ThrowExceptionIfCollectorIsStopped();
+
             float angleToLargestDistance = _lidar.LargestDistanceInRange(260, 100).Angle;
 
             if (float.IsNaN(angleToLargestDistance))
             {
                 _wheels.Stop();
-                Debug.WriteLine("STOPPED due to no LIDAR distance found in range!", "ControlLogic");
-                Thread.Sleep(2000);
+                Debug.WriteLine("STOPPED WHEELS due to no LIDAR distance found in range!", "ControlLogic");
+                Thread.Sleep(200);
             }
             else
             {
@@ -72,5 +75,15 @@ namespace StudentLogic.CodeSnippetExamples
         }
 
         #endregion
+
+        private void ThrowExceptionIfCollectorIsStopped()
+        {
+            if (_lidar.RunCollector == false)
+            {
+                throw new Exception(
+                    "LIDAR collector stopped unexpectedly!\n" +
+                    "Check LIDAR page, and rectify error before starting this control logic again.");
+            }
+        }
     }
 }

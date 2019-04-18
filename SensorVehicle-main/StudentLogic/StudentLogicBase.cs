@@ -17,48 +17,16 @@ namespace StudentLogic
         /// </summary>
         public abstract StudentLogicDescription Details { get; }
 
-        //TODO: Consider moving all error related properties out to separate class (with an instance in every model). Add new error message display to all models.
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
-        }
-
-        private string _errorMessage;
-        public string ErrorMessage
-        {
-            get { return _errorMessage; }
-            private set { SetProperty(ref _errorMessage, value); }
-        }
-
-        private string _errorMessageDetails;
-        public string ErrorMessageDetails
-        {
-            get { return _errorMessageDetails; }
-            private set { SetProperty(ref _errorMessageDetails, value); }
-        }
-
-        private bool _showErrorDetails;
-        public bool ShowErrorDetails
-        {
-            get { return _showErrorDetails; }
-            set { SetProperty(ref _showErrorDetails, value); }
-        }
+        public Error Error { get; }
 
         protected StudentLogicBase(IWheel wheel)
         {
             _wheel = wheel;
+            Error = new Error();
         }
 
         public abstract void Initialize();
         public abstract void Run(CancellationToken cancellationToken);
-
-        public void ClearMessage()
-        {
-            ErrorMessage = "";
-            HasUnacknowledgedError = false;
-        }
 
         private bool _runStudentLogic;
         public bool RunStudentLogic
@@ -87,7 +55,7 @@ namespace StudentLogic
             _cancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
-                if (HasUnacknowledgedError)
+                if (Error.Unacknowledged)
                 {
                     RunStudentLogic = false;
                     return;
@@ -105,9 +73,9 @@ namespace StudentLogic
                 catch (Exception e)
                 {
                     RunStudentLogic = false;
-                    HasUnacknowledgedError = true;
-                    ErrorMessage = e.Message;
-                    ErrorMessageDetails = e.ToString();
+                    Error.Unacknowledged = true;
+                    Error.Message = e.Message;
+                    Error.DetailedMessage = e.ToString();
                     _wheel.SetSpeed(0, 0);
                 }
             }, _cancellationTokenSource.Token);

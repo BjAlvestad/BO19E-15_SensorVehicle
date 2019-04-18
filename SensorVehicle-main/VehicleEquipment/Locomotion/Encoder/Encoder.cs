@@ -18,13 +18,22 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         public string Message { get; private set; }
 
+        public Error Error { get; }
+
         public Encoder(IVehicleCommunication comWithEncoder)
         {
             _vehicleCommunication = comWithEncoder;
+            Error = new Error();
         }
 
         public double CollectAndResetDistanceFromEncoder()
         {
+            if (Error.Unacknowledged)
+            {
+                DistanceAtLastRequest = double.NaN;
+                return DistanceAtLastRequest;
+            }
+
             try
             {
                 VehicleDataPacket data = _vehicleCommunication.Read();
@@ -41,12 +50,13 @@ namespace VehicleEquipment.Locomotion.Encoder
                 TotalTime += TimeSpan.FromMilliseconds(TimeAccumulatedForLastRequest);
                 TotalDistanceTravelled += DistanceAtLastRequest;
             }
-            catch (Exception p)
+            catch (Exception e)
             {
                 DistanceAtLastRequest = double.NaN;
                 TimeAccumulatedForLastRequest = 0;
-                Message = $"ERROR: An exception occured when collecting encoder data: {p.Message}";
-                throw;
+                Error.Message = e.Message;
+                Error.DetailedMessage = e.ToString();
+                Error.Unacknowledged = true;
             }
 
             LastRequestTimeStamp = DateTime.Now;

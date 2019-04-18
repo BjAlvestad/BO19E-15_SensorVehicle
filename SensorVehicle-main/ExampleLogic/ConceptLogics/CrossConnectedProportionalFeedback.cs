@@ -39,6 +39,8 @@ namespace ExampleLogic.ConceptLogics
 
         public override void Run(CancellationToken cancellationToken)
         {
+            ThrowExceptionOnSensorError();
+
             if (_ultrasonic.Fwd < 0.5)
             {
                 _wheels.Stop();
@@ -78,7 +80,7 @@ namespace ExampleLogic.ConceptLogics
         {
             DateTime startedRotationAt = DateTime.Now;
             bool rightHasLargestDistance = _ultrasonic.Right > _ultrasonic.Left;
-            while (_ultrasonic.Fwd < desiredFrontalClearance && !cancellationToken.IsCancellationRequested)
+            while (_ultrasonic.Fwd < desiredFrontalClearance && !cancellationToken.IsCancellationRequested && !UnacknowledgedSensorError())
             {
                 if(rightHasLargestDistance) _wheels.TurnRight(rotationSpeedPercentage);
                 else _wheels.TurnLeft(rotationSpeedPercentage);
@@ -93,6 +95,22 @@ namespace ExampleLogic.ConceptLogics
             }
 
             _wheels.Stop();
+        }
+
+        private void ThrowExceptionOnSensorError()
+        {
+            if (_ultrasonic.Error.Unacknowledged)
+            {
+                throw new Exception(
+                    "The Ultrasonic sensor has unacknowledged error!\n" +
+                    "Control logic stopped as a safety precaution.\n" +
+                    "Check ULTRASONIC page, and rectify error before starting this control logic again.");
+            }
+        }
+
+        private bool UnacknowledgedSensorError()
+        {
+            return _ultrasonic.Error.Unacknowledged;
         }
     }
 }

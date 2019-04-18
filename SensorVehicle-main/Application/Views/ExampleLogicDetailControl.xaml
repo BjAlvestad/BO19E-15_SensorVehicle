@@ -21,15 +21,15 @@
                     Text="{x:Bind MasterMenuItem.Details.Title, Mode=OneWay}"
                     Style="{ThemeResource TitleTextBlockStyle}" />
             </StackPanel>
-            <StackPanel Padding="0,15,0,0" Visibility="{x:Bind MasterMenuItem.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Padding="0,15,0,0" Visibility="{x:Bind MasterMenuItem.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red"/>
-                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessage, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
-                           Visibility="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
-                <TextBlock Text="{x:Bind MasterMenuItem.ErrorMessageDetails, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
-                           Visibility="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Text="{x:Bind MasterMenuItem.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                           Visibility="{x:Bind MasterMenuItem.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+                <TextBlock Text="{x:Bind MasterMenuItem.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                           Visibility="{x:Bind MasterMenuItem.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
-                    <ToggleButton Content="Details" IsChecked="{x:Bind MasterMenuItem.ShowErrorDetails, Mode=TwoWay}" />
-                    <Button Content="Clear error" Click="{x:Bind MasterMenuItem.ClearMessage, Mode=OneWay}" />
+                    <ToggleButton Content="Details" IsChecked="{x:Bind MasterMenuItem.Error.ShowDetailedMessage, Mode=TwoWay}" />
+                    <Button Content="Clear error" Click="{x:Bind MasterMenuItem.Error.Clear, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Name="block" Padding="0,15,0,0">

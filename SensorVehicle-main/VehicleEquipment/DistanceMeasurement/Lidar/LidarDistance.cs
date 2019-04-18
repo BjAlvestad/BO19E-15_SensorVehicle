@@ -37,7 +37,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
             ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
             ActiveVerticalAngles.AddFromArray(verticalAngles);
+
+            Error = new Error();
         }
+
+        public Error Error { get; }
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
@@ -100,13 +104,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             set { SetProperty(ref _defaultHalfBeamOpening, value); }
         }
 
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            private set { SetProperty(ref _message, value); }
-        }
-
         private int _numberOfCycles;
         public int NumberOfCycles
         {
@@ -116,13 +113,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 int valueToSet = value > 0 ? value : 1;
                 SetProperty(ref _numberOfCycles, valueToSet);
             }
-        }
-
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
         }
 
         private bool _runCollector;
@@ -324,12 +314,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        public void ClearMessage()
-        {
-            Message = "";
-            HasUnacknowledgedError = false;
-        }
-
         public void StartCollector()
         {
             if (IsCollectorRunning)
@@ -383,12 +367,14 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
             catch (OperationCanceledException oce)
             {
-                if(string.IsNullOrEmpty(Message)) Message = "Lidar collectors operation has been cancelled";
+                // This is not an error, but an expected exception when collector is stopped (cancelled)
+                Debug.WriteLine("Lidar collector was stopped (cancelled).");
             }
             catch (Exception e)
             {
-                Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
-                HasUnacknowledgedError = true;
+                Error.Message = $"A collector error occured:\n{e.Message}";
+                Error.DetailedMessage = e.ToString();
+                Error.Unacknowledged = true;
                 RunCollector = false;
             }
         }
