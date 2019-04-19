@@ -7,6 +7,8 @@ namespace VehicleEquipment.Locomotion.Wheels
     {
         bool RaiseNotificationForSelective { get; set; }
 
+        bool Power { get; set; }
+
         int CurrentSpeedLeft { get; }
         int CurrentSpeedRight { get; }
 

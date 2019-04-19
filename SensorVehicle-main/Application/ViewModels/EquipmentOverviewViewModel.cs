@@ -14,13 +14,12 @@ namespace Application.ViewModels
 {
     public class EquipmentOverviewViewModel : ViewModelBase
     {
-        public EquipmentOverviewViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
+        public EquipmentOverviewViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
         {
             Ultrasonic = ultrasonic;
             Lidar = lidar;
             Wheel = wheel;
             Encoders = encoders;
-            Power = power;
             ExampleLogic = exampleLogic;
             StudentLogic = studentLogic;
         }
@@ -29,7 +28,6 @@ namespace Application.ViewModels
         public ILidarDistance Lidar { get; set; }
         public IWheel Wheel { get; set; }
         public IEncoders Encoders { get; set; }
-        public IPower Power { get; set; }
         public ExampleLogicService ExampleLogic { get; set; }
         public StudentLogicService StudentLogic { get; set; }
 

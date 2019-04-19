@@ -19,38 +19,23 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0, 10">
                     <TextBlock Text="Lidar:" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Lidar, Mode=TwoWay}"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Lidar.Power, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0, 10">
                     <TextBlock Text="Ultrasound" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Ultrasound, Mode=TwoWay}"/>
+                    <ToggleSwitch OnContent="I2c activated" OffContent="I2c isolated" IsOn="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0, 10">
                     <TextBlock Text="Wheels" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Wheels, Mode=TwoWay}"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Wheel.Power, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0, 10">
                     <TextBlock Text="Encoder" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Encoder, Mode=TwoWay}"/>
+                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Encoders.Power, Mode=TwoWay}"/>
                 </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0, 10">
-                    <TextBlock Text="Spare1" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare1, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <!--<StackPanel Orientation="Horizontal" Margin="0, 10">
-                    <TextBlock Text="Spare2" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare2, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0, 10">
-                    <TextBlock Text="Spare3" FontSize="24" Width="150"/>
-                    <ToggleSwitch OnContent="Powered On" OffContent="Powered Off" IsOn="{x:Bind ViewModel.Power.Spare3, Mode=TwoWay}"/>
-                </StackPanel>-->
 
                 <StackPanel Orientation="Horizontal"  Margin="0, 10">
                     <Button Content="Power down all equipment" Click="{x:Bind ViewModel.PowerDownAllPins}" />
@@ -58,11 +43,6 @@
                     <Button Content="Restart system" Click="{x:Bind ViewModel.RestartSystem}" Visibility="{x:Bind ViewModel.VisibleIfRunningOnIoT}" />
                     <Button Content="Shut down system" Margin="50, 0" Click="{x:Bind ViewModel.ShutDownSystem}" Visibility="{x:Bind ViewModel.VisibleIfRunningOnIoT}" />
                 </StackPanel>
-
-                <!--ERROR MESSAGE box (displays error messages from )-->
-                <TextBlock
-                           Text="{x:Bind ViewModel.Power.Message, Mode=OneWay}" TextWrapping="Wrap"
-                           Tapped="{x:Bind ViewModel.Power.ClearMessage, Mode=OneWay}" />
             </StackPanel>
         </Grid>
     </Grid>

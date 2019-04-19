@@ -17,14 +17,16 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
         private readonly ILidarPacketReceiver _packetReceiver;
+        private readonly IGpioOutputPin _powerPin;
         private CancellationTokenSource _collectorCancelToken;
         private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
-        public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
+        public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioOutputPin powerPin, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
+            _powerPin = powerPin;
 
             DefaultHalfBeamOpening = 15;
             DefaultCalculationType = CalculationType.Max; //TEMP
@@ -39,6 +41,26 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             ActiveVerticalAngles.AddFromArray(verticalAngles);
 
             Error = new Error();
+        }
+
+        public bool Power
+        {
+            get { return _powerPin.SetOutput; }
+            set
+            {
+                try
+                {
+                    _powerPin.SetOutput = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch lidar power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                    RunCollector = false;
+                }
+                RaiseSyncedPropertyChanged();
+            }
         }
 
         public Error Error { get; }

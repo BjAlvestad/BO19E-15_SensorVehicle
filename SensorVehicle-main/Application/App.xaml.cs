@@ -66,6 +66,10 @@ namespace Application
             IVehicleCommunication encoderLeftCommunication;
             IVehicleCommunication encoderRightCommunication;
             IVehicleCommunication wheelCommunication;
+            IGpioOutputPin lidarPowerPin;
+            IGpioOutputPin ultrasoundI2cIsolationPin;
+            IGpioOutputPin wheelPowerPin;
+            IGpioOutputPin encoderPowerPin;
             if (IsRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
@@ -73,7 +77,12 @@ namespace Application
                 encoderLeftCommunication = new VehicleCommunication(Device.EncoderLeft);
                 encoderRightCommunication = new VehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
-                Container.RegisterType<IPower, Power>(new ContainerControlledLifetimeManager());
+
+                lidarPowerPin = new GpioOutputPin(12);
+                ultrasoundI2cIsolationPin = new GpioOutputPin(16);
+                wheelPowerPin = new GpioOutputPin(20);
+                encoderPowerPin = new GpioOutputPin(21);
+                // Other GPIOs: 13, 19, 26
             }
             else if (RunAgainstSimulatorInsteadOfMock)
             {
@@ -82,7 +91,11 @@ namespace Application
                 encoderLeftCommunication = new SimulatedVehicleCommunication(Device.EncoderLeft, _simulatorAppServiceClient);
                 encoderRightCommunication = new SimulatedVehicleCommunication(Device.EncoderRight, _simulatorAppServiceClient);
                 wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
-                Container.RegisterType<IPower, SimulatedPower>(new ContainerControlledLifetimeManager());
+
+                lidarPowerPin = new SimulatedGpioOutputPin(12);
+                ultrasoundI2cIsolationPin = new SimulatedGpioOutputPin(16);
+                wheelPowerPin = new SimulatedGpioOutputPin(20);
+                encoderPowerPin = new SimulatedGpioOutputPin(21);
             }
             else // Connect up against mock/random data instead of simulator
             {
@@ -91,13 +104,25 @@ namespace Application
                 encoderLeftCommunication = new MockVehicleCommunication(Device.EncoderLeft);
                 encoderRightCommunication = new MockVehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
-                Container.RegisterType<IPower, MockPower>(new ContainerControlledLifetimeManager());
+
+                lidarPowerPin = new MockGpioOutputPin(12);
+                ultrasoundI2cIsolationPin = new MockGpioOutputPin(16);
+                wheelPowerPin = new MockGpioOutputPin(20);
+                encoderPowerPin = new MockGpioOutputPin(21);
             }
 
-            Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(), new InjectionConstructor(lidarPacketReceiver, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
-            Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(), new InjectionConstructor(ultrasonicCommunication));
-            Container.RegisterType<IEncoders, Encoders>(new ContainerControlledLifetimeManager(), new InjectionConstructor(new Encoder(encoderLeftCommunication), new Encoder(encoderRightCommunication)));
-            Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(), new InjectionConstructor(wheelCommunication));
+            // Lidar container
+            Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(),
+                new InjectionConstructor(lidarPacketReceiver, lidarPowerPin, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
+            // Ultrasonic container
+            Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(),
+                new InjectionConstructor(ultrasonicCommunication, ultrasoundI2cIsolationPin));
+            // Encoders container
+            Container.RegisterType<IEncoders, Encoders>(new ContainerControlledLifetimeManager(),
+                new InjectionConstructor(new Encoder(encoderLeftCommunication), new Encoder(encoderRightCommunication), encoderPowerPin));
+            // Wheel container
+            Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(),
+                new InjectionConstructor(wheelCommunication, wheelPowerPin));
         }
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)

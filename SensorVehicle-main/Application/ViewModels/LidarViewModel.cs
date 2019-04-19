@@ -12,10 +12,9 @@ namespace Application.ViewModels
 {
     public class LidarViewModel : ViewModelBase
     {
-        public LidarViewModel(ILidarDistance lidar, IPower power)
+        public LidarViewModel(ILidarDistance lidar)
         {
             Lidar = lidar;
-            Power = power;
             CenterForAnglesInRange = 0;
             BeamOpeningForAnglesInRange = 2;
             CalculationTypes = new List<CalculationType>(Enum.GetValues(typeof(CalculationType)).Cast<CalculationType>());
@@ -26,8 +25,6 @@ namespace Application.ViewModels
         public List<VerticalAngle> ActiveVerticalAngles;
 
         public ILidarDistance Lidar { get; }
-
-        public IPower Power { get; }
 
         public List<CalculationType> CalculationTypes { get; }
 

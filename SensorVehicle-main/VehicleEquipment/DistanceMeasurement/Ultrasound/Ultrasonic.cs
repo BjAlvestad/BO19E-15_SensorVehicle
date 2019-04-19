@@ -11,13 +11,34 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         public readonly int MinimumSensorRequestsInterval = 30;
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
+        private readonly IGpioOutputPin _ultrasoundI2cIsolationPin;
 
-        public Ultrasonic(IVehicleCommunication comWithUltrasonic)
+        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioOutputPin ultrasoundI2cIsolationPin)
         {
             _vehicleCommunication = comWithUltrasonic;
+            _ultrasoundI2cIsolationPin = ultrasoundI2cIsolationPin;
             PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
             Error = new Error();
+        }
+
+        public bool DeisolateI2cCommunciation
+        {
+            get { return _ultrasoundI2cIsolationPin.SetOutput; }
+            set
+            {
+                try
+                {
+                    _ultrasoundI2cIsolationPin.SetOutput = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to {(value ? "de-isolate" : "isolate")} ultrasonics I2c communication\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                }
+                RaiseSyncedPropertyChanged();
+            }
         }
 
         public Error Error { get; }
