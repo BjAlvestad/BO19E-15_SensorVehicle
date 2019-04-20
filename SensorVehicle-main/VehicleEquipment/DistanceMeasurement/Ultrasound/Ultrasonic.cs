@@ -27,6 +27,11 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             get { return _ultrasoundI2cIsolationPin.SetOutput; }
             set
             {
+                if (value == false)
+                {
+                    RaiseNotificationForSelective = false;
+                }
+
                 try
                 {
                     _ultrasoundI2cIsolationPin.SetOutput = value;
@@ -38,6 +43,20 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                     Error.Unacknowledged = true;
                 }
                 RaiseSyncedPropertyChanged();
+            }
+        }
+
+        private bool _raiseNotificationForSelective;
+        public override bool RaiseNotificationForSelective
+        {
+            get { return _raiseNotificationForSelective; }
+            set
+            {
+                SetProperty(ref _raiseNotificationForSelective, value);
+                if (value == false)
+                {
+                    RefreshUltrasonicContinously = false;
+                }
             }
         }
 
@@ -137,6 +156,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
                 if (Error.Unacknowledged)
                 {
+                    RefreshUltrasonicContinously = false;
                     Left = float.NaN;
                     FwdLeft = float.NaN;
                     FwdRight = float.NaN;
