@@ -48,6 +48,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             get { return _powerPin.SetOutput; }
             set
             {
+                if (value == false)
+                {
+                    RunCollector = false;
+                }
+
                 try
                 {
                     _powerPin.SetOutput = value;
@@ -146,7 +151,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 SetProperty(ref _runCollector, value);
                 //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
                 if(value) StartCollector();
-                else StopCollector();
+                else
+                {
+                    StopCollector();
+                    RaiseNotificationForSelective = false;
+                }
             }
         }
 

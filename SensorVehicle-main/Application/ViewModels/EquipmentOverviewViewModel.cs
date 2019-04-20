@@ -48,13 +48,17 @@ namespace Application.ViewModels
 
         private void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
-
-            if (!AutoCalculateLidarDistance) return;
-
-            float fwd = Lidar.Fwd;
-            float left = Lidar.Left;
-            float right = Lidar.Right;
+            switch (e.PropertyName)
+            {
+                case nameof(Lidar.RaiseNotificationForSelective) when Lidar.RaiseNotificationForSelective == false:
+                    AutoCalculateLidarDistance = false;
+                    break;
+                case nameof(Lidar.LastUpdate) when AutoCalculateLidarDistance:
+                    float fwd = Lidar.Fwd;
+                    float left = Lidar.Left;
+                    float right = Lidar.Right;
+                    break;
+            }
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)

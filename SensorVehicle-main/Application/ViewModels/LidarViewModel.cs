@@ -105,6 +105,17 @@ namespace Application.ViewModels
 
         private async void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            switch (e.PropertyName)
+            {
+                case nameof(Lidar.RunCollector) when Lidar.RunCollector == false:
+                    CalculateHorizontalPoints = false;
+                    break;
+                case nameof(Lidar.RaiseNotificationForSelective) when Lidar.RaiseNotificationForSelective == false:
+                    AutoCalculateDirections = false;
+                    AutoCalculateLargestDistance = false;
+                    break;
+            }
+
             if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
 
             if (AutoCalculateDirections)
