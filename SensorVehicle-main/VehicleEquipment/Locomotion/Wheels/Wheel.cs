@@ -9,9 +9,9 @@ namespace VehicleEquipment.Locomotion.Wheels
         private const int MaximumValidSpeed = 100;
 
         private readonly IVehicleCommunication vehicleCommunication;
-        private readonly IGpioOutputPin _powerPin;
+        private readonly IGpioPin _powerPin;
 
-        public Wheel(IVehicleCommunication comWithWheel, IGpioOutputPin powerPin)
+        public Wheel(IVehicleCommunication comWithWheel, IGpioPin powerPin)
         {
             vehicleCommunication = comWithWheel;
             _powerPin = powerPin;
@@ -20,12 +20,12 @@ namespace VehicleEquipment.Locomotion.Wheels
 
         public bool Power
         {
-            get { return _powerPin.SetOutput; }
+            get { return _powerPin.PinHigh; }
             set
             {
                 try
                 {
-                    _powerPin.SetOutput = value;
+                    _powerPin.PinHigh = value;
                 }
                 catch (Exception e)
                 {

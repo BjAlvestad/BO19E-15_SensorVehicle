@@ -120,16 +120,16 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MockCommunication\MockGpioOutputPin.cs" />
+    <Compile Include="MockCommunication\MockGpioPin.cs" />
     <Compile Include="MockCommunication\MockLidarPacketReceiver.cs" />
     <Compile Include="MockCommunication\MockVehicleCommunication.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulator\SimulatedLidarPacketReceiver.cs" />
-    <Compile Include="Simulator\SimulatedGpioOutputPin.cs" />
+    <Compile Include="Simulator\SimulatedGpioPin.cs" />
     <Compile Include="Simulator\SimulatedVehicleCommunication.cs" />
     <Compile Include="Simulator\SimulatorAppServiceClient.cs" />
-    <Compile Include="Vehicle\GpioOutputPin.cs" />
+    <Compile Include="Vehicle\PhysicalGpioPin.cs" />
     <Compile Include="Vehicle\VehicleCommunication.cs" />
     <EmbeddedResource Include="Properties\Communication.rd.xml" />
   </ItemGroup>

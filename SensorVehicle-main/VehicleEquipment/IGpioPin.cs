@@ -1,10 +1,10 @@
 ﻿namespace VehicleEquipment
 {
-    public interface IGpioOutputPin
+    public interface IGpioPin
     {
         int PinNumber { get; }
 
-        bool SetOutput { get; set; }
+        bool PinHigh { get; set; }
 
         bool ErrorWhenOpeningPin { get; }
     }

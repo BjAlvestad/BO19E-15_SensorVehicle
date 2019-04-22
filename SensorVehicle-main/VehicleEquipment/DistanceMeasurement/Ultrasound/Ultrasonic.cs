@@ -11,9 +11,9 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         public readonly int MinimumSensorRequestsInterval = 30;
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
-        private readonly IGpioOutputPin _ultrasoundI2cIsolationPin;
+        private readonly IGpioPin _ultrasoundI2cIsolationPin;
 
-        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioOutputPin ultrasoundI2cIsolationPin)
+        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioPin ultrasoundI2cIsolationPin)
         {
             _vehicleCommunication = comWithUltrasonic;
             _ultrasoundI2cIsolationPin = ultrasoundI2cIsolationPin;
@@ -24,7 +24,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
         public bool DeisolateI2cCommunciation
         {
-            get { return _ultrasoundI2cIsolationPin.SetOutput; }
+            get { return _ultrasoundI2cIsolationPin.PinHigh; }
             set
             {
                 if (value == false)
@@ -34,7 +34,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
                 try
                 {
-                    _ultrasoundI2cIsolationPin.SetOutput = value;
+                    _ultrasoundI2cIsolationPin.PinHigh = value;
                 }
                 catch (Exception e)
                 {

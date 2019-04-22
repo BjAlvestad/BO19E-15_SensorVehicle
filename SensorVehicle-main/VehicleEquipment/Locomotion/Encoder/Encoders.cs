@@ -10,9 +10,9 @@ namespace VehicleEquipment.Locomotion.Encoder
     {
         private const int MinimumCollectionIntervalInMilliseconds = 50;
 
-        private readonly IGpioOutputPin _powerPin;
+        private readonly IGpioPin _powerPin;
 
-        public Encoders(Encoder encoderLeft, Encoder encoderRight, IGpioOutputPin powerPin)
+        public Encoders(Encoder encoderLeft, Encoder encoderRight, IGpioPin powerPin)
         {
             Left = encoderLeft;
             Right = encoderRight;
@@ -23,12 +23,12 @@ namespace VehicleEquipment.Locomotion.Encoder
 
         public bool Power
         {
-            get { return _powerPin.SetOutput; }
+            get { return _powerPin.PinHigh; }
             set
             {
                 try
                 {
-                    _powerPin.SetOutput = value;
+                    _powerPin.PinHigh = value;
                 }
                 catch (Exception e)
                 {

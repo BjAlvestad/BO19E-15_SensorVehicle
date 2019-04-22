@@ -17,13 +17,13 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
         private readonly ILidarPacketReceiver _packetReceiver;
-        private readonly IGpioOutputPin _powerPin;
+        private readonly IGpioPin _powerPin;
         private CancellationTokenSource _collectorCancelToken;
         private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
-        public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioOutputPin powerPin, params VerticalAngle[] verticalAngles)
+        public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioPin powerPin, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
             _powerPin = powerPin;
@@ -45,7 +45,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public bool Power
         {
-            get { return _powerPin.SetOutput; }
+            get { return _powerPin.PinHigh; }
             set
             {
                 if (value == false)
@@ -55,7 +55,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
                 try
                 {
-                    _powerPin.SetOutput = value;
+                    _powerPin.PinHigh = value;
                 }
                 catch (Exception e)
                 {

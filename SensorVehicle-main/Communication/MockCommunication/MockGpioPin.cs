@@ -10,15 +10,15 @@ using VehicleEquipment;
 
 namespace Communication.MockCommunication
 {
-    public class MockGpioOutputPin : IGpioOutputPin
+    public class MockGpioPin : IGpioPin
     {
-        public MockGpioOutputPin(int gpioNumber)
+        public MockGpioPin(int gpioNumber)
         {
             PinNumber = gpioNumber;
         }
 
         public int PinNumber { get; }
-        public bool SetOutput { get; set; }
+        public bool PinHigh { get; set; }
         public bool ErrorWhenOpeningPin { get; }
     }
 }

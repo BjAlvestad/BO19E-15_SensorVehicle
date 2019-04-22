@@ -13,6 +13,7 @@ using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.Devices.Gpio;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.ViewManagement;
@@ -66,10 +67,10 @@ namespace Application
             IVehicleCommunication encoderLeftCommunication;
             IVehicleCommunication encoderRightCommunication;
             IVehicleCommunication wheelCommunication;
-            IGpioOutputPin lidarPowerPin;
-            IGpioOutputPin ultrasoundI2cIsolationPin;
-            IGpioOutputPin wheelPowerPin;
-            IGpioOutputPin encoderPowerPin;
+            IGpioPin lidarPowerPin;
+            IGpioPin ultrasoundI2cIsolationPin;
+            IGpioPin wheelPowerPin;
+            IGpioPin encoderPowerPin;
             if (IsRunningOnPhysicalCar)
             {
                 lidarPacketReceiver = new LidarPacketReceiver();
@@ -78,10 +79,10 @@ namespace Application
                 encoderRightCommunication = new VehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new VehicleCommunication(Device.Wheel);
 
-                lidarPowerPin = new GpioOutputPin(12);
-                ultrasoundI2cIsolationPin = new GpioOutputPin(16);
-                wheelPowerPin = new GpioOutputPin(20);
-                encoderPowerPin = new GpioOutputPin(21);
+                lidarPowerPin = new PhysicalGpioPin(12, GpioPinDriveMode.Output);
+                ultrasoundI2cIsolationPin = new PhysicalGpioPin(16, GpioPinDriveMode.Output);
+                wheelPowerPin = new PhysicalGpioPin(20, GpioPinDriveMode.Output);
+                encoderPowerPin = new PhysicalGpioPin(21, GpioPinDriveMode.Output);
                 // Other GPIOs: 13, 19, 26
             }
             else if (RunAgainstSimulatorInsteadOfMock)
@@ -92,10 +93,10 @@ namespace Application
                 encoderRightCommunication = new SimulatedVehicleCommunication(Device.EncoderRight, _simulatorAppServiceClient);
                 wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
 
-                lidarPowerPin = new SimulatedGpioOutputPin(12);
-                ultrasoundI2cIsolationPin = new SimulatedGpioOutputPin(16);
-                wheelPowerPin = new SimulatedGpioOutputPin(20);
-                encoderPowerPin = new SimulatedGpioOutputPin(21);
+                lidarPowerPin = new SimulatedGpioPin(12, GpioPinDriveMode.Output);
+                ultrasoundI2cIsolationPin = new SimulatedGpioPin(16, GpioPinDriveMode.Output);
+                wheelPowerPin = new SimulatedGpioPin(20, GpioPinDriveMode.Output);
+                encoderPowerPin = new SimulatedGpioPin(21, GpioPinDriveMode.Output);
             }
             else // Connect up against mock/random data instead of simulator
             {
@@ -105,10 +106,10 @@ namespace Application
                 encoderRightCommunication = new MockVehicleCommunication(Device.EncoderRight);
                 wheelCommunication = new MockVehicleCommunication(Device.Wheel);
 
-                lidarPowerPin = new MockGpioOutputPin(12);
-                ultrasoundI2cIsolationPin = new MockGpioOutputPin(16);
-                wheelPowerPin = new MockGpioOutputPin(20);
-                encoderPowerPin = new MockGpioOutputPin(21);
+                lidarPowerPin = new MockGpioPin(12);
+                ultrasoundI2cIsolationPin = new MockGpioPin(16);
+                wheelPowerPin = new MockGpioPin(20);
+                encoderPowerPin = new MockGpioPin(21);
             }
 
             // Lidar container
