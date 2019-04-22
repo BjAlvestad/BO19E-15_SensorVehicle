@@ -17,6 +17,9 @@ namespace Communication.MockCommunication
             PinNumber = gpioNumber;
         }
 
+        public event EventHandler PinValueInputChangedLow;
+        public event EventHandler PinValueInputChangedHigh;
+
         public int PinNumber { get; }
         public bool PinHigh { get; set; }
         public bool ErrorWhenOpeningPin { get; }

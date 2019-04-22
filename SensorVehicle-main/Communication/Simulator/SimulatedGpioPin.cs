@@ -31,6 +31,9 @@ namespace Communication.Simulator
             }
         }
 
+        public event EventHandler PinValueInputChangedLow;
+        public event EventHandler PinValueInputChangedHigh;
+
         public int PinNumber { get; }
 
         public bool ErrorWhenOpeningPin { get; }

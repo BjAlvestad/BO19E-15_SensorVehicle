@@ -8,6 +8,7 @@ namespace Communication.Vehicle
     public class PhysicalGpioPin : IGpioPin
     {
         private GpioPin _gpioPin;
+        private bool _isInputPin;
         private Exception _exceptionWhenOpeningPin;
 
         /// <summary>
@@ -25,7 +26,15 @@ namespace Communication.Vehicle
                 _gpioPin = GpioController.GetDefault().OpenPin(PinNumber);
                 _gpioPin.Write(setInitialValueHigh ? GpioPinValue.High : GpioPinValue.Low);
                 _gpioPin.SetDriveMode(driveMode);
+
+                _isInputPin = driveMode == GpioPinDriveMode.Input || driveMode == GpioPinDriveMode.InputPullUp || driveMode == GpioPinDriveMode.InputPullDown;
+
                 ErrorWhenOpeningPin = false;
+
+                if (_isInputPin)
+                {
+                    _gpioPin.ValueChanged += ValueChangedOnInputPin;
+                }
             }
             catch (Exception e)
             {
@@ -33,6 +42,9 @@ namespace Communication.Vehicle
                 _exceptionWhenOpeningPin = e;
             }
         }
+
+        public event EventHandler PinValueInputChangedLow;
+        public event EventHandler PinValueInputChangedHigh;
 
         public int PinNumber { get; }
 
@@ -84,10 +96,25 @@ namespace Communication.Vehicle
 
         private void ThrowExceptionIfDriveModeIsInput()
         {
-            GpioPinDriveMode pinMode = _gpioPin.GetDriveMode();
-            if (pinMode == GpioPinDriveMode.Input || pinMode == GpioPinDriveMode.InputPullUp || pinMode == GpioPinDriveMode.InputPullDown)
+            if (_isInputPin)
             {
-                throw new InvalidOperationException($"Can't set state on pin {PinNumber} since it is configured as an input pin ({pinMode.ToString()})");
+                throw new InvalidOperationException($"Can't set state on pin {PinNumber} since it is configured as an input pin ({_gpioPin.GetDriveMode().ToString()})");
+            }
+        }
+
+
+        private void ValueChangedOnInputPin(GpioPin sender, GpioPinValueChangedEventArgs args)
+        {
+            switch (args.Edge)
+            {
+                case GpioPinEdge.FallingEdge:
+                    PinValueInputChangedLow?.Invoke(this, EventArgs.Empty);
+                    break;
+                case GpioPinEdge.RisingEdge:
+                    PinValueInputChangedHigh?.Invoke(this, EventArgs.Empty);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }
