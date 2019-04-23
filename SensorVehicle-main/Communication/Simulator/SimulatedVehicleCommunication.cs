@@ -22,6 +22,8 @@ namespace Communication.Simulator
             _simulatorCommunication.OnMessageReceived += SimulatorCommunicationOnOnMessageReceived;
         }
 
+        public event EventHandler NewDataReceived;
+
         public void Write(MessageCode message, params int[] data)
         {
             ValueSet valuesToSend = new ValueSet();
@@ -40,6 +42,8 @@ namespace Communication.Simulator
             valuesToSend.Add("REQUEST", "");
 
             ValueSet dataReceived = Task.Run(() => _simulatorCommunication.RequestDataAsync(valuesToSend)).GetAwaiter().GetResult(); //TODO: This is a temporary hack that blocks the async method. WARNING MAY CAUSE ISSUES!. See if Read() can be rewritten to be async.  See Figure 7 "The Thread Pool Hack" on https://msdn.microsoft.com/en-us/magazine/mt238404.aspx
+
+            NewDataReceived?.Invoke(this, EventArgs.Empty);
 
             return ConvertData(dataReceived);
         }

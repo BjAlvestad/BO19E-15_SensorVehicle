@@ -101,7 +101,7 @@ namespace Application
                 wheelPowerPin = new SimulatedGpioPin(20, GpioPinDriveMode.Output);
                 encoderPowerPin = new SimulatedGpioPin(21, GpioPinDriveMode.Output);
 
-                ultrasoundInterruptPin = new SimulatedGpioPin(5, GpioPinDriveMode.Input);  //TODO
+                ultrasoundInterruptPin = new SimulatedGpioPin(5, GpioPinDriveMode.Input, false, (SimulatedVehicleCommunication)ultrasonicCommunication, 340);
             }
             else // Connect up against mock/random data instead of simulator
             {

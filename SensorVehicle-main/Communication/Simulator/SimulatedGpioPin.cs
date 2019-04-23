@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Devices.Gpio;
+using Windows.System.Threading;
 using VehicleEquipment;
 
 namespace Communication.Simulator
@@ -8,20 +9,35 @@ namespace Communication.Simulator
     {
         private Exception _exceptionWhenOpeningPin;
         private GpioPinDriveMode _pinMode;
+        private bool _isInputPin;
+        private ThreadPoolTimer _interruptTimer;
 
-        public SimulatedGpioPin(int gpioNumber, GpioPinDriveMode driveMode, bool setInitialValueHigh = false)
+        public SimulatedGpioPin(int gpioNumber, GpioPinDriveMode driveMode, bool setInitialValueHigh = false, SimulatedVehicleCommunication communicaton = null, int interruptInterval = 0)
         {
             try
             {
                 PinNumber = gpioNumber;
                 _pinMode = driveMode;
 
-                PinHigh = setInitialValueHigh;
-
                 if (gpioNumber < 0)
                 {
                     throw new Exception("Pin number is out of range");
                 }
+
+                _isInputPin = driveMode == GpioPinDriveMode.Input || driveMode == GpioPinDriveMode.InputPullUp || driveMode == GpioPinDriveMode.InputPullDown;
+
+                if (_isInputPin)
+                {
+                    if(communicaton != null) communicaton.NewDataReceived += OnNewDataReceivedFromSensor;
+
+                    _interruptTimer = StartInterruptTimer(interruptInterval);
+                    _pinHigh = true;
+                }
+                else
+                {
+                    PinHigh = setInitialValueHigh;
+                }
+
                 ErrorWhenOpeningPin = false;
             }
             catch (Exception e)
@@ -72,6 +88,28 @@ namespace Communication.Simulator
             {
                 throw new InvalidOperationException($"Can't set state on pin {PinNumber} since it is configured as an input pin ({_pinMode.ToString()})");
             }
+        }
+
+        private ThreadPoolTimer StartInterruptTimer(int millisecondsBetweenInterrupts)
+        {
+            if (millisecondsBetweenInterrupts <= 0) return null;
+
+            return ThreadPoolTimer.CreatePeriodicTimer(
+                (ThreadPoolTimer timer) =>
+                {
+                    if (_pinHigh == false)
+                    {
+                        _pinHigh = true;
+                        PinValueInputChangedHigh?.Invoke(this, EventArgs.Empty);
+                    }
+                }, 
+                TimeSpan.FromMilliseconds(millisecondsBetweenInterrupts));
+        }
+
+        private void OnNewDataReceivedFromSensor(object sender, EventArgs args)
+        {
+            _pinHigh = false;
+            PinValueInputChangedLow?.Invoke(this, EventArgs.Empty);
         }
     }
 }
