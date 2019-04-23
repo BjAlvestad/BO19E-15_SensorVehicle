@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Windows.Networking.Sockets;
 
 // https://docs.microsoft.com/en-us/windows/uwp/networking/sockets
@@ -9,28 +8,21 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 {
     public class SocketServer
     {
-        static string PortNumber = "11000";
-        private StreamSocketListener streamSocketListener;
-        private CancellationTokenSource cancellationTokenSource;
-        private CancellationToken cancellationToken;
-
-        //public async void StartUpServer()
-        //{
-        //    cancellationTokenSource = new CancellationTokenSource();
-        //    cancellationToken = cancellationTokenSource.Token;
-        //}
+        public const string PortNumber = "51915";
+        private StreamSocketListener _streamSocketListener;
+        private bool _clientConnectionOpen;
 
         public async void StartServer()
         {
             try
             {
-                streamSocketListener = new StreamSocketListener();
+                _streamSocketListener = new StreamSocketListener();
 
                 // The ConnectionReceived event is raised when connections are received.
-                streamSocketListener.ConnectionReceived += StreamSocketListener_ConnectionReceived;
+                _streamSocketListener.ConnectionReceived += StreamSocketListener_ConnectionReceived;
 
                 // Start listening for incoming TCP connections on the specified port. You can specify any port that's not currently in use.
-                await streamSocketListener.BindServiceNameAsync(PortNumber);
+                await _streamSocketListener.BindServiceNameAsync(PortNumber);
 
                 Debug.WriteLine("server is listening...", "TcpSocketServer");
             }
@@ -43,41 +35,55 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 
         public async void StopServer()
         {
-            if (streamSocketListener == null) return;
+            if (_streamSocketListener == null) return;
 
-            streamSocketListener.ConnectionReceived -= StreamSocketListener_ConnectionReceived;
-            await streamSocketListener.CancelIOAsync();
-            streamSocketListener.Dispose();
-            //TODO: Check if steamSocketListener is null after disposing
+            _streamSocketListener.ConnectionReceived -= StreamSocketListener_ConnectionReceived;
+            await _streamSocketListener.CancelIOAsync();
+            _streamSocketListener.Dispose();
         }
 
         private async void StreamSocketListener_ConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
-            Debug.WriteLine($"server received a connection");
-            //TODO: consider keeping connection open, instead of closing after each request / response
-            string request;
-            using (var streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
+            try
             {
-                request = await streamReader.ReadLineAsync();
-            }
-            
-            Debug.WriteLine($"server received the request: \"{request}\"", "TcpSocketServer");
+                //if(_clientConnectionOpen) throw new Exception("There is already someone connected to the server");
 
-            // Echo the request back as the response.
-            using (Stream outputStream = args.Socket.OutputStream.AsStreamForWrite())
-            {
+                Debug.WriteLine($"server received a connection");
+                _clientConnectionOpen = true;
+
+                using (var streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
+                using (Stream outputStream = args.Socket.OutputStream.AsStreamForWrite())
                 using (var streamWriter = new StreamWriter(outputStream))
                 {
-                    await streamWriter.WriteLineAsync(request);
-                    await streamWriter.FlushAsync();
+                    while (_clientConnectionOpen)
+                    {
+                        Debug.WriteLine("server is awaiting request.");
+                        string request = await streamReader.ReadLineAsync();
+                        Debug.WriteLine($"server received the request: \"{request}\"", "TcpSocketServer");
+                        _clientConnectionOpen = request != "<EXIT>";
+
+                        if (_clientConnectionOpen)
+                        {
+                            string response = $"Server confirms receiving request: {request}";
+                            await streamWriter.WriteLineAsync(response);
+                            await streamWriter.FlushAsync();
+                            Debug.WriteLine($"server sent back the response: \"{response}\"", "TcpSocketServer");
+                        }
+                    }
+
+                    Debug.WriteLine("Server received exit message...");
                 }
             }
-
-            Debug.WriteLine($"server sent back the response: \"{request}\"", "TcpSocketServer");
-
-            sender.Dispose();
-
-            Debug.WriteLine("server closed its socket", "TcpSocketServer");
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Exception occured on SocketServer: {e.Message}");
+                //TODO: Add exception display to settings page
+            }
+            finally
+            {
+                _clientConnectionOpen = false;
+                Debug.WriteLine("server closed its socket", "TcpSocketServer");
+            }
         }
     }
 }
