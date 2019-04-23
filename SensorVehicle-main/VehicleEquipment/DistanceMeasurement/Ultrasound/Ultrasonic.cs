@@ -12,14 +12,17 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
         private readonly IGpioPin _ultrasoundI2cIsolationPin;
+        private readonly IGpioPin _newDataAvailablePin;
 
-        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioPin ultrasoundI2cIsolationPin)
+        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioPin ultrasoundI2cIsolationPin, IGpioPin ultrasoundInterruptPin)
         {
             _vehicleCommunication = comWithUltrasonic;
             _ultrasoundI2cIsolationPin = ultrasoundI2cIsolationPin;
             PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
             Error = new Error();
+
+            _newDataAvailablePin = ultrasoundInterruptPin;
         }
 
         public bool DeisolateI2cCommunciation
@@ -126,33 +129,35 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             private set { SetPropertyRaiseSelectively(ref _right, value); }
         }
         
-        //TODO: This property should be removed once pin-interrupt on new distance data available has been set up (Allready connected and implemented on microcontroller side - GPIO5 on SBC)
         private bool _refreshUltrasonicContinously;
         public bool RefreshUltrasonicContinously
         {
             get { return _refreshUltrasonicContinously; }
             set
             {
-                SetProperty(ref _refreshUltrasonicContinously, value);
-                if (value)
+                if (value && !_refreshUltrasonicContinously)
                 {
-                    Task.Run(() =>
-                    {
-                        while (RefreshUltrasonicContinously)
-                        {
-                            UpdateDistanceProperties();
-                            Thread.Sleep(PermissableDistanceAge / 2);
-                        }
-                    });
+                    _newDataAvailablePin.PinValueInputChangedHigh += _newDataAvailablePin_PinValueInputChangedHigh;
+                    UpdateDistanceProperties();
                 }
+                else if (!value && _refreshUltrasonicContinously)
+                {
+                    _newDataAvailablePin.PinValueInputChangedHigh -= _newDataAvailablePin_PinValueInputChangedHigh;
+                }
+                SetProperty(ref _refreshUltrasonicContinously, value);
             }
+        }
+
+        private void _newDataAvailablePin_PinValueInputChangedHigh(object sender, EventArgs e)
+        {
+            UpdateDistanceProperties();
         }
 
         private void UpdateDistanceProperties()
         {
             lock (DistanceUpdateSyncLock)
             {
-                if ((DateTime.Now - TimeStamp).TotalMilliseconds <= PermissableDistanceAge) return;
+                if (!_newDataAvailablePin.PinHigh) return;
 
                 if (Error.Unacknowledged)
                 {
