@@ -120,6 +120,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ExternalCommunication\StreamSocketServer\SocketServer.cs" />
     <Compile Include="IPower.cs" />
     <Compile Include="MockCommunication\MockLidarPacketReceiver.cs" />
     <Compile Include="MockCommunication\MockPower.cs" />

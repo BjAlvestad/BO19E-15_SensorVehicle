@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -14,6 +15,7 @@ using Windows.ApplicationModel;
 using Windows.System;
 using Windows.UI.Xaml;
 
+using Communication.ExternalCommunication.StreamSocketServer;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -67,17 +69,26 @@ namespace Application.ViewModels
             }
         }
 
+        private SocketServer asyncSocketServer = new SocketServer();
         private bool _runAsyncSocketServer;
         public bool RunAsyncSocketServer
         {
             get { return _runAsyncSocketServer; }
             set
             {
-                //TODO: Implement Async Socket Server functionality (start on true, and stop on false)
+                if (value == _runAsyncSocketServer) return;
+
                 if (value)
                 {
                     if (RunSocketServer) RunSocketServer = false;
+                    //AsynchronousSocketListener.StartListening(_asyncSocketCancellationTokenSource.Token);
+                    asyncSocketServer.StartServer();
                 }
+                else
+                {
+                    asyncSocketServer.StopServer();
+                }
+
                 SetProperty(ref _runAsyncSocketServer, value);
             }
         }
