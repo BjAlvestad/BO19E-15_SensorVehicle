@@ -26,11 +26,7 @@ namespace Application.ViewModels
     // For help see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/pages/settings.md
     public class SettingsViewModel : ViewModelBase
     {
-        private IUltrasonic _ultrasonic;
-        private ILidarDistance _lidar;
-        private IWheel _wheel;
-        private IEncoders _encoders;
-        private SocketServer asyncSocketServer;
+        private readonly SocketServer _asyncSocketServer;
 
         private ElementTheme _elementTheme = ThemeSelectorService.Theme;
         public ElementTheme ElementTheme
@@ -77,42 +73,20 @@ namespace Application.ViewModels
 
                 if (value)
                 {
-                    if (RunSocketServer) RunSocketServer = false;
-                    //AsynchronousSocketListener.StartListening(_asyncSocketCancellationTokenSource.Token);
-                    asyncSocketServer.StartServer();
+                    _asyncSocketServer.StartServer();
                 }
                 else
                 {
-                    asyncSocketServer.StopServer();
+                    _asyncSocketServer.StopServer();
                 }
 
                 SetProperty(ref _runAsyncSocketServer, value);
             }
         }
 
-        private bool _runSocketServer;
-        public bool RunSocketServer
-        {
-            get { return _runSocketServer; }
-            set
-            {
-                //TODO: Implement Socket Server functionality (start on true, and stop on false)
-                if (value)
-                {
-                    if (RunAsyncSocketServer) RunAsyncSocketServer = false;
-                }
-                SetProperty(ref _runSocketServer, value);
-            }
-        }
-
         public SettingsViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders)
         {
-            _ultrasonic = ultrasonic;
-            _lidar = lidar;
-            _wheel = wheel;
-            _encoders = encoders;
-
-            asyncSocketServer = new SocketServer(_wheel, _ultrasonic, _lidar, _encoders);
+            _asyncSocketServer = new SocketServer(wheel, ultrasonic, lidar, encoders);
         }
 
         public async Task LaunchExtraFunctions()

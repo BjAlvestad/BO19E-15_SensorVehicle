@@ -17,10 +17,10 @@ namespace Communication.ExternalCommunication.StreamSocketServer
     public class SocketServer
     {
         public const string PortNumber = "51915";
+        private readonly RequestHandler _requestHandler;
+        private readonly IWheel _wheel;
         private StreamSocketListener _streamSocketListener;
         private bool _clientConnectionOpen;
-        private RequestHandler _requestHandler;
-        private IWheel _wheel;
 
         public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders)
         {
@@ -67,8 +67,6 @@ namespace Communication.ExternalCommunication.StreamSocketServer
         {
             try
             {
-                //if(_clientConnectionOpen) throw new Exception("There is already someone connected to the server");
-
                 Debug.WriteLine($"server received a connection");
                 _clientConnectionOpen = true;
 

@@ -77,7 +77,6 @@
         <StackPanel Grid.Column="2" Grid.Row="0">
             <TextBlock Text="Experimental functionality" Style="{ThemeResource SubtitleTextBlockStyle}"/>
             <ToggleSwitch Header="Async socket server (for Android app)" IsOn="{x:Bind ViewModel.RunAsyncSocketServer, Mode=TwoWay}"/>
-            <ToggleSwitch Header="Socket server (for Android app)" IsOn="{x:Bind ViewModel.RunSocketServer, Mode=TwoWay}"/>
             <Button Content="Open extra functions" Click="{x:Bind ViewModel.LaunchExtraFunctions, Mode=OneWay}"/>
         </StackPanel>
 
