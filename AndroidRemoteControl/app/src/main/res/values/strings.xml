@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Android Remote Control</string>
+    <string name="sensor_vehicle">SensorVehicle</string>
+    <string name="connect">CONNECT:</string>
+    <string name="connect_vehicle_1">connect vehicle 1</string>
+    <string name="connect_vehicle_2">connect vehicle 2</string>
+    <string name="connect_default">Connect default</string>
+    <string name="sensor_data">sensor data</string>
+    <string name="move_vehicle">Move Vehicle</string>
+    <string name="info_text"> . . . </string>
 </resources>
