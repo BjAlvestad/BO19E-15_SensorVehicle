@@ -23,9 +23,9 @@
                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--DISPLAY SETTINGS box (contains properties that allways raises NotifyPropertyChanged)-->
@@ -69,17 +69,32 @@
 
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
             <StackPanel Grid.Row="0" Grid.Column="4">
-                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Ultrasound, Mode=TwoWay}" />
+                <ToggleSwitch Header="I2c isolation" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=TwoWay}" />
                 <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                              Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Ultrasonic.RefreshUltrasonicContinously, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Autocollect' (and ) can remain on (but hidden) when 'Power' is switched off -->
+                              Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Autocollect' (and ) can remain on (but hidden) when 'Power' is switched off -->
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->
-            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
-                       Text="{x:Bind ViewModel.Ultrasonic.Message, Mode=OneWay}" TextWrapping="Wrap"
-                       Tapped="{x:Bind ViewModel.Ultrasonic.ClearMessage, Mode=OneWay}" />
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Padding="0,15,0,10"
+                        Visibility="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        <TextBlock Text="{x:Bind ViewModel.Ultrasonic.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Details" IsChecked="{x:Bind ViewModel.Ultrasonic.Error.ShowDetailedMessage, Mode=TwoWay}" />
+                    <Button Content="Clear error" Click="{x:Bind ViewModel.Ultrasonic.Error.Clear, Mode=OneWay}" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

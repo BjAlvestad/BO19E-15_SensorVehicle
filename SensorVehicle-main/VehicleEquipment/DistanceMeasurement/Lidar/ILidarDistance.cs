@@ -9,15 +9,15 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
     public interface ILidarDistance : INotifyPropertyChanged
     {
         bool RaiseNotificationForSelective { get; set; }
-        bool HasUnacknowledgedError { get; }
-        string Message { get; }
+
+        bool Power { get; set; }
+
+        Error Error { get; }
 
         bool RunCollector { get; set; }
 
         double MinRange { get; set; }
         double MaxRange { get; set; }
-
-        void ClearMessage();
 
         void StartCollector();
         void StopCollector();

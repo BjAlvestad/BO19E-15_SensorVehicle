@@ -12,10 +12,9 @@ namespace Application.ViewModels
 {
     public class LidarViewModel : ViewModelBase
     {
-        public LidarViewModel(ILidarDistance lidar, IPower power)
+        public LidarViewModel(ILidarDistance lidar)
         {
             Lidar = lidar;
-            Power = power;
             CenterForAnglesInRange = 0;
             BeamOpeningForAnglesInRange = 2;
             CalculationTypes = new List<CalculationType>(Enum.GetValues(typeof(CalculationType)).Cast<CalculationType>());
@@ -26,8 +25,6 @@ namespace Application.ViewModels
         public List<VerticalAngle> ActiveVerticalAngles;
 
         public ILidarDistance Lidar { get; }
-
-        public IPower Power { get; }
 
         public List<CalculationType> CalculationTypes { get; }
 
@@ -108,6 +105,17 @@ namespace Application.ViewModels
 
         private async void Lidar_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            switch (e.PropertyName)
+            {
+                case nameof(Lidar.RunCollector) when Lidar.RunCollector == false:
+                    CalculateHorizontalPoints = false;
+                    break;
+                case nameof(Lidar.RaiseNotificationForSelective) when Lidar.RaiseNotificationForSelective == false:
+                    AutoCalculateDirections = false;
+                    AutoCalculateLargestDistance = false;
+                    break;
+            }
+
             if (e.PropertyName != nameof(Lidar.LastUpdate)) return;
 
             if (AutoCalculateDirections)

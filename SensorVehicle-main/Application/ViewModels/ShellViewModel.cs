@@ -41,7 +41,8 @@ namespace Application.ViewModels
         public IUltrasonic Ultrasonic { get; }
         public IWheel Wheel { get; }
         public IEncoders Encoders { get; }
-        public IPower Power { get; }
+
+        public bool UnacknowledgedWheelOrEncoderError => Wheel.Error.Unacknowledged || Encoders.Error.Unacknowledged;
         #endregion
 
         public ICommand ItemInvokedCommand { get; }
@@ -58,14 +59,13 @@ namespace Application.ViewModels
             set { SetProperty(ref _selected, value); }
         }
 
-        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
+        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
         {
             _navigationService = navigationServiceInstance;
             Lidar = lidar;
             Ultrasonic = ultrasonic;
             Wheel = wheel;
             Encoders = encoders;
-            Power = power;
             ExampleLogic = exampleLogic;
             StudentLogic = studentLogic;
             ItemInvokedCommand = new DelegateCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked);
@@ -80,6 +80,8 @@ namespace Application.ViewModels
             };
             frame.Navigated += Frame_Navigated;
             _navigationView.BackRequested += OnBackRequested;
+            Wheel.Error.PropertyChanged += WheelError_PropertyChanged;
+            Encoders.Error.PropertyChanged += EncoderError_PropertyChanged;
         }
 
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
@@ -123,5 +125,23 @@ namespace Application.ViewModels
             var pageKey = menuItem.GetValue(NavHelper.NavigateToProperty) as string;
             return pageKey == sourcePageKey;
         }
+
+        #region WheelAndEncoderErrorCombiner
+        private void EncoderError_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Encoders.Error.Unacknowledged))
+            {
+                RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
+            }
+        }
+
+        private void WheelError_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Wheel.Error.Unacknowledged))
+            {
+                RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
+            }
+        }
+        #endregion
     }
 }

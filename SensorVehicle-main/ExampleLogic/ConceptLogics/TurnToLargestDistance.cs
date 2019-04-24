@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.WebSockets;
 using System.Threading;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.Locomotion.Wheels;
@@ -43,6 +44,8 @@ namespace ExampleLogic.ConceptLogics
 
         public override void Run(CancellationToken cancellationToken)
         {
+            ThrowExceptionIfCollectorIsStopped();
+
             const int rotateLimit = 60;
 
             float angleToLargestDistance = _lidar.LargestDistance.Angle;
@@ -50,8 +53,8 @@ namespace ExampleLogic.ConceptLogics
             if (float.IsNaN(angleToLargestDistance))  //TODO: Make LIDAR class throw exception when calling methods (or when accessing Distance) when power is off, or collector not running.
             {
                 _wheels.Stop();
-                Debug.WriteLine("STOPPED due to no LIDAR distance found!\nIs LIDAR powered on, and collector running?", "ControlLogic");
-                Thread.Sleep(2000);
+                Debug.WriteLine("STOPPED WHEELS due to no LIDAR distance found!", "ControlLogic");
+                Thread.Sleep(200);
             }
             else if (angleToLargestDistance > rotateLimit && angleToLargestDistance < 360 - rotateLimit)
             {
@@ -66,7 +69,7 @@ namespace ExampleLogic.ConceptLogics
             const float errorMargin = 5;
             DateTime lastCommand = DateTime.Now;
 
-            while (!IsPointingTowardsLargestDistance(errorMargin) && !cancellationToken.IsCancellationRequested)
+            while (!IsPointingTowardsLargestDistance(errorMargin) && !cancellationToken.IsCancellationRequested && _lidar.RunCollector)
             {
                 float angle = _lidar.LargestDistance.Angle;
                 bool gettingCloseToTarget = angle < 5 * errorMargin || angle > (360 - angle) * 5;
@@ -94,6 +97,16 @@ namespace ExampleLogic.ConceptLogics
         {
             if (angle < 180) _wheels.TurnRight(turnSpeed);
             else _wheels.TurnLeft(turnSpeed);
+        }
+
+        private void ThrowExceptionIfCollectorIsStopped()
+        {
+            if (_lidar.RunCollector == false)
+            {
+                throw new Exception(
+                    "LIDAR collector stopped unexpectedly!\n" +
+                    "Check LIDAR page, and rectify error before starting this control logic again.");
+            }
         }
     }
 }

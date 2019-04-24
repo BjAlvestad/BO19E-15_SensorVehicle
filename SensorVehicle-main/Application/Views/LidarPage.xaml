@@ -148,18 +148,32 @@
 
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
             <StackPanel Grid.Row="0" Grid.Column="6">
-                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Power.Lidar, Mode=TwoWay}" />
+                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Lidar.Power, Mode=TwoWay}" />
                 <ToggleSwitch Header="Run Collector" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Lidar.RunCollector, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Collect' can remain on (but hidden) when 'Power' is switched off -->
+                              Visibility="{x:Bind ViewModel.Lidar.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                              Visibility="{x:Bind ViewModel.Lidar.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->
-            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7"
-                       Text="{x:Bind ViewModel.Lidar.Message, Mode=OneWay}" TextWrapping="Wrap"
-                       Tapped="{x:Bind ViewModel.Lidar.ClearMessage, Mode=OneWay}" />
-
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Padding="0,15,0,10"
+                        Visibility="{x:Bind ViewModel.Lidar.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        <TextBlock Text="{x:Bind ViewModel.Lidar.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                   Visibility="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Details" IsChecked="{x:Bind ViewModel.Lidar.Error.ShowDetailedMessage, Mode=TwoWay}" />
+                    <Button Content="Clear error" Click="{x:Bind ViewModel.Lidar.Error.Clear, Mode=OneWay}" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

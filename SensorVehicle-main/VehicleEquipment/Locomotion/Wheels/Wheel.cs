@@ -9,11 +9,35 @@ namespace VehicleEquipment.Locomotion.Wheels
         private const int MaximumValidSpeed = 100;
 
         private readonly IVehicleCommunication vehicleCommunication;
+        private readonly IGpioPin _powerPin;
 
-        public Wheel(IVehicleCommunication comWithWheel)
+        public Wheel(IVehicleCommunication comWithWheel, IGpioPin powerPin)
         {
             vehicleCommunication = comWithWheel;
+            _powerPin = powerPin;
+            Error = new Error();
         }
+
+        public bool Power
+        {
+            get { return _powerPin.PinHigh; }
+            set
+            {
+                try
+                {
+                    _powerPin.PinHigh = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch wheel power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                }
+                RaiseSyncedPropertyChanged();
+            }
+        }
+
+        public Error Error { get; }
 
         private int _currentSpeedLeft;
         public int CurrentSpeedLeft
@@ -27,26 +51,6 @@ namespace VehicleEquipment.Locomotion.Wheels
         {
             get { return _currentSpeedRight; }
             private set { SetPropertyRaiseSelectively(ref _currentSpeedRight, value); }
-        }
-
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
-        }
-
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            private set { SetProperty(ref _message, value); }
-        }
-
-        public void ClearMessage()
-        {
-            Message = "";
-            HasUnacknowledgedError = false;
         }
 
         public void Fwd(int speed = 50)
@@ -82,7 +86,7 @@ namespace VehicleEquipment.Locomotion.Wheels
         /// <param name="onlySendIfValuesChanged">If set to false, new command will be sent to wheels, even if command is the same as old.</param>
         public void SetSpeed(int leftValue, int rightValue, bool onlySendIfValuesChanged = true)
         {
-            if ((onlySendIfValuesChanged && leftValue == CurrentSpeedLeft && rightValue == CurrentSpeedRight) || HasUnacknowledgedError) return;
+            if ((onlySendIfValuesChanged && leftValue == CurrentSpeedLeft && rightValue == CurrentSpeedRight) || Error.Unacknowledged) return;
 
             try
             {
@@ -98,8 +102,8 @@ namespace VehicleEquipment.Locomotion.Wheels
             {
                 CurrentSpeedLeft = 999;
                 CurrentSpeedRight = 999;
-                Message += $"Error when setting speed: \n{e.Message}\n\nStacktrace: \n{e.StackTrace}\n**************";
-                Debug.WriteLine($"ERROR when writing to wheel: {e}");
+                Error.Message = $"Error when setting wheel speed...\n{e.Message}";
+                Error.DetailedMessage = e.ToString();
             }
         }
 

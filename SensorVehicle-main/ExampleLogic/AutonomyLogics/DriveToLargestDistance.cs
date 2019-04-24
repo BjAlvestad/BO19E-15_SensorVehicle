@@ -56,13 +56,15 @@ namespace ExampleLogic.AutonomyLogics
         private int _speedRight;
         public override void Run(CancellationToken cancellationToken)
         {
+            ThrowExceptionIfLidarCollectorIsStoppedOrSensorError();
+
             float angleToLargestDistance = _lidar.LargestDistanceInRange(260, 100).Angle;
 
             if (float.IsNaN(angleToLargestDistance))
             {
                 _wheels.Stop();
                 Debug.WriteLine("STOPPED due to no LIDAR distance found in range!", "ControlLogic");
-                Thread.Sleep(2000);
+                Thread.Sleep(200);
             }
             else
             {
@@ -141,6 +143,33 @@ namespace ExampleLogic.AutonomyLogics
             _speedRight -= rightSpeedReduction;
         }
 
+        private void ThrowExceptionIfLidarCollectorIsStoppedOrSensorError()
+        {
+            string errorMessage = "";
+
+            if (_lidar.RunCollector == false)
+            {
+                errorMessage += "LIDAR collector stopped unexpectedly!\n" +
+                    "Check LIDAR page, and rectify error before starting this control logic again.";
+            }
+            if (_ultrasonic.Error.Unacknowledged)
+            {
+                if (errorMessage != "") errorMessage += "\n\n";
+                errorMessage += "Ultrasound sensor has an unacknowledged error.\n" +
+                                "See Ultrasonic page for details.";
+            }
+            if (_wheels.Error.Unacknowledged)
+            {
+                if (errorMessage != "") errorMessage += "\n\n";
+                errorMessage += "Wheels has an unacknowledged error.\n" +
+                                "See Wheels page for details.";
+            }
+
+            if (errorMessage != "")
+            {
+                throw new Exception(errorMessage);
+            }
+        }
         #endregion
     }
 }

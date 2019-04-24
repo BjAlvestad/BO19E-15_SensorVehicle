@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Encoder
 {
@@ -7,17 +8,19 @@ namespace VehicleEquipment.Locomotion.Encoder
     {
         bool RaiseNotificationForSelective { get; set; }
 
+        bool Power { get; set; }
+
+        Error Error { get; }
+
         Encoder Left { get; }
         Encoder Right { get; }
 
         int CollectionInterval { get; set; }
         bool CollectContinously { get; set; }
 
-        bool HasUnacknowledgedError { get; }
-        string Message { get; }
-        void ClearMessage();
-
         void ResetTotalDistanceTraveled();
         void CollectAndResetDistanceFromEncoders();
+
+        void ClearAllEncoderErrors();
     }
 }

@@ -17,14 +17,16 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
         private readonly ILidarPacketReceiver _packetReceiver;
+        private readonly IGpioPin _powerPin;
         private CancellationTokenSource _collectorCancelToken;
         private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
-        public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
+        public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioPin powerPin, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
+            _powerPin = powerPin;
 
             DefaultHalfBeamOpening = 15;
             DefaultCalculationType = CalculationType.Max; //TEMP
@@ -37,7 +39,36 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
             ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
             ActiveVerticalAngles.AddFromArray(verticalAngles);
+
+            Error = new Error();
         }
+
+        public bool Power
+        {
+            get { return _powerPin.PinHigh; }
+            set
+            {
+                if (value == false)
+                {
+                    RunCollector = false;
+                }
+
+                try
+                {
+                    _powerPin.PinHigh = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch lidar power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                    RunCollector = false;
+                }
+                RaiseSyncedPropertyChanged();
+            }
+        }
+
+        public Error Error { get; }
 
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
 
@@ -100,13 +131,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             set { SetProperty(ref _defaultHalfBeamOpening, value); }
         }
 
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            private set { SetProperty(ref _message, value); }
-        }
-
         private int _numberOfCycles;
         public int NumberOfCycles
         {
@@ -118,13 +142,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        private bool _hasUnacknowledgedError;
-        public bool HasUnacknowledgedError
-        {
-            get { return _hasUnacknowledgedError; }
-            set { SetProperty(ref _hasUnacknowledgedError, value); }
-        }
-
         private bool _runCollector;
         public bool RunCollector
         {
@@ -134,7 +151,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 SetProperty(ref _runCollector, value);
                 //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
                 if(value) StartCollector();
-                else StopCollector();
+                else
+                {
+                    StopCollector();
+                    RaiseNotificationForSelective = false;
+                }
             }
         }
 
@@ -324,12 +345,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        public void ClearMessage()
-        {
-            Message = "";
-            HasUnacknowledgedError = false;
-        }
-
         public void StartCollector()
         {
             if (IsCollectorRunning)
@@ -383,12 +398,14 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
             catch (OperationCanceledException oce)
             {
-                if(string.IsNullOrEmpty(Message)) Message = "Lidar collectors operation has been cancelled";
+                // This is not an error, but an expected exception when collector is stopped (cancelled)
+                Debug.WriteLine("Lidar collector was stopped (cancelled).");
             }
             catch (Exception e)
             {
-                Message = $"A collector error occured:\n{e.Message}\n\nStackTrace below\n{e.StackTrace}";
-                HasUnacknowledgedError = true;
+                Error.Message = $"A collector error occured:\n{e.Message}";
+                Error.DetailedMessage = e.ToString();
+                Error.Unacknowledged = true;
                 RunCollector = false;
             }
         }

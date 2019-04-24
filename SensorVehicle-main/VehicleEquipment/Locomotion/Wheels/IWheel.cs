@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.Locomotion.Wheels
 {
     public interface IWheel : INotifyPropertyChanged
     {
         bool RaiseNotificationForSelective { get; set; }
+
+        bool Power { get; set; }
 
         int CurrentSpeedLeft { get; }
         int CurrentSpeedRight { get; }
@@ -17,8 +20,6 @@ namespace VehicleEquipment.Locomotion.Wheels
         void Reverse(int speed);
         void Stop();
 
-        bool HasUnacknowledgedError { get; }
-        string Message { get; }
-        void ClearMessage();
+        Error Error { get; }
     }
 }

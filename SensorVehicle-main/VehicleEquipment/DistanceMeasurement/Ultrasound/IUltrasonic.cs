@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public interface IUltrasonic : INotifyPropertyChanged
     {
+        bool DeisolateI2cCommunciation { get; set; }
+
         float Left { get; }
 
         float Fwd { get; }
@@ -19,11 +22,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
         bool RaiseNotificationForSelective { get; set; }
 
-        bool HasUnacknowledgedError { get; }
-
-        string Message { get; }
-
-        void ClearMessage();
+        Error Error { get; }
 
         bool RefreshUltrasonicContinously { get; set; }
     }

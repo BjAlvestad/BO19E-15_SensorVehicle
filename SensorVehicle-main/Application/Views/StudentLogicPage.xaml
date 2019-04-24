@@ -20,6 +20,7 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
+        <!--STUDENT LOGIC DataTemplate for items in List-->
         <DataTemplate x:Key="ItemTemplate" x:DataType="studentLogic:StudentLogicBase">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
@@ -33,6 +34,7 @@
             </Grid>
         </DataTemplate>
 
+        <!--SELECTED STUDENT LOGIC DETAILS DataTemplate (Specified in StudentLogicDetailControl.xaml file)-->
         <DataTemplate x:Key="DetailsTemplate">
             <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                 <views:StudentLogicDetailControl MasterMenuItem="{Binding}"/>
