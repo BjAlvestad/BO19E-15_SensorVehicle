@@ -30,9 +30,9 @@ namespace Application.ViewModels
         private ILidarDistance _lidar;
         private IWheel _wheel;
         private IEncoders _encoders;
+        private SocketServer asyncSocketServer;
 
         private ElementTheme _elementTheme = ThemeSelectorService.Theme;
-
         public ElementTheme ElementTheme
         {
             get { return _elementTheme; }
@@ -41,7 +41,6 @@ namespace Application.ViewModels
         }
 
         private string _versionDescription;
-
         public string VersionDescription
         {
             get { return _versionDescription; }
@@ -50,7 +49,6 @@ namespace Application.ViewModels
         }
 
         private ICommand _switchThemeCommand;
-
         public ICommand SwitchThemeCommand
         {
             get
@@ -69,7 +67,6 @@ namespace Application.ViewModels
             }
         }
 
-        private SocketServer asyncSocketServer = new SocketServer();
         private bool _runAsyncSocketServer;
         public bool RunAsyncSocketServer
         {
@@ -114,6 +111,8 @@ namespace Application.ViewModels
             _lidar = lidar;
             _wheel = wheel;
             _encoders = encoders;
+
+            asyncSocketServer = new SocketServer(_wheel, _ultrasonic, _lidar, _encoders);
         }
 
         public async Task LaunchExtraFunctions()
