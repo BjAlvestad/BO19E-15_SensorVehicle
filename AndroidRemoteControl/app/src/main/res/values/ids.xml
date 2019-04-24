@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="vehicle_1" type="string">Vehicle1</item>
+    <item name="vehicle_2" type="string">Vehicle2</item>
+    <item name="ip_vehicle_1" type="string">158.37.76.13</item>
+    <item name="ip_vehicle_2" type="string">456.654.456.65</item>
+    <item name="port" type="string">51915</item>
+
+</resources>
