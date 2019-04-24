@@ -5,6 +5,7 @@ using System.IO;
 using Windows.Networking.Sockets;
 using Communication.ExternalCommunication.Handler;
 using Communication.ExternalCommunication.Handler.Constants;
+using Helpers;
 using Newtonsoft.Json;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
@@ -22,10 +23,13 @@ namespace Communication.ExternalCommunication.StreamSocketServer
         private StreamSocketListener _streamSocketListener;
         private bool _clientConnectionOpen;
 
+        public Error Error { get; }
+
         public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders)
         {
             _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders);
             _wheel = wheel;
+            Error = new Error();
         }
 
         public async void StartServer()
@@ -45,7 +49,11 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             catch (Exception ex)
             {
                 SocketErrorStatus webErrorStatus = SocketError.GetStatus(ex.GetBaseException().HResult);
-                Debug.WriteLine(webErrorStatus.ToString() != "Unknown" ? webErrorStatus.ToString() : ex.Message);
+                string errorMessage = webErrorStatus.ToString() != "Unknown" ? webErrorStatus.ToString() : ex.Message;
+                Debug.WriteLine(errorMessage);
+                Error.Message = errorMessage;
+                Error.DetailedMessage = ex.ToString();
+                Error.Unacknowledged = true;
             }
         }
 
@@ -97,7 +105,9 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             catch (Exception e)
             {
                 Debug.WriteLine($"Exception occured on SocketServer: {e.Message}");
-                //TODO: Add exception display to settings page
+                Error.Message = e.Message;
+                Error.DetailedMessage = e.ToString();
+                Error.Unacknowledged = true;
             }
             finally
             {
