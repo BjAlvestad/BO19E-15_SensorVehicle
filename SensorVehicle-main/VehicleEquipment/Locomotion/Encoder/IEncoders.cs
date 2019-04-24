@@ -8,6 +8,8 @@ namespace VehicleEquipment.Locomotion.Encoder
     {
         bool RaiseNotificationForSelective { get; set; }
 
+        bool Power { get; set; }
+
         Error Error { get; }
 
         Encoder Left { get; }

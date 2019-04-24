@@ -17,14 +17,16 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private bool _rightHasBeenCalculated;
         private bool _aftHasBeenCalculated;
         private readonly ILidarPacketReceiver _packetReceiver;
+        private readonly IGpioPin _powerPin;
         private CancellationTokenSource _collectorCancelToken;
         private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
-        public LidarDistance(ILidarPacketReceiver packetReceiver, params VerticalAngle[] verticalAngles)
+        public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioPin powerPin, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
+            _powerPin = powerPin;
 
             DefaultHalfBeamOpening = 15;
             DefaultCalculationType = CalculationType.Max; //TEMP
@@ -39,6 +41,31 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             ActiveVerticalAngles.AddFromArray(verticalAngles);
 
             Error = new Error();
+        }
+
+        public bool Power
+        {
+            get { return _powerPin.PinHigh; }
+            set
+            {
+                if (value == false)
+                {
+                    RunCollector = false;
+                }
+
+                try
+                {
+                    _powerPin.PinHigh = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch lidar power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                    RunCollector = false;
+                }
+                RaiseSyncedPropertyChanged();
+            }
         }
 
         public Error Error { get; }
@@ -124,7 +151,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 SetProperty(ref _runCollector, value);
                 //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
                 if(value) StartCollector();
-                else StopCollector();
+                else
+                {
+                    StopCollector();
+                    RaiseNotificationForSelective = false;
+                }
             }
         }
 

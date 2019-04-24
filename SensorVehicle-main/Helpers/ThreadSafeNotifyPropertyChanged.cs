@@ -30,7 +30,7 @@ namespace Helpers
         }
 
         private bool _raiseNotificationForSelective;
-        public bool RaiseNotificationForSelective
+        public virtual bool RaiseNotificationForSelective
         {
             get { return _raiseNotificationForSelective; }
             set { SetProperty(ref _raiseNotificationForSelective, value); }

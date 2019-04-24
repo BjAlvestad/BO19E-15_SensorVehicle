@@ -10,6 +10,8 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
     {
         bool RaiseNotificationForSelective { get; set; }
 
+        bool Power { get; set; }
+
         Error Error { get; }
 
         bool RunCollector { get; set; }

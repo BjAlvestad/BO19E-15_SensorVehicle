@@ -41,7 +41,6 @@ namespace Application.ViewModels
         public IUltrasonic Ultrasonic { get; }
         public IWheel Wheel { get; }
         public IEncoders Encoders { get; }
-        public IPower Power { get; }
 
         public bool UnacknowledgedWheelOrEncoderError => Wheel.Error.Unacknowledged || Encoders.Error.Unacknowledged;
         #endregion
@@ -60,14 +59,13 @@ namespace Application.ViewModels
             set { SetProperty(ref _selected, value); }
         }
 
-        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, IPower power, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
+        public ShellViewModel(INavigationService navigationServiceInstance, ILidarDistance lidar, IUltrasonic ultrasonic, IWheel wheel, IEncoders encoders, ExampleLogicService exampleLogic, StudentLogicService studentLogic)
         {
             _navigationService = navigationServiceInstance;
             Lidar = lidar;
             Ultrasonic = ultrasonic;
             Wheel = wheel;
             Encoders = encoders;
-            Power = power;
             ExampleLogic = exampleLogic;
             StudentLogic = studentLogic;
             ItemInvokedCommand = new DelegateCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked);

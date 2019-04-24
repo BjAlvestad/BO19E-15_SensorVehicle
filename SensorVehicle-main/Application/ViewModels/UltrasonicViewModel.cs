@@ -10,13 +10,11 @@ namespace Application.ViewModels
 {
     public class UltrasonicViewModel : ViewModelBase
     {
-        public UltrasonicViewModel(IUltrasonic ultrasonic, IPower power)
+        public UltrasonicViewModel(IUltrasonic ultrasonic)
         {
             Ultrasonic = ultrasonic;
-            Power = power;
         }
 
         public IUltrasonic Ultrasonic { get; set; }
-        public IPower Power { get; set; }
     }
 }

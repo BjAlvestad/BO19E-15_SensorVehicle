@@ -10,12 +10,34 @@ namespace VehicleEquipment.Locomotion.Encoder
     {
         private const int MinimumCollectionIntervalInMilliseconds = 50;
 
-        public Encoders(Encoder encoderLeft, Encoder encoderRight)
+        private readonly IGpioPin _powerPin;
+
+        public Encoders(Encoder encoderLeft, Encoder encoderRight, IGpioPin powerPin)
         {
             Left = encoderLeft;
             Right = encoderRight;
+            _powerPin = powerPin;
             CollectionInterval = 500;
             Error = new Error();
+        }
+
+        public bool Power
+        {
+            get { return _powerPin.PinHigh; }
+            set
+            {
+                try
+                {
+                    _powerPin.PinHigh = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch encoder power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                }
+                RaiseSyncedPropertyChanged();
+            }
         }
 
         public Error Error { get; }

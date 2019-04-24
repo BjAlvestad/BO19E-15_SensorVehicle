@@ -9,11 +9,32 @@ namespace VehicleEquipment.Locomotion.Wheels
         private const int MaximumValidSpeed = 100;
 
         private readonly IVehicleCommunication vehicleCommunication;
+        private readonly IGpioPin _powerPin;
 
-        public Wheel(IVehicleCommunication comWithWheel)
+        public Wheel(IVehicleCommunication comWithWheel, IGpioPin powerPin)
         {
             vehicleCommunication = comWithWheel;
+            _powerPin = powerPin;
             Error = new Error();
+        }
+
+        public bool Power
+        {
+            get { return _powerPin.PinHigh; }
+            set
+            {
+                try
+                {
+                    _powerPin.PinHigh = value;
+                }
+                catch (Exception e)
+                {
+                    Error.Message = $"An error occured when trying to switch wheel power {(value ? "on" : "off")}\n{e.Message}";
+                    Error.DetailedMessage = e.ToString();
+                    Error.Unacknowledged = true;
+                }
+                RaiseSyncedPropertyChanged();
+            }
         }
 
         public Error Error { get; }

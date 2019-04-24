@@ -6,6 +6,8 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public interface IUltrasonic : INotifyPropertyChanged
     {
+        bool DeisolateI2cCommunciation { get; set; }
+
         float Left { get; }
 
         float Fwd { get; }

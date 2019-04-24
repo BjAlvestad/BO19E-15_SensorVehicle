@@ -52,7 +52,7 @@
             </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_Wheels" helpers:NavHelper.NavigateTo="Wheels"
-                                      Background="{x:Bind ViewModel.Power.Wheels, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      Background="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
                                       BorderBrush="{x:Bind ViewModel.UnacknowledgedWheelOrEncoderError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEA3A;"/>
@@ -60,7 +60,7 @@
             </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_Lidar" helpers:NavHelper.NavigateTo="Lidar"
-                                      Background="{x:Bind ViewModel.Power.Lidar, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      Background="{x:Bind ViewModel.Lidar.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
                                       BorderBrush="{x:Bind ViewModel.Lidar.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7C0;"/>
@@ -68,15 +68,14 @@
             </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" helpers:NavHelper.NavigateTo="Ultrasonic"
-                                      Background="{x:Bind ViewModel.Power.Ultrasound, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      Background="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
                                       BorderBrush="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE957;"/>
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
 
-            <winui:NavigationViewItem x:Uid="Shell_Power" helpers:NavHelper.NavigateTo="Power"
-                                      BorderBrush="{x:Bind ViewModel.Power.HasUnacknowledgedError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+            <winui:NavigationViewItem x:Uid="Shell_Power" helpers:NavHelper.NavigateTo="Power">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7E8;"/>
                 </winui:NavigationViewItem.Icon>

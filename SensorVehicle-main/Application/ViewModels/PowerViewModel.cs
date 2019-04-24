@@ -5,33 +5,34 @@ using Windows.UI.Xaml;
 using Communication;
 using Prism.Unity.Windows;
 using Prism.Windows.Mvvm;
+using VehicleEquipment.DistanceMeasurement.Lidar;
+using VehicleEquipment.DistanceMeasurement.Ultrasound;
+using VehicleEquipment.Locomotion.Encoder;
+using VehicleEquipment.Locomotion.Wheels;
 
 namespace Application.ViewModels
 {
     public class PowerViewModel : ViewModelBase
     {
-        public PowerViewModel(IPower power)
+        public PowerViewModel(ILidarDistance lidarDistance, IWheel wheel, IEncoders encoders, IUltrasonic ultrasonic)
         {
-            Power = power;
+            Lidar = lidarDistance;
+            Wheel = wheel;
+            Encoders = encoders;
+            Ultrasonic = ultrasonic;
         }
 
-        private IPower _power;
-        public IPower Power
-        {
-            get { return _power; }
-            set { SetProperty(ref _power, value); }
-        }
+        public ILidarDistance Lidar { get; }
+        public IWheel Wheel { get; }
+        public IEncoders Encoders { get; }
+        public IUltrasonic Ultrasonic { get; }
 
         public void PowerDownAllPins()
         {
-            Power.Lidar = false;
-            Power.Ultrasound = false;
-            Power.Wheels = false;
-            Power.Encoder = false;
-            Power.Spare1 = false;
-            Power.Spare2 = false;
-            Power.Spare3 = false;
-            RaisePropertyChanged(nameof(Power));
+            Lidar.Power = false;
+            Wheel.Power = false;
+            Encoders.Power = false;
+            Ultrasonic.DeisolateI2cCommunciation = false;
         }
 
         public Visibility VisibleIfRunningOnIoT => ((App) PrismUnityApplication.Current).IsRunningOnPhysicalCar ? Visibility.Visible : Visibility.Collapsed;
