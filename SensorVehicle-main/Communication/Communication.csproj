@@ -124,6 +124,7 @@
     <Compile Include="ExternalCommunication\Handler\Constants\Key.cs" />
     <Compile Include="ExternalCommunication\Handler\Constants\RequestType.cs" />
     <Compile Include="ExternalCommunication\Handler\RequestHandler.cs" />
+    <Compile Include="ExternalCommunication\StreamSocketServer\ISocketServer.cs" />
     <Compile Include="ExternalCommunication\StreamSocketServer\SocketServer.cs" />
     <Compile Include="MockCommunication\MockLidarPacketReceiver.cs" />
     <Compile Include="MockCommunication\MockGpioPin.cs" />

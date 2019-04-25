@@ -20,6 +20,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Communication;
+using Communication.ExternalCommunication.StreamSocketServer;
 using Communication.MockCommunication;
 using Communication.Simulator;
 using Communication.Vehicle;
@@ -131,6 +132,9 @@ namespace Application
             // Wheel container
             Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(),
                 new InjectionConstructor(wheelCommunication, wheelPowerPin));
+            // Socket Server container
+            Container.RegisterType<ISocketServer, SocketServer>(new ContainerControlledLifetimeManager(),
+                new InjectionConstructor(Container.Resolve(typeof(IWheel)), Container.Resolve(typeof(IUltrasonic)), Container.Resolve(typeof(ILidarDistance)), Container.Resolve(typeof(IEncoders))));
         }
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)

@@ -15,7 +15,7 @@ using VehicleEquipment.Locomotion.Wheels;
 // https://docs.microsoft.com/en-us/windows/uwp/networking/sockets
 namespace Communication.ExternalCommunication.StreamSocketServer
 {
-    public class SocketServer
+    public class SocketServer : ThreadSafeNotifyPropertyChanged, ISocketServer
     {
         public const string PortNumber = "51915";
         private readonly RequestHandler _requestHandler;
@@ -32,7 +32,28 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             Error = new Error();
         }
 
-        public async void StartServer()
+        private bool _listenForConnections;
+        public bool ListenForConnections
+        {
+            get { return _listenForConnections; }
+            set
+            {
+                if (value == _listenForConnections) return;
+
+                if (value)
+                {
+                    StartServer();
+                }
+                else
+                {
+                    StopServer();
+                }
+
+                SetProperty(ref _listenForConnections, value);
+            }
+        }
+
+        private async void StartServer()
         {
             try
             {
@@ -54,10 +75,11 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                 Error.Message = errorMessage;
                 Error.DetailedMessage = ex.ToString();
                 Error.Unacknowledged = true;
+                ListenForConnections = false;
             }
         }
 
-        public async void StopServer()
+        private async void StopServer()
         {
             if (_streamSocketListener == null) return;
 

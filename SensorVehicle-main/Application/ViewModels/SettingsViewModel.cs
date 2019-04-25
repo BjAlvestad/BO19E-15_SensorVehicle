@@ -26,7 +26,7 @@ namespace Application.ViewModels
     // For help see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/pages/settings.md
     public class SettingsViewModel : ViewModelBase
     {
-        public SocketServer AsyncSocketServer { get; }
+        public ISocketServer AsyncSocketServer { get; }
 
         private ElementTheme _elementTheme = ThemeSelectorService.Theme;
         public ElementTheme ElementTheme
@@ -63,30 +63,9 @@ namespace Application.ViewModels
             }
         }
 
-        private bool _runAsyncSocketServer;
-        public bool RunAsyncSocketServer
+        public SettingsViewModel(ISocketServer socketServer)
         {
-            get { return _runAsyncSocketServer; }
-            set
-            {
-                if (value == _runAsyncSocketServer) return;
-
-                if (value)
-                {
-                    AsyncSocketServer.StartServer();
-                }
-                else
-                {
-                    AsyncSocketServer.StopServer();
-                }
-
-                SetProperty(ref _runAsyncSocketServer, value);
-            }
-        }
-
-        public SettingsViewModel(IUltrasonic ultrasonic, ILidarDistance lidar, IWheel wheel, IEncoders encoders)
-        {
-            AsyncSocketServer = new SocketServer(wheel, ultrasonic, lidar, encoders);
+            AsyncSocketServer = socketServer;
         }
 
         public async Task LaunchExtraFunctions()
