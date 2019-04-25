@@ -49,13 +49,14 @@ namespace Communication.ExternalCommunication.Handler
                         response.Add(Key.ExitConfirmation, "Client exiting confirmed ...");
                         break;
                     default:
-                        response.Add(Key.Error, $"UNSUPPORTED REQUEST TYPE --> {request[Key.RequestType]}");
+                        response.Add(Key.Error, $"UNSUPPORTED REQUEST TYPE --> {request[Key.RequestType]}\n" +
+                                                $"Examples of valid Request types are: {RequestType.Command} {RequestType.Data} {RequestType.Exit}");
                         break;
                 }
             }
             catch (Exception e)
             {
-                response.Add(Key.Error, $"Unable to handle request. \nException message: {e.Message}");
+                response.Add(Key.Error, $"Unable to handle request. \nException message: \n{e.Message}");
             }
 
             return response;
@@ -92,8 +93,14 @@ namespace Communication.ExternalCommunication.Handler
 
         private string HandleWheelCommand(Dictionary<string, string> request)
         {
-            int requestedLeftSpeed = Int32.Parse(request["LEFT"]);
-            int requestedRightSpeed = Int32.Parse(request["RIGHT"]);
+            if (!request.ContainsKey(Key.Left) || !request.ContainsKey(Key.Right))
+            {
+                throw new Exception("Commands to the Wheel components requires the following two keys:\n" +
+                                    $"{Key.Left}, {Key.Right}");
+            }
+
+            int requestedLeftSpeed = Int32.Parse(request[Key.Left]);
+            int requestedRightSpeed = Int32.Parse(request[Key.Right]);
 
             _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);
 

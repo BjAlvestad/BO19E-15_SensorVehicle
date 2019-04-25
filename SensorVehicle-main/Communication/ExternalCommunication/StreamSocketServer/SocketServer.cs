@@ -110,8 +110,29 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                         string request = await streamReader.ReadLineAsync();
                         Debug.WriteLine($"server received the request: \"{request}\"", "TcpSocketServer");
 
-                        Dictionary<string, string> requestKeyValuePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
-                        Dictionary<string, string> responseKeyValuePair = _requestHandler.HandleRequest(requestKeyValuePair);
+                        Dictionary<string, string> responseKeyValuePair;
+                        try
+                        {
+                            Dictionary<string, string> requestKeyValuePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
+                            responseKeyValuePair = _requestHandler.HandleRequest(requestKeyValuePair);
+                        }
+                        catch (JsonReaderException jre)
+                        {
+                            Error.Message = GetJsonReaderErrorMessage(request);
+                            Error.DetailedMessage = jre.ToString();
+                            Error.Unacknowledged = true;
+
+                            responseKeyValuePair = new Dictionary<string, string> {{Key.Error, Error.Message}};
+                        }
+                        catch (Exception e)
+                        {
+                            Error.Message = e.Message;
+                            Error.DetailedMessage = e.ToString();
+                            Error.Unacknowledged = true;
+
+                            responseKeyValuePair = new Dictionary<string, string> {{Key.Error, Error.Message}};
+                        }
+
                         string response = JsonConvert.SerializeObject(responseKeyValuePair);
 
                         await streamWriter.WriteLineAsync(response);
@@ -127,7 +148,9 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             catch (Exception e)
             {
                 Debug.WriteLine($"Exception occured on SocketServer: {e.Message}");
-                Error.Message = e.Message;
+                Error.Message = $"{e.Message}\n\n" +
+                                $"Note: Client connection closed, but Socket Server is still open for new connections.\n" +
+                                $"Reconnect and try again";
                 Error.DetailedMessage = e.ToString();
                 Error.Unacknowledged = true;
             }
@@ -137,6 +160,23 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                 Debug.WriteLine("Server stopped communication with client, and awaits new connection ...", "TcpSocketServer");
                 _wheel.SetSpeed(0 ,0, false);
             }
+        }
+
+        private static string GetJsonReaderErrorMessage(string incorrectlyFormattedJsonString)
+        {
+            return "Could not deserialize received json string to Key-Value pair format.\n" +
+                   "************************************\n" +
+                   "String received:\n" +
+                   $"{incorrectlyFormattedJsonString}\n" +
+                   "************************************\n" +
+                   "\n" +
+                   "The string should be on the following format:\n" +
+                   "{ \"KEY\": \"Value\"}, { \"KEY\": \"Value\"}\n" +
+                   "\n" +
+                   "Example to request Ultrasound data:\n" +
+                   "{ \"REQUEST_TYPE\": \"Data\", \"COMPONENT\": \"Ultrasound\" }\n" +
+                   "\n" +
+                   "Note: Client connection is still open. Reformat your text correctly and try again.";
         }
     }
 }
