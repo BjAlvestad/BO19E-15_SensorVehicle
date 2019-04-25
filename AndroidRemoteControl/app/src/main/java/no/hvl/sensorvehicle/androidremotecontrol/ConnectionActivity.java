@@ -22,15 +22,12 @@ import java.net.UnknownHostException;
 
 import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.GenerateServerRequest;
 
+import static no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.Address.IpVehicle1;
+import static no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.Address.Port;
+
 public class ConnectionActivity extends AppCompatActivity {
 
     TextView textViewInfo;
-
-    private static Socket s;
-    private static ServerSocket ss;
-    private static InputStreamReader isr;
-    private static BufferedReader br;
-    private static PrintWriter printWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +38,7 @@ public class ConnectionActivity extends AppCompatActivity {
         textViewInfo.setText ("Select vehicle to connect");
 
        // buttonEnable (R.id.btnMoveVehicle, false);
-        buttonEnable (R.id.btnSensorData, false);
+       // buttonEnable (R.id.btnSensorData, false);         // blir brukt til test av socket, se metode
     }
 
     @SuppressLint({"SetTextI18n", "ResourceType"})
@@ -58,8 +55,8 @@ public class ConnectionActivity extends AppCompatActivity {
 
         // start connecting service
 
-        myTask mt = new myTask ();
-        mt.execute ();
+        String status = ConnectionHandler.connect(IpVehicle1,Port);
+        textViewInfo.setText(status);
 
     }
 
@@ -96,7 +93,10 @@ public class ConnectionActivity extends AppCompatActivity {
         startActivity (intent);
     }
 
+    int x = 0;
     public void onClickedSensorData(View view) {
+        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (10, x));
+        x++;
     }
 
     private void buttonEnable(int id, boolean b){
@@ -104,37 +104,14 @@ public class ConnectionActivity extends AppCompatActivity {
         btn.setEnabled (b);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop ();
 
-    class myTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            try {
-                Log.i ("main", "enter background");
-                s= new Socket ("158.37.76.13", 51915);
-                Log.i ("main", s.toString ());
-
-
-
-                printWriter = new PrintWriter (s.getOutputStream ());
-                printWriter.write (GenerateServerRequest.setPower(-30, 30));
-                printWriter.flush ();
-                Log.i ("main", "datasent");
-
-                printWriter.close ();
-
-
-
-                s.close ();
-
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace ();
-            } catch (IOException e) {
-                e.printStackTrace ();
-            }
-            return null;
+        try {
+            ConnectionHandler.closeSocket();
+        } catch (IOException e) {
+            e.printStackTrace ();
         }
     }
 }
