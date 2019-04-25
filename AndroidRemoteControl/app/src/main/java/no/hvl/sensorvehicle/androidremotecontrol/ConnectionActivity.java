@@ -20,6 +20,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.GenerateServerRequest;
+
 public class ConnectionActivity extends AppCompatActivity {
 
     TextView textViewInfo;
@@ -116,7 +118,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
 
                 printWriter = new PrintWriter (s.getOutputStream ());
-                printWriter.write (" { \"REQUEST_TYPE\": \"COMMAND\", \"LEFT\": \"0\", \"RIGHT\": \"20\" }");
+                printWriter.write (GenerateServerRequest.setPower(-30, 30));
                 printWriter.flush ();
                 Log.i ("main", "datasent");
 
