@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SensorVehicle_extras.Configuration;
+using SensorVehicle_extras.Devices;
+using SensorVehicle_extras.Web;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +28,24 @@ namespace SensorVehicle_extras
         public MainPage()
         {
             this.InitializeComponent();
+
+            Loaded += MainPage_Loaded;
+        }
+
+        //public object ConfigurationFile { get; private set; }
+
+        private async void MainPage_Loaded(object sender, RoutedEventArgs eventArgs)
+        {
+            var camera = new Camera();
+            var mediaFrameFormats = await camera.GetMediaFrameFormatsAsync();
+            ConfigurationFile.SetSupportedVideoFrameFormats(mediaFrameFormats);
+            var videoSetting = await ConfigurationFile.Read(mediaFrameFormats);
+
+            await camera.Initialize(videoSetting);
+            camera.Start();
+
+            var httpServer = new HttpServer(camera);
+            httpServer.Start();
         }
     }
 }
