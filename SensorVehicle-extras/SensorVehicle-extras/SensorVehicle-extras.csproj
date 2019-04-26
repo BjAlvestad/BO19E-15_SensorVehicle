@@ -156,7 +156,7 @@
     <Content Include="Web\JavaScript\Fullscreen.js" />
     <Content Include="Web\JavaScript\VideoSettings.js" />
     <Content Include="Web\JavaScript\WebSocketHelper.js" />
-    <Content Include="Web\Styles\Index.js" />
+    <Content Include="Web\Styles\Index.css" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
