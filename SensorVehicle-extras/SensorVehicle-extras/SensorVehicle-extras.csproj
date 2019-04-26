@@ -151,7 +151,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Web\Html\Index.html" />
     <Content Include="Web\JavaScript\Camera.js" />
-    <Content Include="Web\JavaScript\Controls.js" />
     <Content Include="Web\JavaScript\Fullscreen.js" />
     <Content Include="Web\JavaScript\WebSocketHelper.js" />
     <Content Include="Web\Styles\Index.css" />
