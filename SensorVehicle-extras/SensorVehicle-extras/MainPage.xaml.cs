@@ -38,9 +38,16 @@ namespace SensorVehicle_extras
         {
             var camera = new Camera();
             var mediaFrameFormats = await camera.GetMediaFrameFormatsAsync();
-            ConfigurationFile.SetSupportedVideoFrameFormats(mediaFrameFormats);
-            var videoSetting = await ConfigurationFile.Read(mediaFrameFormats);
+            //ConfigurationFile.SetSupportedVideoFrameFormats(mediaFrameFormats);
+            //var videoSetting = await ConfigurationFile.Read(mediaFrameFormats);
 
+            VideoSetting videoSetting = new VideoSetting
+            {
+                VideoResolution = VideoResolution.SD640_480,
+                VideoSubtype = VideoSubtype.NV12,
+                VideoQuality = 0.2,
+                UsedThreads = 1
+            };
             await camera.Initialize(videoSetting);
             camera.Start();
 

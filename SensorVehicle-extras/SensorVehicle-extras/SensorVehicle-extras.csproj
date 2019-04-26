@@ -119,7 +119,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ConfigurationFile.cs" />
     <Compile Include="Configuration\ConfigurationFileHelper.cs" />
     <Compile Include="Devices\Camera.cs" />
     <Compile Include="Helper\DispatcherHelper.cs" />
