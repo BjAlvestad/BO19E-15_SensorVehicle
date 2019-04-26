@@ -82,8 +82,8 @@ namespace SensorVehicle_extras.Devices
                 {
                     Width = 640,
                     Height = 480
-                }; //VideoResolutionWidthHeight.Get(videoSetting.VideoResolution);
-                var videoSubType = VideoSubtype.NV12; //VideoSubtypeHelper.Get(videoSetting.VideoSubtype);
+                };
+                var videoSubType = VideoSubtype.NV12;
 
                 //Set resolution, frame rate and video subtyp
                 var videoFormat = mediaFrameSource.SupportedFormats.Where(sf => sf.VideoFormat.Width == videoResolutionWidthHeight.Width

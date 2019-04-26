@@ -113,13 +113,7 @@ namespace SensorVehicle_extras.Web
 
                     break;
             }
-        }
-
-        //private async Task WriteFrame(string data)
-        //{
-        //    var dataBytes = Encoding.UTF8.GetBytes(data);
-        //    await WriteFrame(dataBytes, OpCode.Text);
-        //}
+        } 
 
         private async Task WriteFrame(byte[] data, OpCode opCode)
         {

@@ -101,36 +101,6 @@ namespace SensorVehicle_extras.Web
             {
                 await HttpServerResponse.WriteResponseFile(ToFolderPath(request.Url), HttpContentType.Css, outputStream);
             }
-            //Get video setting
-            /*else*/
-            //else if (relativeUrlLower.StartsWith("/videosetting"))
-            //{
-            //    HttpServerResponse.WriteResponseJson(ConfigurationFile.VideoSetting.Stringify(), outputStream);
-            //}
-            ////Get supported video settings
-            //else if (relativeUrlLower.StartsWith("/supportedvideosettings"))
-            //{
-            //    HttpServerResponse.WriteResponseJson(ConfigurationFile.VideoSettingsSupported.Stringify(), outputStream);
-            //}
-            //Set video settings
-            //else if (relativeUrlLower.StartsWith("/savevideosetting"))
-            //{
-            //    await _camera.Stop();
-
-            //    var videoSetting = new VideoSetting
-            //    {
-            //        VideoSubtype = VideoSubtypeHelper.Get(request.Body["VideoSubtype"].GetString()),
-            //        VideoResolution = (VideoResolution)request.Body["VideoResolution"].GetNumber(),
-            //        VideoQuality = request.Body["VideoQuality"].GetNumber(),
-            //        UsedThreads = (int)request.Body["UsedThreads"].GetNumber()
-            //    };
-
-            //    await ConfigurationFile.Write(videoSetting);
-            //    await _camera.Initialize(videoSetting);
-            //    _camera.Start();
-
-            //    HttpServerResponse.WriteResponseOk(outputStream);
-            //}
             //Get current camera frame
 
             else if (relativeUrlLower.StartsWith("/videoframe"))
@@ -150,18 +120,6 @@ namespace SensorVehicle_extras.Web
             {
                 await HttpServerResponse.WriteResponseFile(@"\Html\Index.html", HttpContentType.Html, outputStream);
             }
-            //if (relativeUrlLower.StartsWith("/videoframe"))
-            //{
-            //    if (_camera.Frame != null)
-            //    {
-            //        var webSocket = new WebSocket(socket, request, _camera);
-            //        await webSocket.Start();
-            //    }
-            //    else
-            //    {
-            //        HttpServerResponse.WriteResponseError("Not camera fram available. Maybe there is an error or camera is not started.", outputStream);
-            //    }
-            //}
         }
 
         private bool HttpGetRequestHasUrl(string httpRequest)

@@ -21,25 +21,6 @@ namespace SensorVehicle_extras.Web
             WriteResponse(HttpContentType.Text, textBytes, HttpStatusCode.HttpCode500, outputStream);
         }
 
-        public static void WriteResponseOk(IOutputStream outputStream)
-        {
-            WriteResponse(null, null, HttpStatusCode.HttpCode204, outputStream);
-        }
-
-        public static void WriteResponseText(string text,
-                                             IOutputStream outputStream)
-        {
-            var textBytes = Encoding.UTF8.GetBytes(text);
-            WriteResponse(HttpContentType.Text, textBytes, HttpStatusCode.HttpCode200, outputStream);
-        }
-
-        public static void WriteResponseJson(string json,
-                                             IOutputStream outputStream)
-        {
-            var jsonBytes = Encoding.UTF8.GetBytes(json);
-            WriteResponse(HttpContentType.Json, jsonBytes, HttpStatusCode.HttpCode200, outputStream);
-        }
-
         public static async Task WriteResponseFile(string pathFileName,
                                               HttpContentType mimeType,
                                               IOutputStream outputStream)
@@ -67,13 +48,6 @@ namespace SensorVehicle_extras.Web
             }
 
             WriteResponse(mimeType, fileBytes, HttpStatusCode.HttpCode200, outputStream);
-        }
-
-        public static void WriteResponseFile(byte[] content,
-                                             HttpContentType mimeType,
-                                             IOutputStream outputStream)
-        {
-            WriteResponse(mimeType, content, HttpStatusCode.HttpCode200, outputStream);
         }
 
         private static void WriteResponse(HttpContentType? mimeType,
