@@ -66,7 +66,7 @@ function SetVideoResolutions(videoSubtype) {
 
         var videoSubtypeVideoResolution = document.createElement('option');
         videoSubtypeVideoResolution.value = videoResolution;
-        videoSubtypeVideoResolution.innerHTML = GetVideoResolutionName(videoResolution);
+        videoSubtypeVideoResolution.innerHTML = "SD640_480";
         videoResolutionElement.appendChild(videoSubtypeVideoResolution);
     });
 
@@ -75,40 +75,21 @@ function SetVideoResolutions(videoSubtype) {
     }
 }
 
-function GetVideoResolutionName(videoResolution) {
+//videoSubtypeElement.addEventListener("change", function () {
+//    SetVideoResolutions(videoSubtypeElement.value);
+//});
 
-    if (videoResolution == 0) {
-        return "HD1080p";
-    }
-    else if (videoResolution == 1) {
-        return "HD720p";
-    }
-    else if (videoResolution == 2) {
-        return "SD1024_768";
-    }
-    else if (videoResolution == 3) {
-        return "SD800_600";
-    }
-    else if (videoResolution == 4) {
-        return "SD640_480";
-    }
-}
+//saveElement.addEventListener("click", function () {
+//    SetVideoSetting();
+//});
 
-videoSubtypeElement.addEventListener("change", function () {
-    SetVideoResolutions(videoSubtypeElement.value);
-});
-
-saveElement.addEventListener("click", function () {
-    SetVideoSetting();
-});
-
-saveElement.addEventListener("touchstart", function () {
-    SetVideoSetting();
-}, { passive: true });
+//saveElement.addEventListener("touchstart", function () {
+//    SetVideoSetting();
+//}, { passive: true });
 
 function SetVideoSetting() {
     var videoSubtype = videoSubtypeElement.options[videoSubtypeElement.options.selectedIndex].value;
-    var videoResolution = videoResolutionElement.options[videoResolutionElement.options.selectedIndex].value;
+    var videoResolution = "SD640_480";
     var videoQuality = videoQualityElement.options[videoQualityElement.options.selectedIndex].value;
     var usedThreads = usedThreadsElement.options[usedThreadsElement.options.selectedIndex].value;
 
