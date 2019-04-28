@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Networking.Connectivity;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,14 +28,35 @@ namespace SensorVehicle_extras
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private IPAddress addr;
         public MainPage()
         {
             this.InitializeComponent();
+            GetIpAddress();
 
             Loaded += MainPage_Loaded;
         }
 
-        //public object ConfigurationFile { get; private set; }
+        public IPAddress GetIpAddress()
+        {
+            var hosts = NetworkInformation.GetHostNames();
+            foreach (var host in hosts)
+            {
+                if (!IPAddress.TryParse(host.DisplayName, out addr))
+                {
+                    continue;
+                }
+
+                if (addr.AddressFamily != AddressFamily.InterNetwork)
+                {
+                    IpValue.Text = addr.ToString();
+                    continue;
+                }
+                IpValue.Text = addr.ToString();
+                return addr;
+            }
+            return null;
+        }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs eventArgs)
         {
