@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Configuration\ConfigurationFileHelper.cs" />
+    <Compile Include="Connection\ConnectionInfo.cs" />
     <Compile Include="Devices\Camera.cs" />
     <Compile Include="Helper\DispatcherHelper.cs" />
     <Compile Include="Helper\TaskHelper.cs" />

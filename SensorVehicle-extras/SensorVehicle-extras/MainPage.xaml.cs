@@ -1,4 +1,5 @@
 ﻿using SensorVehicle_extras.Configuration;
+using SensorVehicle_extras.Connection;
 using SensorVehicle_extras.Devices;
 using SensorVehicle_extras.Web;
 using System;
@@ -28,56 +29,59 @@ namespace SensorVehicle_extras
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private IPAddress _addr;
-        private string _ssid;
+        private ConnectionInfo _connInfo;
+
+        public ConnectionInfo ConnInfo { get =>_connInfo; private set => _connInfo = value; }
+
         public MainPage()
         {
             this.InitializeComponent();
-            GetIpAddress();
-            GetCurrentNetworkName();
+            ConnInfo = new ConnectionInfo();
+            //GetIpAddress();
+            //GetCurrentNetworkName();
 
             Loaded += MainPage_Loaded;
         }
 
-        public IPAddress GetIpAddress()
-        {
-            var hosts = NetworkInformation.GetHostNames();
-            foreach (var host in hosts)
-            {
-                if (!IPAddress.TryParse(host.DisplayName, out _addr))
-                {
-                    continue;
-                }
+        //public IPAddress GetIpAddress()
+        //{
+        //    var hosts = NetworkInformation.GetHostNames();
+        //    foreach (var host in hosts)
+        //    {
+        //        if (!IPAddress.TryParse(host.DisplayName, out _addr))
+        //        {
+        //            continue;
+        //        }
 
-                if (_addr.AddressFamily != AddressFamily.InterNetwork)
-                {
-                    IpValue.Text = _addr.ToString();
-                    continue;
-                }
-                IpValue.Text = _addr.ToString();
-                return _addr;
-            }
-            return null;
-        }
-        public void GetCurrentNetworkName()
-        {
-            try
-            {
-                var icp = NetworkInformation.GetInternetConnectionProfile();
-                if (icp != null)
-                {
-                    _ssid = icp.ProfileName;
-                    SSIDValue.Text = _ssid;
-                }
-            }
-            catch (Exception ex)
-            {
-                //App.LogService.WriteException(ex);
-                _ssid = "NoInternetConnection";
-                SSIDValue.Text = _ssid;
-            }
+        //        if (_addr.AddressFamily != AddressFamily.InterNetwork)
+        //        {
+        //            IpValue.Text = _addr.ToString();
+        //            continue;
+        //        }
+        //        IpValue.Text = _addr.ToString();
+        //        return _addr;
+        //    }
+        //    return null;
+        //}
+        //public void GetCurrentNetworkName()
+        //{
+        //    try
+        //    {
+        //        var icp = NetworkInformation.GetInternetConnectionProfile();
+        //        if (icp != null)
+        //        {
+        //            _ssid = icp.ProfileName;
+        //            SSIDValue.Text = _ssid;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //App.LogService.WriteException(ex);
+        //        _ssid = "NoInternetConnection";
+        //        SSIDValue.Text = _ssid;
+        //    }
 
-        }
+        //}
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs eventArgs)
         {
