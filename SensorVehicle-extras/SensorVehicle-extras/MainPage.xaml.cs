@@ -28,11 +28,13 @@ namespace SensorVehicle_extras
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private IPAddress addr;
+        private IPAddress _addr;
+        private string _ssid;
         public MainPage()
         {
             this.InitializeComponent();
             GetIpAddress();
+            GetCurrentNetworkName();
 
             Loaded += MainPage_Loaded;
         }
@@ -42,20 +44,39 @@ namespace SensorVehicle_extras
             var hosts = NetworkInformation.GetHostNames();
             foreach (var host in hosts)
             {
-                if (!IPAddress.TryParse(host.DisplayName, out addr))
+                if (!IPAddress.TryParse(host.DisplayName, out _addr))
                 {
                     continue;
                 }
 
-                if (addr.AddressFamily != AddressFamily.InterNetwork)
+                if (_addr.AddressFamily != AddressFamily.InterNetwork)
                 {
-                    IpValue.Text = addr.ToString();
+                    IpValue.Text = _addr.ToString();
                     continue;
                 }
-                IpValue.Text = addr.ToString();
-                return addr;
+                IpValue.Text = _addr.ToString();
+                return _addr;
             }
             return null;
+        }
+        public void GetCurrentNetworkName()
+        {
+            try
+            {
+                var icp = NetworkInformation.GetInternetConnectionProfile();
+                if (icp != null)
+                {
+                    _ssid = icp.ProfileName;
+                    SSIDValue.Text = _ssid;
+                }
+            }
+            catch (Exception ex)
+            {
+                //App.LogService.WriteException(ex);
+                _ssid = "NoInternetConnection";
+                SSIDValue.Text = _ssid;
+            }
+
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs eventArgs)
