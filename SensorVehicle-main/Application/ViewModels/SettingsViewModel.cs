@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -12,6 +13,8 @@ using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 
 using Windows.ApplicationModel;
+using Windows.Networking;
+using Windows.Networking.Connectivity;
 using Windows.System;
 using Windows.UI.Xaml;
 
@@ -60,6 +63,24 @@ namespace Application.ViewModels
                 }
 
                 return _switchThemeCommand;
+            }
+        }
+
+        public string IpAddress
+        {
+            get
+            {  
+                var icp = NetworkInformation.GetInternetConnectionProfile();
+
+                if (icp?.NetworkAdapter == null) return "0.0.0.0";
+                var hostname =
+                    NetworkInformation.GetHostNames()
+                        .FirstOrDefault(hostName =>
+                                hostName.Type == HostNameType.Ipv4 &&
+                                hostName.IPInformation?.NetworkAdapter != null && 
+                                hostName.IPInformation.NetworkAdapter.NetworkAdapterId == icp.NetworkAdapter.NetworkAdapterId);
+
+                return hostname != null ? hostname.CanonicalName : "0.0.0.0";
             }
         }
 

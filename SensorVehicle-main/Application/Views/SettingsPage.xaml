@@ -76,8 +76,17 @@
         <!--EXPERIMENTAL FUNCTIONALITY-->
         <StackPanel Grid.Column="2" Grid.Row="0">
             <TextBlock Text="Experimental functionality" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-            <ToggleSwitch Header="Async socket server (for Android app)" IsOn="{x:Bind ViewModel.AsyncSocketServer.ListenForConnections, Mode=TwoWay}"/>
-            <Button Content="Open extra functions" Click="{x:Bind ViewModel.LaunchExtraFunctions, Mode=OneWay}"/>
+            <ToggleSwitch Header="Socket server (for Android app, etc.)" IsOn="{x:Bind ViewModel.AsyncSocketServer.ListenForConnections, Mode=TwoWay}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Bind ViewModel.IpAddress}" />
+                <TextBlock Text=":" Margin="5,0"/>
+                <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.PortNumber}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Open client connections:" Padding="0,0,10,0" />
+                <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.NumberOfClientsConnected, Mode=OneWay}" />
+            </StackPanel>
+            <Button Content="Open extra functions" Click="{x:Bind ViewModel.LaunchExtraFunctions, Mode=OneWay}" Margin="0,20"/>
         </StackPanel>
 
         <!--ABOUT THIS APPLICATION-->

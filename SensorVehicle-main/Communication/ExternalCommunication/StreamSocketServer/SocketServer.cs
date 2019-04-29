@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Networking.Sockets;
 using Communication.ExternalCommunication.Handler;
 using Communication.ExternalCommunication.Handler.Constants;
@@ -17,7 +18,6 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 {
     public class SocketServer : ThreadSafeNotifyPropertyChanged, ISocketServer
     {
-        public const string PortNumber = "51915";
         private readonly RequestHandler _requestHandler;
         private readonly IWheel _wheel;
         private StreamSocketListener _streamSocketListener;
@@ -30,6 +30,16 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders);
             _wheel = wheel;
             Error = new Error();
+            PortNumber = "51915";
+        }
+
+        public string PortNumber { get; }
+
+        private int _numberOfClientsConnected;
+        public int NumberOfClientsConnected
+        {
+            get { return _numberOfClientsConnected; }
+            private set { SetProperty(ref _numberOfClientsConnected, value); }
         }
 
         private bool _listenForConnections;
@@ -95,10 +105,12 @@ namespace Communication.ExternalCommunication.StreamSocketServer
         // Send exit message to server:     { "REQUEST_TYPE": "Exit" }
         private async void StreamSocketListener_ConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
+            // TODO: Prevent multiple people connecting to the vehicle (for control) at the same time
             try
             {
                 Debug.WriteLine($"server received a connection");
                 _clientConnectionOpen = true;
+                NumberOfClientsConnected += 1;
 
                 using (var streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
                 using (Stream outputStream = args.Socket.OutputStream.AsStreamForWrite())
@@ -116,17 +128,9 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                             Dictionary<string, string> requestKeyValuePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
                             responseKeyValuePair = _requestHandler.HandleRequest(requestKeyValuePair);
                         }
-                        catch (JsonReaderException jre)
+                        catch (Exception e) when (e is JsonReaderException || e is ArgumentNullException)
                         {
                             Error.Message = GetJsonReaderErrorMessage(request);
-                            Error.DetailedMessage = jre.ToString();
-                            Error.Unacknowledged = true;
-
-                            responseKeyValuePair = new Dictionary<string, string> {{Key.Error, Error.Message}};
-                        }
-                        catch (Exception e)
-                        {
-                            Error.Message = e.Message;
                             Error.DetailedMessage = e.ToString();
                             Error.Unacknowledged = true;
 
@@ -145,19 +149,26 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                     Debug.WriteLine("Server received exit message...");
                 }
             }
-            catch (Exception e)
+            catch (IOException ioe)
             {
-                Debug.WriteLine($"Exception occured on SocketServer: {e.Message}");
-                Error.Message = $"{e.Message}\n\n" +
+                Error.Message = $"{ioe.Message}\n\n" +
                                 $"Note: Client connection closed, but Socket Server is still open for new connections.\n" +
                                 $"Reconnect and try again";
+                Error.DetailedMessage = ioe.ToString();
+                Error.Unacknowledged = true;
+            }
+            catch (Exception e)
+            {
+                ListenForConnections = false;
+                Error.Message = $"{e.Message}\n\n" +
+                                $"Note: Async Server has been shut down";
                 Error.DetailedMessage = e.ToString();
                 Error.Unacknowledged = true;
             }
             finally
             {
+                NumberOfClientsConnected -= 1;
                 _clientConnectionOpen = false;
-                Debug.WriteLine("Server stopped communication with client, and awaits new connection ...", "TcpSocketServer");
                 _wheel.SetSpeed(0 ,0, false);
             }
         }
