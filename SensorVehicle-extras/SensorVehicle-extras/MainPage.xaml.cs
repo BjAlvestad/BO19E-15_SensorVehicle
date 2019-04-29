@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Connectivity;
@@ -30,65 +31,23 @@ namespace SensorVehicle_extras
     public sealed partial class MainPage : Page
     {
         private ConnectionInfo _connInfo;
+        private Camera _camera;
+        private HttpServer _httpServer;        
 
         public ConnectionInfo ConnInfo { get =>_connInfo; private set => _connInfo = value; }
+        public Camera Camera { get => _camera; private set => _camera = value; }
+        public HttpServer HttpServer { get => _httpServer; private set => _httpServer = value; }
 
         public MainPage()
         {
             this.InitializeComponent();
             ConnInfo = new ConnectionInfo();
-            //GetIpAddress();
-            //GetCurrentNetworkName();
-
-            Loaded += MainPage_Loaded;
-        }
-
-        //public IPAddress GetIpAddress()
-        //{
-        //    var hosts = NetworkInformation.GetHostNames();
-        //    foreach (var host in hosts)
-        //    {
-        //        if (!IPAddress.TryParse(host.DisplayName, out _addr))
-        //        {
-        //            continue;
-        //        }
-
-        //        if (_addr.AddressFamily != AddressFamily.InterNetwork)
-        //        {
-        //            IpValue.Text = _addr.ToString();
-        //            continue;
-        //        }
-        //        IpValue.Text = _addr.ToString();
-        //        return _addr;
-        //    }
-        //    return null;
-        //}
-        //public void GetCurrentNetworkName()
-        //{
-        //    try
-        //    {
-        //        var icp = NetworkInformation.GetInternetConnectionProfile();
-        //        if (icp != null)
-        //        {
-        //            _ssid = icp.ProfileName;
-        //            SSIDValue.Text = _ssid;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //App.LogService.WriteException(ex);
-        //        _ssid = "NoInternetConnection";
-        //        SSIDValue.Text = _ssid;
-        //    }
-
-        //}
+        }       
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs eventArgs)
         {
             var camera = new Camera();
             var mediaFrameFormats = await camera.GetMediaFrameFormatsAsync();
-            //ConfigurationFile.SetSupportedVideoFrameFormats(mediaFrameFormats);
-            //var videoSetting = await ConfigurationFile.Read(mediaFrameFormats);
 
             VideoSetting videoSetting = new VideoSetting
             {
@@ -102,6 +61,44 @@ namespace SensorVehicle_extras
 
             var httpServer = new HttpServer(camera);
             httpServer.Start();
-        }        
+        }
+
+        private async void BtnStart_Toggled(object sender, RoutedEventArgs e)
+        {
+            await Run();            
+        }
+        private async Task Run()
+        {
+            if (Camera == null)
+            {
+                Camera = new Camera();                
+            }
+
+            VideoSetting videoSetting = new VideoSetting
+                {
+                    VideoResolution = VideoResolution.SD640_480,
+                    VideoSubtype = VideoSubtype.NV12,
+                    VideoQuality = 0.2,
+                    UsedThreads = 1
+                };
+            if (HttpServer == null)
+            {
+                HttpServer = new HttpServer(Camera);
+                HttpServer.Start();
+            }
+            await Camera.Initialize(videoSetting);
+            if(!ConnInfo.IsStreaming)
+            {
+                Camera.Start();
+                ConnInfo.IsStreaming = true;
+            }
+            else
+            {
+                await Camera.Stop();
+                ConnInfo.IsStreaming = false;
+            }
+
+            
+        }
     }
 }
