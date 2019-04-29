@@ -8,4 +8,5 @@
     <string name="move_vehicle">Move Vehicle</string>
     <string name="info_text"> . . . </string>
     <string name="sensor_vehicle">SensorVehicle</string>
+    <string name="stop">stop</string>
 </resources>

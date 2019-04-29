@@ -24,6 +24,8 @@ public  class ConnectionHandler {
     private static String connectedIP;
     private static int connectedPort;
 
+    public static boolean sending = false;
+
     public static String connect(String ip, int port){
         Log.i (TAG, "connect " + ip+ "  "+ port) ;
          String status ="Connecting "+ ip;
@@ -37,9 +39,10 @@ public  class ConnectionHandler {
      }
 
      public static String sendMessage (String message){
-        Log.i (TAG, "sendMessage :-> " + message);
+        Log.i (TAG, "sendMessage :-> ");
          String status = "";
 
+         if (socket == null) return "socket is not open";
          /* TODO: connect() uses ConnectionTask, which runs asynchronously, and therefore new next if-statement may be entered before connection is complete.
          Consider removing ConnectTask, and let SendMessageTask handle connection if none is open.
          (Connection logic may be placed in a private method).*/
@@ -62,7 +65,7 @@ public  class ConnectionHandler {
     // (sendMessage(GenerateServerRequest.exitMessage()) should be used for closing connection - upon response from the server.
     // But we need to be able to close the connection also if the server doesn't respond for some reason.
     public static void closeSocket() throws IOException {
-        if (socket.isClosed ())return;
+        if (socket == null || socket.isClosed ())return;
         bufferedWriter.close();
         bufferedReader.close();
         socket.close ();
@@ -115,6 +118,9 @@ public  class ConnectionHandler {
          @Override
          protected Void doInBackground(Void... voids) {
              try {
+                 sending = true;
+
+
                  if(!message.endsWith("\n")){
                      message = message + "\n";
                  }
@@ -124,6 +130,8 @@ public  class ConnectionHandler {
 
                  response = bufferedReader.readLine();
                  Log.i (TAG, "Response from server:\n " + response);
+
+                 sending = false;
              } catch (IOException e) {
                  e.printStackTrace ();
              }

@@ -1,15 +1,22 @@
 package no.hvl.sensorvehicle.androidremotecontrol;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.GenerateServerRequest;
 
 public class MoveActivity extends AppCompatActivity {
 
@@ -63,6 +70,11 @@ public class MoveActivity extends AppCompatActivity {
 
 
         relativeLayout.setOnTouchListener (onHandleTouchRl ());
+
+
+
+
+
     }
 
     @Override
@@ -76,6 +88,9 @@ public class MoveActivity extends AppCompatActivity {
         lParams.leftMargin = rLayoutWidth/2 - iconWidth/2;
         lParams.topMargin = rLayoutHigh/2 - iconHigh/2;
         iconView.setLayoutParams (lParams);
+
+
+
     }
 
     private View.OnTouchListener onHandleTouchRl() {
@@ -87,10 +102,10 @@ public class MoveActivity extends AppCompatActivity {
                  int y = (int) event.getY ();
                // Log.i (TAG, x + "   " + y );
 
-                RelativeLayout.LayoutParams lParams=(RelativeLayout.LayoutParams)iconView.getLayoutParams();
-                lParams.leftMargin = x;
-                lParams.topMargin = y;
-                iconView.setLayoutParams (lParams);
+                //  RelativeLayout.LayoutParams lParams=(RelativeLayout.LayoutParams)iconView.getLayoutParams();
+                // lParams.leftMargin = x;
+                //  lParams.topMargin = y;
+                //  iconView.setLayoutParams (lParams);
 
                 valueHandler(x, y);
                 return true;
@@ -98,7 +113,16 @@ public class MoveActivity extends AppCompatActivity {
         };
     }
 
+    private int lastLeft=0;
+    private int lastRight=0;
     private void valueHandler(int x, int y) {
+
+        if (ConnectionHandler.sending ) return;
+
+        Log.i (TAG, "-------------------");
+
+
+        Log.i (TAG, x + "   " + y);
 
         // value inside view
         if (x<0) x=0;
@@ -106,22 +130,99 @@ public class MoveActivity extends AppCompatActivity {
         if (y<0) y=0;
         if (y>rLayoutHigh) y=rLayoutHigh;
 
-        // define origo
-        int origoX = rLayoutWidth/2;
-        int origoY = rLayoutHigh/2;
-
-        // value from origo
-        if (x>0) x = x/2 - origoX;
-        if (y>0) y = y/2 - origoY;
 
         Log.i (TAG, x + "   " + y);
 
-        int wheelLeft=0;
-        int wheelRight=0;
+
+
+
+        // define origo
+        int origoX = rLayoutWidth/2;
+        int origoY = rLayoutHigh/2;
+       // Log.i (TAG, origoX + " X-origo-Y " + origoY);
+
+
+
+        // value from origo
+        if (x>-1) x = x - origoX ;
+        if (y>-1) y = y - origoY ;
+
+        y = y*-1;
+
+
+        Log.i (TAG, x + "   " + y);
+
+
+
+        // % of width
+        double proX = x / ( rLayoutWidth/2.0 );
+        double proY = y / ( rLayoutHigh/2.0 ) ;
+
+        Log.i (TAG, proX + "   " + proY);
+
+        //  -100 - 100
+        int wheelLeft= (int) (100 * proY  );
+        int wheelRight= (int) (100 * proY );
+
+        Log.i (TAG, wheelLeft + "   " + wheelRight);
+
+
+        if (proX<0){
+            wheelLeft = (int) (wheelLeft + 100 * proX);
+        }
+        else if (proX>0){
+            wheelRight = (int) (wheelRight - 100 * proX);
+        }
+        Log.i (TAG, wheelLeft + "   " + wheelRight);
+
+
+        if (newStepCheck(wheelLeft, lastLeft) || newStepCheck(wheelRight, lastRight)) {
+            lastLeft = wheelLeft;
+            lastRight = wheelRight;
+
+            Log.i (TAG, " - - - - - - - - -- - - - - -    "+wheelLeft + "   " + wheelRight);
+
+
+
+            String status = ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight));
+
+              Log.i( TAG, status);
+        }
+
+
+
+
+        //
+        //
+
+
+
+
+
 
 
 
 
     }
+
+    private boolean newStepCheck(int wheelnew, int wheelLast) {
+        int diff =  wheelLast - wheelnew ;
+        //Log.i (TAG, String.valueOf (diff));
+
+        if (diff < -9|| diff > 9){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    public void onClickedStop(View view) {
+        String status = ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0));
+
+        Log.i( TAG, status);
+    }
+
 
 }

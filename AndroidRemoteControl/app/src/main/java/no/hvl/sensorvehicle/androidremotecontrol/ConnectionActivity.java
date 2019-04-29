@@ -107,16 +107,16 @@ public class ConnectionActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop ();
-        ConnectionHandler.sendMessage(GenerateServerRequest.exitMessage());
+      //  ConnectionHandler.sendMessage(GenerateServerRequest.exitMessage());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            ConnectionHandler.closeSocket();
-        } catch (IOException e) {
-            e.printStackTrace ();
-        }
+        //try {
+        //    ConnectionHandler.closeSocket();
+       // } catch (IOException e) {
+        //    e.printStackTrace ();
+       // }
     }
 }
