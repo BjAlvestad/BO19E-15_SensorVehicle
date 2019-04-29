@@ -32,7 +32,7 @@
                     <ToggleSwitch x:Name="BtnStart" IsOn="{x:Bind ConnInfo.IsStreaming}" OnContent="Stop" OffContent="Start" Header="Webcam" Margin="20,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="0" FontSize="14" Toggled="BtnStart_Toggled"/>
                     <Button x:Name="BtnLaunchApp" Content="Launch main app" Margin="50,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="250" FontSize="30"/>
                 </StackPanel>
-                <TextBlock x:Name="WebcamText" Text="{x:Bind ConnInfo.CameraMessage}" RelativePanel.Below="SpButtons" ></TextBlock>
+                <TextBlock x:Name="WebcamText" Text="{x:Bind ConnInfo.CameraMessage,Mode=OneWay}" RelativePanel.Below="SpButtons" ></TextBlock>
             </RelativePanel>
 
         </StackPanel>
