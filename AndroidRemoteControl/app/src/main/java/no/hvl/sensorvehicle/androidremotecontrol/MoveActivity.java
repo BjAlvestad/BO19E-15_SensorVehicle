@@ -87,6 +87,7 @@ public class MoveActivity extends AppCompatActivity {
 
     private int lastLeft = 0;
     private int lastRight = 0;
+
     private void valueHandler(int x, int y) {
 
         if (ConnectionHandler.sending) return;
@@ -129,9 +130,9 @@ public class MoveActivity extends AppCompatActivity {
 
         // Steering
         if (percX < 0) {
-            wheelLeft = (int) (wheelLeft + 100 * percX);
+            wheelLeft = (int) (wheelLeft + (wheelLeft) * percX);
         } else if (percX > 0) {
-            wheelRight = (int) (wheelRight - 100 * percX);
+            wheelRight = (int) (wheelRight - (wheelRight) * percX);
         }
         Log.i (TAG, wheelLeft + "   " + wheelRight);
 
@@ -140,16 +141,14 @@ public class MoveActivity extends AppCompatActivity {
             lastLeft = wheelLeft;
             lastRight = wheelRight;
 
-            String status = ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight));
-
-            Log.i (TAG, status);
+            ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight));
         }
     }
 
     private boolean newStepCheck(int wheelNew, int wheelLast) {
         int diff = wheelLast - wheelNew;
 
-        if (diff < STEP || diff > STEP) {
+        if (diff < -STEP || diff > STEP) {
             return true;
         } else {
             return false;
@@ -157,8 +156,6 @@ public class MoveActivity extends AppCompatActivity {
     }
 
     public void onClickedStop(View view) {
-        String status = ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0));
-
-        Log.i (TAG, status);
+        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0));
     }
 }
