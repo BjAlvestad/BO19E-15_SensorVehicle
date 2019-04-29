@@ -65,6 +65,10 @@ namespace SensorVehicle_extras
 
         private async void BtnStart_Toggled(object sender, RoutedEventArgs e)
         {
+            if(!ConnInfo.IsStreaming)
+            {
+                ConnInfo.CameraMessage = "Searching for webcam...";
+            }
             await Run();            
         }
         private async Task Run()
@@ -86,19 +90,22 @@ namespace SensorVehicle_extras
                 HttpServer = new HttpServer(Camera);
                 HttpServer.Start();
             }
+
             await Camera.Initialize(videoSetting);
+
             if(!ConnInfo.IsStreaming)
-            {
+            {                
                 Camera.Start();
                 ConnInfo.IsStreaming = true;
+                ConnInfo.CameraMessage = $"Streaming to http://{ConnInfo.IPAddr}";
             }
             else
             {
+                ConnInfo.CameraMessage = "Stopping the camera...";
                 await Camera.Stop();
                 ConnInfo.IsStreaming = false;
+                ConnInfo.CameraMessage = "Webcam is off";
             }
-
-            
         }
     }
 }
