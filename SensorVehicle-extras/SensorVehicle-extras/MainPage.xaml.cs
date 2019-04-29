@@ -76,7 +76,11 @@ namespace SensorVehicle_extras
                 BtnStart.IsOn = false;
                 ConnInfo.IsStreaming = false;
                 ConnInfo.CameraMessage = "No camera found";
-                DisplayNoCamFound(); //TODO: implement this
+                DisplayNoCamFound();
+            }
+            else if (!BtnStart.IsOn)
+            {
+                ConnInfo.CameraMessage = "No camera found";
             }
         }
 
