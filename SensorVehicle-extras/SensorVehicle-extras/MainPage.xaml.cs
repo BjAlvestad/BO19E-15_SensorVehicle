@@ -55,7 +55,7 @@ namespace SensorVehicle_extras
        
         private async void BtnStart_Toggled(object sender, RoutedEventArgs e)
         {
-            bool success = await Run();
+            bool success = await SetUpStreaming();
             if (success)
             {
                 if (!ConnInfo.IsStreaming)
@@ -91,7 +91,7 @@ namespace SensorVehicle_extras
             DisplayLaunchDialog();            
         }
 
-        private async Task<bool> Run()
+        private async Task<bool> SetUpStreaming()
         {
             if (Camera == null)
             {
