@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Connectivity;
@@ -91,7 +92,18 @@ namespace SensorVehicle_extras
                 HttpServer.Start();
             }
 
-            await Camera.Initialize(videoSetting);
+            ConnInfo.CameraMessage = "Searching for webcam...";
+            try
+            {
+                await Camera.Initialize(videoSetting);
+                ConnInfo.IsStreaming = true;
+            }
+            catch (Exception)
+            {
+                DisplayNoCamFound();
+                ConnInfo.IsStreaming = false;
+            }
+            
 
             if(!ConnInfo.IsStreaming)
             {                
@@ -107,5 +119,73 @@ namespace SensorVehicle_extras
                 ConnInfo.CameraMessage = "Webcam is off";
             }
         }
+        
+        private async void DisplayExitAppDialog()
+        {
+            ContentDialog exitAppDialog = new ContentDialog
+            {
+                Title = "Are you sure you want to exit?",
+                Content = "This app will be exited and SensorVehicle Main App will be launced",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await exitAppDialog.ShowAsync();
+
+            // Delete the file if the user clicked the primary button.
+            /// Otherwise, do nothing.
+            if (result == ContentDialogResult.Primary)
+            {
+                CoreApplication.Exit();
+            }
+        }
+        private async void DisplayRestartSysDialog()
+        {
+            ContentDialog restartSysDialog = new ContentDialog
+            {
+                Title = "Are you sure you want to restart the system?",
+                Content = "The system will restart within 5 seconds",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await restartSysDialog.ShowAsync();
+                        
+            if (result == ContentDialogResult.Primary)
+            {
+                //TODO: Remove these comments
+                // Restarts the device within 5 seconds:
+                //ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(5));
+            }
+        }
+        private async void DisplayShutDownDialog()
+        {
+            ContentDialog shutDownDialog = new ContentDialog
+            {
+                Title = "Are you sure you want to shut down the system?",
+                Content = "The system will be shut down",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await shutDownDialog.ShowAsync();
+                        
+            if (result == ContentDialogResult.Primary)
+            {
+                //TODO: Remove these comments
+                //ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
+            }
+        }
+        private async void DisplayNoCamFound()
+        {
+            ContentDialog noCameraFoundDialog = new ContentDialog
+            {
+                Title = "No camera found",
+                Content = "Check that there is a camera connected and try again",
+                PrimaryButtonText = "Ok",
+            };
+
+            ContentDialogResult result = await noCameraFoundDialog.ShowAsync();
+        }        
     }
 }
