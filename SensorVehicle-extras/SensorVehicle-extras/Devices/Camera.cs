@@ -34,69 +34,78 @@ namespace SensorVehicle_extras.Devices
         private volatile Stopwatch _lastFrameAdded = new Stopwatch();
         private volatile object _lastFrameAddedLock = new object();
 
-        public async Task Initialize(VideoSetting videoSetting)
+        public async Task<bool> Initialize(VideoSetting videoSetting)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAndAwaitAsync(CoreDispatcherPriority.Normal, async () =>
+            try
             {
-                _threadsCount = videoSetting.UsedThreads;
-                _stoppedThreads = videoSetting.UsedThreads;
-
-                _lastFrameAdded.Start();
-
-                _imageQuality = new BitmapPropertySet();
-                var imageQualityValue = new BitmapTypedValue(videoSetting.VideoQuality, Windows.Foundation.PropertyType.Single);
-                _imageQuality.Add("ImageQuality", imageQualityValue);
-
-                _mediaCapture = new MediaCapture();
-
-                var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
-
-                var settings = new MediaCaptureInitializationSettings()
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAndAwaitAsync(CoreDispatcherPriority.Normal, async () =>
                 {
-                    SharingMode = MediaCaptureSharingMode.ExclusiveControl,
+                    _threadsCount = videoSetting.UsedThreads;
+                    _stoppedThreads = videoSetting.UsedThreads;
 
-                    //With CPU the results contain always SoftwareBitmaps, otherwise with GPU
-                    //they preferring D3DSurface
-                    MemoryPreference = MediaCaptureMemoryPreference.Cpu,
+                    _lastFrameAdded.Start();
 
-                    //Capture only video, no audio
-                    StreamingCaptureMode = StreamingCaptureMode.Video
-                };
+                    _imageQuality = new BitmapPropertySet();
+                    var imageQualityValue = new BitmapTypedValue(videoSetting.VideoQuality, Windows.Foundation.PropertyType.Single);
+                    _imageQuality.Add("ImageQuality", imageQualityValue);
 
-                await _mediaCapture.InitializeAsync(settings);
+                    _mediaCapture = new MediaCapture();
 
-                var mediaFrameSource = _mediaCapture.FrameSources.First().Value;
-                var videoDeviceController = mediaFrameSource.Controller.VideoDeviceController;
+                    var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
 
-                videoDeviceController.DesiredOptimization = Windows.Media.Devices.MediaCaptureOptimization.Quality;
-                videoDeviceController.PrimaryUse = Windows.Media.Devices.CaptureUse.Video;
+                    var settings = new MediaCaptureInitializationSettings()
+                    {
+                        SharingMode = MediaCaptureSharingMode.ExclusiveControl,
 
-                //Set exposure (auto light adjustment)
-                if (_mediaCapture.VideoDeviceController.Exposure.Capabilities.Supported
-                    && _mediaCapture.VideoDeviceController.Exposure.Capabilities.AutoModeSupported)
-                {
-                    _mediaCapture.VideoDeviceController.Exposure.TrySetAuto(true);
-                }
+                        //With CPU the results contain always SoftwareBitmaps, otherwise with GPU
+                        //they preferring D3DSurface
+                        MemoryPreference = MediaCaptureMemoryPreference.Cpu,
 
-                var videoResolutionWidthHeight = new VideoResolutionWidthHeight
-                {
-                    Width = 640,
-                    Height = 480
-                };
-                var videoSubType = VideoSubtype.NV12;
+                        //Capture only video, no audio
+                        StreamingCaptureMode = StreamingCaptureMode.Video
+                    };
 
-                //Set resolution, frame rate and video subtyp
-                var videoFormat = mediaFrameSource.SupportedFormats.Where(sf => sf.VideoFormat.Width == videoResolutionWidthHeight.Width
-                                                                                && sf.VideoFormat.Height == videoResolutionWidthHeight.Height
-                                                                                && sf.Subtype == videoSubType.ToString())
-                                                                    .OrderByDescending(m => m.FrameRate.Numerator / m.FrameRate.Denominator)
-                                                                    .First();
+                    await _mediaCapture.InitializeAsync(settings);
 
-                await mediaFrameSource.SetFormatAsync(videoFormat);
+                    var mediaFrameSource = _mediaCapture.FrameSources.First().Value;
+                    var videoDeviceController = mediaFrameSource.Controller.VideoDeviceController;
 
-                _mediaFrameReader = await _mediaCapture.CreateFrameReaderAsync(mediaFrameSource);
-                await _mediaFrameReader.StartAsync();
-            });
+                    videoDeviceController.DesiredOptimization = Windows.Media.Devices.MediaCaptureOptimization.Quality;
+                    videoDeviceController.PrimaryUse = Windows.Media.Devices.CaptureUse.Video;
+
+                    //Set exposure (auto light adjustment)
+                    if (_mediaCapture.VideoDeviceController.Exposure.Capabilities.Supported
+                        && _mediaCapture.VideoDeviceController.Exposure.Capabilities.AutoModeSupported)
+                    {
+                        _mediaCapture.VideoDeviceController.Exposure.TrySetAuto(true);
+                    }
+
+                    var videoResolutionWidthHeight = new VideoResolutionWidthHeight
+                    {
+                        Width = 640,
+                        Height = 480
+                    };
+                    var videoSubType = VideoSubtype.NV12;
+
+                    //Set resolution, frame rate and video subtyp
+                    var videoFormat = mediaFrameSource.SupportedFormats.Where(sf => sf.VideoFormat.Width == videoResolutionWidthHeight.Width
+                                                                                    && sf.VideoFormat.Height == videoResolutionWidthHeight.Height
+                                                                                    && sf.Subtype == videoSubType.ToString())
+                                                                        .OrderByDescending(m => m.FrameRate.Numerator / m.FrameRate.Denominator)
+                                                                        .First();
+
+                    await mediaFrameSource.SetFormatAsync(videoFormat);
+
+                    _mediaFrameReader = await _mediaCapture.CreateFrameReaderAsync(mediaFrameSource);
+                    await _mediaFrameReader.StartAsync();
+                });
+                return true;
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Unable to initialize camera..."); //TODO: Remove/edit this line
+                return false;
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
