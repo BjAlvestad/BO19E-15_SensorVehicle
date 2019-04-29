@@ -9,4 +9,6 @@
     <string name="info_text"> . . . </string>
     <string name="sensor_vehicle">SensorVehicle</string>
     <string name="stop">stop</string>
+    <string name="ip">ip</string>
+    <string name="info">INFO</string>
 </resources>

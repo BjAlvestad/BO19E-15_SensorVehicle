@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.GenerateServerRequest;
 
 import static no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.Address.IpVehicle1;
+import static no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.Address.IpVehicle2;
 import static no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.Address.Port;
 
 public class ConnectionActivity extends AppCompatActivity {
@@ -31,33 +32,33 @@ public class ConnectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connection);
+        super.onCreate (savedInstanceState);
+        setContentView (R.layout.activity_connection);
 
         textViewInfo = findViewById (R.id.textViewInfo);
         textViewInfo.setText ("Select vehicle to connect");
 
-       // buttonEnable (R.id.btnMoveVehicle, false);
-       // buttonEnable (R.id.btnSensorData, false);         // blir brukt til test av socket, se metode
+        buttonEnable (R.id.btnMoveVehicle, false);
+        buttonEnable (R.id.btnSensorData, false);
+        buttonEnable (R.id.btnDisconnect, false);
     }
 
     @SuppressLint({"SetTextI18n", "ResourceType"})
     public void onClickedConnectVehicle1(View view) {
-
         buttonEnable (R.id.btnConnectVehicle1, false);
         buttonEnable (R.id.btnConnectVehicle2, false);
         buttonEnable (R.id.btnConnectDefault, false);
 
         EditText editText = findViewById (R.id.editTextIpUi);
-        editText.setText (getResources ().getString (R.string.ip_vehicle_1));
+        editText.setText (IpVehicle1);
 
         textViewInfo.setText ("Connecting: " + getResources ().getString (R.string.vehicle_1));
 
-        // start connecting service
+        ConnectionHandler.connect (IpVehicle1, Port);
 
-        String status = ConnectionHandler.connect(IpVehicle1,Port);
-        textViewInfo.setText(status);
-
+        buttonEnable (R.id.btnMoveVehicle, true);
+        buttonEnable (R.id.btnSensorData, true);
+        buttonEnable (R.id.btnDisconnect, true);
     }
 
     @SuppressLint({"ResourceType", "SetTextI18n"})
@@ -67,11 +68,16 @@ public class ConnectionActivity extends AppCompatActivity {
         buttonEnable (R.id.btnConnectDefault, false);
 
         EditText editText = findViewById (R.id.editTextIpUi);
-        editText.setText (getResources ().getString (R.string.ip_vehicle_2));
+        editText.setText (IpVehicle2);
 
-        textViewInfo.setText ("Connecting: " + getResources ().getString (R.string.vehicle_1));
+        textViewInfo.setText ("Connecting: " + IpVehicle2);
 
-        // start connecting service
+        ConnectionHandler.connect (IpVehicle2, Port);
+
+        buttonEnable (R.id.btnMoveVehicle, true);
+        buttonEnable (R.id.btnSensorData, true);
+        buttonEnable (R.id.btnDisconnect, true);
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -83,9 +89,13 @@ public class ConnectionActivity extends AppCompatActivity {
         EditText editText = findViewById (R.id.editTextIpUi);
         String ip = String.valueOf (editText.getText ());
 
-        textViewInfo.setText ("Connecting: " + "default");
+        textViewInfo.setText ("Connecting: " + ip);
 
-        // start connecting service
+        ConnectionHandler.connect (ip, Port);
+
+        buttonEnable (R.id.btnMoveVehicle, true);
+        buttonEnable (R.id.btnSensorData, true);
+        buttonEnable (R.id.btnDisconnect, true);
     }
 
     public void onClickedMoveVehicle(View view) {
@@ -93,30 +103,27 @@ public class ConnectionActivity extends AppCompatActivity {
         startActivity (intent);
     }
 
-    int x = 0;
     public void onClickedSensorData(View view) {
-        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (10, x));
-        x++;
     }
 
-    private void buttonEnable(int id, boolean b){
+    private void buttonEnable(int id, boolean b) {
         Button btn = findViewById (id);
         btn.setEnabled (b);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop ();
-      //  ConnectionHandler.sendMessage(GenerateServerRequest.exitMessage());
-    }
+    public void onClickedDisconnect(View view) {
+        //ConnectionHandler.sendMessage (GenerateServerRequest.exitMessage ());
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //try {
-        //    ConnectionHandler.closeSocket();
-       // } catch (IOException e) {
-        //    e.printStackTrace ();
-       // }
+        try {
+            ConnectionHandler.closeSocket ();
+        } catch (IOException e) {
+            e.printStackTrace ();
+        }
+
+        buttonEnable (R.id.btnConnectVehicle1, true);
+        buttonEnable (R.id.btnConnectVehicle2, true);
+        buttonEnable (R.id.btnConnectDefault, true);
+        buttonEnable (R.id.btnMoveVehicle, false);
+        buttonEnable (R.id.btnSensorData, false);
     }
 }
