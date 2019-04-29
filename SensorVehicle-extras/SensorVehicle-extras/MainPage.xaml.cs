@@ -17,6 +17,7 @@ using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Connectivity;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -179,6 +180,30 @@ namespace SensorVehicle_extras
             //ConnInfo.CameraMessage = "No camera found";
             ContentDialogResult result = await noCameraFoundDialog.ShowAsync();
             //ConnInfo.IsStreaming = false;
-        }       
+        }
+        private async void DisplayLaunchDialog()
+        {
+            ContentDialog launchMainAppDialog = new ContentDialog
+            {
+                Title = "Are you sure you want to launch the main app?",
+                Content = "If the webcam is started, this app will run in the background. If not, the app is closed.",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await launchMainAppDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                Uri _mainAppUri = new Uri("hvl-sensorvehicle-mainapp:");
+                var success = await Launcher.LaunchUriAsync(_mainAppUri);
+            }
+        }
+
+        private void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayLaunchDialog();
+            
+        }
     }
 }
