@@ -124,6 +124,7 @@
     <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Helpers\Json.cs" />
     <Compile Include="Helpers\NavHelper.cs" />
+    <Compile Include="Helpers\RunningState.cs" />
     <Compile Include="Helpers\SettingsStorageExtensions.cs" />
     <Compile Include="Helpers\Singleton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

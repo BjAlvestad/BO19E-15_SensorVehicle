@@ -2,6 +2,7 @@
 using Windows.ApplicationModel.Core;
 using Windows.System;
 using Windows.UI.Xaml;
+using Application.Helpers;
 using Communication;
 using Prism.Unity.Windows;
 using Prism.Windows.Mvvm;
@@ -35,7 +36,7 @@ namespace Application.ViewModels
             Ultrasonic.DeisolateI2cCommunciation = false;
         }
 
-        public Visibility VisibleIfRunningOnIoT => ((App) PrismUnityApplication.Current).IsRunningOnPhysicalCar ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility VisibleIfRunningOnIoT => ((App) PrismUnityApplication.Current).ProgramRunningState == RunningState.OnPhysicalCar ? Visibility.Visible : Visibility.Collapsed;
 
         public void ExitApplication()
         {
