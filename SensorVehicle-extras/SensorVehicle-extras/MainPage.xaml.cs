@@ -39,6 +39,8 @@ namespace SensorVehicle_extras
         private ConnectionInfo _connInfo;
         private Camera _camera;
         private HttpServer _httpServer;
+        private Timer _periodicTimer; //TODO: Check if this is redundant
+        private ExtendedExecutionSession _session = null;
 
         public ConnectionInfo ConnInfo { get => _connInfo; private set => _connInfo = value; }
         public Camera Camera { get => _camera; private set => _camera = value; }
@@ -83,6 +85,10 @@ namespace SensorVehicle_extras
             {
                 ConnInfo.CameraMessage = "No camera found";
             }
+        }
+        private void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayLaunchDialog();            
         }
 
         private async Task<bool> Run()
@@ -195,15 +201,67 @@ namespace SensorVehicle_extras
 
             if (result == ContentDialogResult.Primary)
             {
+                if (BtnStart.IsOn)
+                {
+                    BeginExtendedExecution();                    
+                }
+                else
+                {
+                    EndExtendedExecution();
+                }
+
                 Uri _mainAppUri = new Uri("hvl-sensorvehicle-mainapp:");
                 var success = await Launcher.LaunchUriAsync(_mainAppUri);
             }
         }
 
-        private void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void BeginExtendedExecution()
         {
-            DisplayLaunchDialog();
-            
+            ClearExtendedExecution();
+
+            var newSession = new ExtendedExecutionSession();
+            newSession.Reason = ExtendedExecutionReason.Unspecified;
+            newSession.Revoked += SessionRevoked;
+            ExtendedExecutionResult result = await newSession.RequestExtensionAsync();
+            _session = newSession;
         }
+        void ClearExtendedExecution()
+        {
+            if (_session != null)
+            {
+                _session.Revoked -= SessionRevoked;
+                _session.Dispose();
+                _session = null;
+            }
+
+            if (_periodicTimer != null)
+            {
+                _periodicTimer.Dispose();
+                _periodicTimer = null;
+            }
+        }
+        private async void SessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                switch (args.Reason)
+                {
+                    case ExtendedExecutionRevokedReason.Resumed:
+                        //rootPage.NotifyUser("Extended execution revoked due to returning to foreground.", NotifyType.StatusMessage);
+                        break;
+
+                    case ExtendedExecutionRevokedReason.SystemPolicy:
+                        //rootPage.NotifyUser("Extended execution revoked due to system policy.", NotifyType.StatusMessage);
+                        break;
+                }
+
+                EndExtendedExecution();
+            });
+        }
+        private void EndExtendedExecution()
+        {
+            ClearExtendedExecution();
+        }
+
     }
 }
