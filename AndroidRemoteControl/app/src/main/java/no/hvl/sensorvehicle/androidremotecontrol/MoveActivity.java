@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.support.v4.view.KeyEventDispatcher;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.ComponentType;
 import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.GenerateServerRequest;
 
 public class MoveActivity extends AppCompatActivity {
@@ -142,6 +144,7 @@ public class MoveActivity extends AppCompatActivity {
             lastRight = wheelRight;
 
             ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight));
+           // ConnectionHandler.sendMessage (GenerateServerRequest.getSensorData (ComponentType.Ultrasoun));
         }
     }
 

@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="no.hvl.sensorvehicle.androidremotecontrol">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,10 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-
         tools:ignore="ExtraText,GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".MoveActivity" />
-        <activity android:name=".ConnectionActivity">
+        <activity
+            android:name=".DataActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MoveActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ConnectionActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

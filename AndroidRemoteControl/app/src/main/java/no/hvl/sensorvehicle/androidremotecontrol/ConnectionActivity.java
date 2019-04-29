@@ -104,6 +104,8 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     public void onClickedSensorData(View view) {
+        Intent intent = new Intent (this, DataActivity.class);
+        startActivity (intent);
     }
 
     private void buttonEnable(int id, boolean b) {
