@@ -29,7 +29,7 @@
                 <TextBlock x:Name="DevNameText" Text="Device" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="SSIDValue" Height="25" Width="100" Margin="0,10,0,0" FontWeight="Bold" FontSize="20"/>
                 <TextBlock x:Name="DevNameValue" Text="{x:Bind ConnInfo.DeviceName}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="DevNameText" Height="25" Width="250" FontSize="20"/>
                 <StackPanel Name="SpButtons" Orientation="Horizontal" Margin="0,35,0,0" RelativePanel.Below="DevNameValue">
-                    <ToggleSwitch x:Name="BtnStart" OnContent="Stop" OffContent="Start" Header="Webcam" Margin="20,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="0" FontSize="14" Toggled="BtnStart_Toggled"/>
+                    <ToggleSwitch x:Name="WebcamTogg" OnContent="Stop" OffContent="Start" Header="Webcam" Margin="20,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="0" FontSize="14" Toggled="WebcamTogg_Toggled"/>
                     <Button x:Name="BtnLaunchApp" Content="Launch main app" Margin="50,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="250" FontSize="30" Tapped="BtnLaunchApp_Tapped"/>
                 </StackPanel>
                 <TextBlock x:Name="WebcamText" Text="{x:Bind ConnInfo.CameraMessage,Mode=OneWay}" RelativePanel.Below="SpButtons" ></TextBlock>

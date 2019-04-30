@@ -53,7 +53,7 @@ namespace SensorVehicle_extras
         }
 
        
-        private async void BtnStart_Toggled(object sender, RoutedEventArgs e)
+        private async void WebcamTogg_Toggled(object sender, RoutedEventArgs e)
         {
             bool success = await SetUpStreaming();
             if (success)
@@ -61,7 +61,7 @@ namespace SensorVehicle_extras
                 if (!ConnInfo.IsStreaming)
                 {
                     Camera.Start();
-                    BtnStart.IsOn = true;
+                    WebcamTogg.IsOn = true;
                     ConnInfo.IsStreaming = true;
                     ConnInfo.CameraMessage = $"Streaming to http://{ConnInfo.IPAddr}";
                 }
@@ -70,18 +70,18 @@ namespace SensorVehicle_extras
                     ConnInfo.CameraMessage = "Stopping the camera...";
                     await Camera.Stop();
                     ConnInfo.IsStreaming = false;
-                    BtnStart.IsOn = false;
+                    WebcamTogg.IsOn = false;
                     ConnInfo.CameraMessage = "Webcam is off";
                 }
             }
-            else if (BtnStart.IsOn)
+            else if (WebcamTogg.IsOn)
             {
-                BtnStart.IsOn = false;
+                WebcamTogg.IsOn = false;
                 ConnInfo.IsStreaming = false;
                 ConnInfo.CameraMessage = "No camera found";
                 DisplayNoCamFound();
             }
-            else if (!BtnStart.IsOn)
+            else if (!WebcamTogg.IsOn)
             {
                 ConnInfo.CameraMessage = "No camera found";
             }
@@ -110,7 +110,7 @@ namespace SensorVehicle_extras
                 HttpServer = new HttpServer(Camera);
                 HttpServer.Start();
             }
-            if (BtnStart.IsOn)
+            if (WebcamTogg.IsOn)
             {
                 ConnInfo.CameraMessage = "Searching for webcam...";
             }
@@ -201,7 +201,7 @@ namespace SensorVehicle_extras
 
             if (result == ContentDialogResult.Primary)
             {
-                if (BtnStart.IsOn)
+                if (WebcamTogg.IsOn)
                 {
                     BeginExtendedExecution();                    
                 }
