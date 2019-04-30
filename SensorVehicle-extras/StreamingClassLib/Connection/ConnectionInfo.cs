@@ -93,7 +93,6 @@ namespace SensorVehicle_extras.Connection
             }
             catch (Exception ex)
             {
-                //App.LogService.WriteException(ex);
                 Ssid = "NoInternetConnection";
             }
 
