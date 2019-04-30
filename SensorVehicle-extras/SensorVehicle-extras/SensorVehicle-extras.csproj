@@ -119,21 +119,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ConfigurationFileHelper.cs" />
-    <Compile Include="Connection\ConnectionInfo.cs" />
-    <Compile Include="Devices\Camera.cs" />
-    <Compile Include="Helper\DispatcherHelper.cs" />
-    <Compile Include="Helper\TaskHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\HttpContentType.cs" />
-    <Compile Include="Web\HttpServer.cs" />
-    <Compile Include="Web\HttpServerRequest.cs" />
-    <Compile Include="Web\HttpServerResponse.cs" />
-    <Compile Include="Web\HttpStatusCode.cs" />
-    <Compile Include="Web\WebSocket.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -171,7 +160,12 @@
       <Version>6.2.7</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\StreamingClassLib\StreamingClassLib.csproj">
+      <Project>{8454da7f-7716-412b-b113-1588ecf49512}</Project>
+      <Name>StreamingClassLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

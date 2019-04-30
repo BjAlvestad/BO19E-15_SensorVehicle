@@ -120,6 +120,17 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigurationFileHelper.cs" />
+    <Compile Include="Connection\ConnectionInfo.cs" />
+    <Compile Include="Devices\Camera.cs" />
+    <Compile Include="Helper\DispatcherHelper.cs" />
+    <Compile Include="Helper\TaskHelper.cs" />
+    <Compile Include="Http\HttpContentType.cs" />
+    <Compile Include="Http\HttpServer.cs" />
+    <Compile Include="Http\HttpServerRequest.cs" />
+    <Compile Include="Http\HttpServerResponse.cs" />
+    <Compile Include="Http\HttpStatusCode.cs" />
+    <Compile Include="Http\WebSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\StreamingClassLib.rd.xml" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿var videoFrameElement = document.getElementById("videoFrame");
 var bodyElement = document.getElementsByTagName("body")[0];
 
+//TODO: Check if this is necessary
 videoFrameElement.addEventListener("dblclick", function (e) {
     toggleFullScreen();
 });
