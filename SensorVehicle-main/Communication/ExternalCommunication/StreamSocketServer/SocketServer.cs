@@ -91,6 +91,7 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 
         private async void StopServer()
         {
+            NumberOfClientsConnected = 0;
             if (_streamSocketListener == null) return;
 
             _streamSocketListener.ConnectionReceived -= StreamSocketListener_ConnectionReceived;
