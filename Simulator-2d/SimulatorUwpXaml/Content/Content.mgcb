@@ -43,6 +43,21 @@
 /processorParam:TextureFormat=Color
 /build:Maps/CorridorTiles_50x50px_12tiles.png
 
+#begin Maps/FourColorsTileSet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/FourColorsTileSet.png
+
+#begin Maps/RealMapFinite.tmx
+/copy:Maps/RealMapFinite.tmx
+
 #begin Maps/SimpleTCorridor.tmx
 /copy:Maps/SimpleTCorridor.tmx
 

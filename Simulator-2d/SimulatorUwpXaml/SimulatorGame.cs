@@ -55,12 +55,13 @@ namespace SimulatorUwpXaml
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _simulatorMap = new SimulatorMap(Content, mapName: "4B-corridores.tmx", scale: Screen.ScaleToHighDPI(1.0f * GlobalScale));
+            _simulatorMap = new SimulatorMap(Content, mapName: "RealMapFinite.tmx", scale: Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/SensorVehicle_Prototype2-300x316");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPIWithoutRounding(0.1f * GlobalScale));
 
-            _vehicle.Position = new Vector2(150, 150);
+            _vehicle.Position = new Vector2(2100, 900);
+            _vehicle.Angle = 4.712f;
 
             _lidar = new Lidar(_vehicle);
 
