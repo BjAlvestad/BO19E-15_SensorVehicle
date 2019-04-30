@@ -1,7 +1,10 @@
 package no.hvl.sensorvehicle.androidremotecontrol;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,10 +13,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.ParseServerRequest;
+
 public class ConnectionHandler {
-
     // TODO: broadcastR for messages (connected, disconnected, ...)
-
     final static String TAG = "ConnectionHandler";
 
     private static Socket socket;
@@ -21,6 +24,8 @@ public class ConnectionHandler {
     private static BufferedReader bufferedReader;
     private static String connectedIP;
     private static int connectedPort;
+
+    private static Context context;
 
     public static boolean sending = false;
 
@@ -33,7 +38,9 @@ public class ConnectionHandler {
         cTask.execute ();
     }
 
-    public static void sendMessage(String message) {
+    // ToDo: look into possibility of passing context only once
+    public static void sendMessage(String message, Context contextForToast) {
+        context = contextForToast;
         Log.i (TAG, "sendMessage :-> ");
 
         if (socket == null) return;
@@ -111,7 +118,6 @@ public class ConnectionHandler {
             try {
                 sending = true;
 
-
                 if (!message.endsWith ("\n")) {
                     message = message + "\n";
                 }
@@ -132,6 +138,8 @@ public class ConnectionHandler {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute (aVoid);
+            displayToast();
+
             if (response.contentEquals ("EXIT_CONFIRMATION")) {
                 try {
                     closeSocket ();
@@ -139,6 +147,12 @@ public class ConnectionHandler {
                     e.printStackTrace ();
                 }
             }
+        }
+
+        private void displayToast(){
+            Toast toast = Toast.makeText(context, ParseServerRequest.toCompleteMessage(response), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 150);
+            toast.show();
         }
     }
 }

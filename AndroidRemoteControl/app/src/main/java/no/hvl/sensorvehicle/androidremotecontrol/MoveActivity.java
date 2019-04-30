@@ -143,8 +143,7 @@ public class MoveActivity extends AppCompatActivity {
             lastLeft = wheelLeft;
             lastRight = wheelRight;
 
-            ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight));
-           // ConnectionHandler.sendMessage (GenerateServerRequest.getSensorData (ComponentType.Ultrasoun));
+            ConnectionHandler.sendMessage (GenerateServerRequest.setPower (wheelLeft, wheelRight), getApplicationContext());
         }
     }
 
@@ -159,6 +158,6 @@ public class MoveActivity extends AppCompatActivity {
     }
 
     public void onClickedStop(View view) {
-        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0));
+        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0), getApplicationContext());
     }
 }
