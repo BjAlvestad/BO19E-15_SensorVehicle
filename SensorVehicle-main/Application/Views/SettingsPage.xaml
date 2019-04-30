@@ -15,8 +15,21 @@
     </Page.Resources>
 
     <Grid Margin="{StaticResource MediumLeftRightMargin}">
-        <StackPanel
-            x:Name="ContentArea">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.05*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--THEME SELECTOR-->
+        <StackPanel Grid.Column="0" Grid.Row="0">
             <TextBlock
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -58,7 +71,27 @@
                     </RadioButton>
                 </StackPanel>
             </StackPanel>
+        </StackPanel>
 
+        <!--EXPERIMENTAL FUNCTIONALITY-->
+        <StackPanel Grid.Column="2" Grid.Row="0">
+            <TextBlock Text="Experimental functionality" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            <ToggleSwitch Header="Socket server (for Android app, etc.)" IsOn="{x:Bind ViewModel.AsyncSocketServer.ListenForConnections, Mode=TwoWay}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Bind ViewModel.IpAddress}" />
+                <TextBlock Text=":" Margin="5,0"/>
+                <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.PortNumber}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Open client connections:" Padding="0,0,10,0" />
+                <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.NumberOfClientsConnected, Mode=OneWay}" />
+            </StackPanel>
+            <Button Content="Open extra functions" Click="{x:Bind ViewModel.LaunchExtraFunctions, Mode=OneWay}" Margin="0,20"/>
+        </StackPanel>
+
+        <!--ABOUT THIS APPLICATION-->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2"
+                    Visibility="{x:Bind ViewModel.AsyncSocketServer.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
             <TextBlock
                     x:Uid="Settings_About"
                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
@@ -75,6 +108,26 @@
                 <HyperlinkButton
                     x:Uid="Settings_GitHubRepoLink" 
                     Margin="{StaticResource XSmallTopMargin}" />
+            </StackPanel>
+        </StackPanel>
+
+        <!--ERROR MESSAGE box (displays error messages from )-->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2" Padding="0,15,0,10"
+                    Visibility="{x:Bind ViewModel.AsyncSocketServer.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="An error has occured with the Socket Server:" FontWeight="ExtraBold" Foreground="Red" />
+            <ScrollViewer MaxHeight="300"
+                          ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                          VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                <StackPanel>
+                    <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                               Visibility="{x:Bind ViewModel.AsyncSocketServer.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                    <TextBlock Text="{x:Bind ViewModel.AsyncSocketServer.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                               Visibility="{x:Bind ViewModel.AsyncSocketServer.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                <ToggleButton Content="Details" IsChecked="{x:Bind ViewModel.AsyncSocketServer.Error.ShowDetailedMessage, Mode=TwoWay}" />
+                <Button Content="Clear error" Click="{x:Bind ViewModel.AsyncSocketServer.Error.Clear, Mode=OneWay}" />
             </StackPanel>
         </StackPanel>
     </Grid>

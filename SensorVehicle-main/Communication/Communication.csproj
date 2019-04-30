@@ -120,8 +120,14 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MockCommunication\MockGpioPin.cs" />
+    <Compile Include="ExternalCommunication\Handler\Constants\Component.cs" />
+    <Compile Include="ExternalCommunication\Handler\Constants\Key.cs" />
+    <Compile Include="ExternalCommunication\Handler\Constants\RequestType.cs" />
+    <Compile Include="ExternalCommunication\Handler\RequestHandler.cs" />
+    <Compile Include="ExternalCommunication\StreamSocketServer\ISocketServer.cs" />
+    <Compile Include="ExternalCommunication\StreamSocketServer\SocketServer.cs" />
     <Compile Include="MockCommunication\MockLidarPacketReceiver.cs" />
+    <Compile Include="MockCommunication\MockGpioPin.cs" />
     <Compile Include="MockCommunication\MockVehicleCommunication.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -136,6 +142,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.9</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="vehicle_1" type="string">Vehicle1</item>
+    <item name="vehicle_2" type="string">Vehicle2</item>
+</resources>
