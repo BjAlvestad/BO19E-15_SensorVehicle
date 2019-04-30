@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="SensorVehicle_extras.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SensorVehicle_extras"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="20">
+            <RelativePanel >
+                <TextBlock x:Name="IpText" Text="IP Address" RelativePanel.AlignLeftWithPanel="True"  Height="25" Width="100" FontWeight="Bold" FontSize="20"/>
+                <TextBlock x:Name="IpValue" Text="{x:Bind ConnInfo.IPAddr}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below = "IpText" Height="25" Width="250" FontSize="20"/>
+                <TextBlock x:Name="SSIDText" Text="Network" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below = "IpValue" Height="25" Width="100" Margin ="0,10,0,0" FontWeight="Bold" FontSize="20"/>
+                <TextBlock x:Name="SSIDValue" Text="{x:Bind ConnInfo.Ssid}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below = "SSIDText" Height="25" Width="250" FontSize="20"/>
+                <TextBlock x:Name="DevNameText" Text="Device" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="SSIDValue" Height="25" Width="100" Margin="0,10,0,0" FontWeight="Bold" FontSize="20"/>
+                <TextBlock x:Name="DevNameValue" Text="{x:Bind ConnInfo.DeviceName}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="DevNameText" Height="25" Width="250" FontSize="20"/>
+                <StackPanel Name="SpButtons" Orientation="Horizontal" Margin="0,35,0,0" RelativePanel.Below="DevNameValue">
+                    <ToggleSwitch x:Name="WebcamTogg" OnContent="Stop" OffContent="Start" Header="Webcam" Margin="20,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="0" FontSize="14" Toggled="WebcamTogg_Toggled"/>
+                    <Button x:Name="BtnLaunchApp" Content="Launch main app" Margin="50,0,0,0" HorizontalAlignment="Left" Height="55" VerticalAlignment="Center" Width="250" FontSize="30" Tapped="BtnLaunchApp_Tapped"/>
+                </StackPanel>
+                <TextBlock x:Name="WebcamText" Text="{x:Bind ConnInfo.CameraMessage,Mode=OneWay}" RelativePanel.Below="SpButtons" ></TextBlock>
+                <StackPanel Orientation="Horizontal" RelativePanel.Below="WebcamText" Margin="0,75,0,0">
+                    <Button x:Name="BtnExit" Content="Exit application" Margin="50, 0" Tapped="{x:Bind DisplayExitAppDialog}"/>
+                    <Button x:Name="BtnRestart" Content="Restart system" Tapped="{x:Bind DisplayRestartSysDialog}"/>
+                    <Button x:Name="BtnShutDown" Content="Shut down system" Margin="50, 0" Tapped="{x:Bind DisplayShutDownDialog}"/>
+                </StackPanel>
+            </RelativePanel>
+
+        </StackPanel>
+
+
+
+
+    </Grid>
+</Page>
