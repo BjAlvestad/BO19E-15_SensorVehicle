@@ -209,7 +209,7 @@ namespace SensorVehicle_extras
                 {
                     EndExtendedExecution();
                 }
-
+                //TODO: See if it is possible to explicit exit the app, to improve performance
                 Uri _mainAppUri = new Uri("hvl-sensorvehicle-mainapp:");
                 var success = await Launcher.LaunchUriAsync(_mainAppUri);
             }
