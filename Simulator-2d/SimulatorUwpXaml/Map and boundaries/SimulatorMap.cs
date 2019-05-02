@@ -19,7 +19,8 @@ namespace SimulatorUwpXaml
         private int _tilesetTilesHigh;
         private List<Tile> _wallTiles = new List<Tile>();
         private List<Tile> _floorTiles = new List<Tile>();
-        public readonly List<BoundingBox> Boundaries = new List<BoundingBox>(); //TODO: Check if this can be better encapsulated / protected against acidental edits from outside.
+
+        public List<BoundingBox> Boundaries { get; private set; }
 
         public Vector2 VehicleStartPosition { get; private set; }
 
@@ -39,6 +40,7 @@ namespace SimulatorUwpXaml
 
         private void LoadMap(float scale)
         {
+            List<Rectangle> rectanglesToCreateBoundaryAround = new List<Rectangle>();
             for (int layer = 0; layer < _map.Layers.Count; layer++)
             {
                 for (var i = 0; i < _map.Layers[layer].Tiles.Count; i++)
@@ -62,6 +64,7 @@ namespace SimulatorUwpXaml
                                 break;
                             case 1:
                                 _wallTiles.Add(new Tile(mapRectangle, tilesetRec));
+                                rectanglesToCreateBoundaryAround.Add(mapRectangle);
                                 break;
                             case 2:
                                 VehicleStartPosition = new Vector2(x * scale, y * scale);
@@ -71,22 +74,7 @@ namespace SimulatorUwpXaml
                 }
             }
 
-            LoadBoundaries();
-        }
-
-        private void LoadBoundaries()
-        {
-            if (_wallTiles == null)
-            {
-                return;
-            }
-
-            foreach(Tile tile in _wallTiles)
-            {
-                Vector3 startBoundary = new Vector3(tile.MapRectangle.X, tile.MapRectangle.Y, 0f);
-                Vector3 endBoundary =  new Vector3(tile.MapRectangle.X + tile.MapRectangle.Width, tile.MapRectangle.Y + tile.MapRectangle.Height, 0f);
-                Boundaries.Add(new BoundingBox(startBoundary, endBoundary));
-            }
+            Boundaries = BoundaryGenerator.GenerateCombinedBoundaryBoxes(rectanglesToCreateBoundaryAround);
         }
 
         public void DrawMap(SpriteBatch spriteBatch)

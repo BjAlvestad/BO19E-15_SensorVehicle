@@ -103,6 +103,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Map and boundaries\BoundaryGenerator.cs" />
     <Compile Include="Screen and scaling\HudViewModel.cs" />
     <Compile Include="SensorVehicleApp interface\Device.cs" />
     <Compile Include="GamePage.xaml.cs">
