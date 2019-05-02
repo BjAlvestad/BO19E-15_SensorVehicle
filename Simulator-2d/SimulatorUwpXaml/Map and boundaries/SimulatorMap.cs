@@ -21,6 +21,8 @@ namespace SimulatorUwpXaml
         private List<Tile> _floorTiles = new List<Tile>();
         public readonly List<BoundingBox> Boundaries = new List<BoundingBox>(); //TODO: Check if this can be better encapsulated / protected against acidental edits from outside.
 
+        public Vector2 VehicleStartPosition { get; private set; }
+
 
         public SimulatorMap(ContentManager content, string mapName, float scale)
         {
@@ -37,11 +39,11 @@ namespace SimulatorUwpXaml
 
         private void LoadMap(float scale)
         {
-            for (int j = 0; j < _map.Layers.Count; j++)
+            for (int layer = 0; layer < _map.Layers.Count; layer++)
             {
-                for (var i = 0; i < _map.Layers[j].Tiles.Count; i++)
+                for (var i = 0; i < _map.Layers[layer].Tiles.Count; i++)
                 {
-                    int gid = this._map.Layers[j].Tiles[i].Gid;
+                    int gid = this._map.Layers[layer].Tiles[i].Gid;
                     if (gid != 0)
                     {
                         int tileFrame = gid - 1;
@@ -53,11 +55,17 @@ namespace SimulatorUwpXaml
                         Rectangle tilesetRec = new Rectangle(_tileWidth * tileFrame, _tileHeight * row, _tileWidth, _tileHeight);
                         Rectangle mapRectangle = new Rectangle((int) (x * scale), (int) (y*scale), (int)(_tileWidth*scale), (int)(_tileHeight*scale));
 
-                        if (j == 1)
-                            _wallTiles.Add(new Tile(mapRectangle, tilesetRec));
-                        else
+                        switch (layer)
                         {
-                            _floorTiles.Add(new Tile(mapRectangle, tilesetRec));
+                            case 0:
+                                _floorTiles.Add(new Tile(mapRectangle, tilesetRec));
+                                break;
+                            case 1:
+                                _wallTiles.Add(new Tile(mapRectangle, tilesetRec));
+                                break;
+                            case 2:
+                                VehicleStartPosition = new Vector2(x * scale, y * scale);
+                                break;
                         }
                     }
                 }
