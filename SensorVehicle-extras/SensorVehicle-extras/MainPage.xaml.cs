@@ -192,7 +192,7 @@ namespace SensorVehicle_extras
             ContentDialog launchMainAppDialog = new ContentDialog
             {
                 Title = "Are you sure you want to launch the main app?",
-                Content = "If the webcam is started, this app will run in the background. If not, theis app will be closed.",
+                Content = "If the webcam is started, this app will run in the background. If not, this app will be closed.",
                 PrimaryButtonText = "Yes",
                 CloseButtonText = "Cancel"
             };
