@@ -1,4 +1,5 @@
-﻿using Windows.Graphics.Display;
+﻿using System;
+using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Comora;
@@ -30,6 +31,8 @@ namespace SimulatorUwpXaml
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            //IsFixedTimeStep = false;  // Setting this to false will cause next frame to render as soon as the previous is complete (default is true where it will occur at a fixed interval). https://stackoverflow.com/a/8554106/1821428
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / 30.0);  // Sets target/max frame rate. Default is 60FPS.
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace SimulatorUwpXaml
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/SensorVehicle_Prototype2-300x316");
             _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPIWithoutRounding(0.1f * GlobalScale));
 
-            _vehicle.Position = new Vector2(2100, 900);
+            _vehicle.Position = _simulatorMap.VehicleStartPosition;
             _vehicle.Angle = 4.712f;
 
             _lidar = new Lidar(_vehicle);
@@ -90,7 +93,11 @@ namespace SimulatorUwpXaml
         {
             float elapsedTimeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds; // Get time elapsed since last Update iteration
             _vehicle.Update(elapsedTimeSinceLastUpdate, WallClearanceOk(0.1f));
-            _lidar.Update360(_simulatorMap.Boundaries, Screen.ScaleToHighDPI(1.0f * GlobalScale));
+
+            if (DateTime.Now - _lidar.DistanceReadingAge > TimeSpan.FromMilliseconds(100))
+            {
+                _lidar.Update360(_simulatorMap.Boundaries, Screen.ScaleToHighDPI(1.0f * GlobalScale));
+            }
 
             SetCameraZoom(gameTime);
             _camera.Update(gameTime);
