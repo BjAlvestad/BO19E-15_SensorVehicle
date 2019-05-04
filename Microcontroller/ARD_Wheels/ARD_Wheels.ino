@@ -1,6 +1,4 @@
-// Code for SensorVehicle v.0.1
-
-
+// Code for SensorVehicle v.1.0
 
 #include <Wire.h>
 #include <Servo.h>

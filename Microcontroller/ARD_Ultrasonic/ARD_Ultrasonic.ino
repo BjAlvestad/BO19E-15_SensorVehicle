@@ -1,12 +1,6 @@
-// Code for SensorVehicle v.0.1
+// Code for SensorVehicle v.1.0
 
-
-
-#include <Wire.h>
-
-//byte response[6]; // this data is sent to PI
-
-// defines pins numbers
+//PIN's definition
 const int pin_trig_left = 9;
 const int pin_echo_left = 8;
 
@@ -22,10 +16,16 @@ const int pin_echo_forward_right = 4;
 const int pin_new_message = 10;
 const int pin_mode_1 = 12;
 const int pin_mode_2 = 11;
+const int i2c_enable_pin = 14;  //A0
+const int pin_mode_switch = 13;
 
+// Communication
+#include <Wire.h>
 const int size_of_byte_array = 23;
 const byte address = 0x25;
-const int pause = 30;
+
+void i2c_request();
+void send_byte_array(int message, int array_length, long longs_to_be_sent[]);
 
 // defines variables
 long distance_left;
@@ -37,12 +37,11 @@ long distance_forward_right;
 int count;
 int mode;
 
-void i2c_request();
 long ultrasonic(int trig_pin, int echo_pin);
 void check_distance(long distance);
 void set_mode(int i);
-void send_byte_array(int message, int array_length, long longs_to_be_sent[]);
 
+const int pause = 30;
 
 void setup() {
 
@@ -65,16 +64,20 @@ void setup() {
 	digitalWrite(pin_mode_2, LOW);
 
 	pinMode(pin_new_message, OUTPUT);
+	digitalWrite(pin_new_message, LOW);
 
-
-	Serial.begin(9600);
+	//Serial.begin(9600);
 
 	Wire.begin(address);
-
 	Wire.onRequest(i2c_request);
 
 	mode = 1;
-	
+
+	pinMode(pin_mode_switch, INPUT_PULLUP);
+	//pinMode(LED_BUILTIN, OUTPUT);  sjekk om 13 er led builtin
+
+	pinMode(i2c_enable_pin, OUTPUT);
+	digitalWrite(i2c_enable_pin, HIGH);
 }
 
 
@@ -87,7 +90,7 @@ void loop() {
 	delay(pause);
 
 	distance_left = ultrasonic(pin_trig_left, pin_echo_left);
-	check_distance(distance_left+5);
+	check_distance(distance_left + 5);
 	delay(pause);
 
 	distance_forward_left = ultrasonic(pin_trig_forward_left, pin_echo_forward_left);
@@ -95,22 +98,22 @@ void loop() {
 	delay(pause);
 
 	distance_right = ultrasonic(pin_trig_right, pin_echo_right);
-	check_distance(distance_right+5);
+	check_distance(distance_right + 5);
 	delay(pause);
 
 	digitalWrite(pin_new_message, HIGH);
 
 
-	const String text = "L: " + String(distance_left) + "\t FL: " +String(distance_forward_left) + "\t FR: " +
+	/*const String text = "L: " + String(distance_left) + "\t FL: " +String(distance_forward_left) + "\t FR: " +
 		String(distance_forward_right) + "\t R: " + String(distance_right) + "\t Mode: " + String(mode) + "\t Count: " + String(count);
-	Serial.println(text);
+	Serial.println(text);*/
 
 	if (count > 3)
 	{
 		if (mode < 3)
 		{
 			mode++;
-			
+
 		}
 		set_mode(mode);
 		// mode 3
@@ -119,7 +122,7 @@ void loop() {
 
 void i2c_request() {
 
-	Serial.println("I2C-Request");
+	//Serial.println("I2C-Request");
 
 	long longs_to_be_sent[] = { distance_left, distance_forward_left, distance_right, distance_forward_right };
 	const int array_length = sizeof(longs_to_be_sent) / sizeof(long);
@@ -137,7 +140,7 @@ long ultrasonic(const int trig_pin, const int echo_pin)
 	delayMicroseconds(10);
 	digitalWrite(trig_pin, LOW);
 	// Reads the echoPin, returns the sound wave travel time in microseconds
-	const long duration = pulseIn(echo_pin, HIGH,100000);  // todo: De nye ultra.ene krever lengre timeout. Hvorfor..!?! Burde vært 24000
+	const long duration = pulseIn(echo_pin, HIGH, 24000);  //
 
 	const int distance = duration * 0.034 / 2;
 
@@ -158,12 +161,19 @@ long ultrasonic(const int trig_pin, const int echo_pin)
 
 void check_distance(const long distance)
 {
-	if (distance < 15)
+	int reduced_safety = 0;
+
+	if (digitalRead(pin_mode_switch) == HIGH)
+	{
+		reduced_safety = 10;
+	}
+
+	if (distance < 15 - reduced_safety)
 	{
 		mode = 0;
 		set_mode(mode);
 	}
-	else if (distance < 20 )
+	else if (distance < 20 - reduced_safety)
 	{
 		if (mode < 1)
 		{
@@ -174,11 +184,10 @@ void check_distance(const long distance)
 			mode = 1;
 			set_mode(mode);
 		}
-		
 	}
-	else if (distance < 25)
+	else if (distance < 25 - reduced_safety)
 	{
-		if (mode< 2)
+		if (mode < 2)
 		{
 			count++;
 		}
@@ -187,21 +196,14 @@ void check_distance(const long distance)
 			mode = 2;
 			set_mode(mode);
 		}
-
-	
 	}
 	else
 	{
 		if (mode < 3)
 		{
 			count++;
-
 		}
-
-	
 	}
-	
-
 }
 
 void set_mode(const int i)
@@ -209,31 +211,31 @@ void set_mode(const int i)
 	switch (i)
 	{
 	case 0:
-		Serial.println("MODE 0");
+		//Serial.println("MODE 0");
 
 		digitalWrite(pin_mode_1, LOW);
 		digitalWrite(pin_mode_2, LOW);
 		break;
 	case 1:
-		Serial.println("MODE 1");
+		//Serial.println("MODE 1");
 
 		digitalWrite(pin_mode_1, LOW);
 		digitalWrite(pin_mode_2, HIGH);
 		break;
 	case 2:
-		Serial.println("MODE 2");
+		//Serial.println("MODE 2");
 
 		digitalWrite(pin_mode_1, HIGH);
 		digitalWrite(pin_mode_2, LOW);
 		break;
 	case 3:
-		Serial.println("MODE 3");
+		//Serial.println("MODE 3");
 
 		digitalWrite(pin_mode_1, HIGH);
 		digitalWrite(pin_mode_2, HIGH);
 		break;
 	default:
-		
+
 		break;
 	}
 }
