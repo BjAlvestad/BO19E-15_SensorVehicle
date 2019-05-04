@@ -1,3 +1,5 @@
+// Code for SensorVehicle v.0.1
+
 //PIN's definition
 #define encoder0PinA  3
 #define encoder0PinB  2
