@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Communication.ExternalCommunication.Handler.Constants;
+using ExampleLogic;
+using StudentLogic;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -14,13 +16,17 @@ namespace Communication.ExternalCommunication.Handler
         private ILidarDistance _lidar;
         private IWheel _wheel;
         private IEncoders _encoders;
+        private ExampleLogicService _exampleLogic;
+        private StudentLogicService _studentLogicService;
 
-        public RequestHandler(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders)
+        public RequestHandler(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders, ExampleLogicService exampleLogicService, StudentLogicService studentLogicService)
         {
             _wheel = wheel;
             _ultrasonic = ultrasonic;
             _lidar = lidar;
             _encoders = encoders;
+            _exampleLogic = exampleLogicService;
+            _studentLogicService = studentLogicService;
         }
 
         public Dictionary<string, string> HandleRequest(Dictionary<string, string> request)
@@ -102,9 +108,24 @@ namespace Communication.ExternalCommunication.Handler
             int requestedLeftSpeed = Int32.Parse(request[Key.Left]);
             int requestedRightSpeed = Int32.Parse(request[Key.Right]);
 
-            _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);
+            bool requestStop = requestedLeftSpeed == 0 && requestedRightSpeed == 0;
 
-            return $"Left: {_wheel.CurrentSpeedLeft},  Right: {_wheel.CurrentSpeedRight}.";
+            switch (requestStop)
+            {
+                case true when _exampleLogic.ActiveExampleLogic != null && _exampleLogic.ActiveExampleLogic.RunExampleLogic:
+                    _exampleLogic.ActiveExampleLogic.RunExampleLogic = false;
+                    _wheel.SetSpeed(0, 0, false);
+                    return $"Stopped demo logic: \'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
+                case true when _studentLogicService.ActiveStudentLogic != null && _studentLogicService.ActiveStudentLogic.RunStudentLogic:
+                    _studentLogicService.ActiveStudentLogic.RunStudentLogic = false;
+                    _wheel.SetSpeed(0, 0, false);
+                    return $"Stopped student logic: \'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
+                case false when (_exampleLogic.ActiveExampleLogic != null && _exampleLogic.ActiveExampleLogic.RunExampleLogic) || (_studentLogicService.ActiveStudentLogic != null && _studentLogicService.ActiveStudentLogic.RunStudentLogic):
+                    return "Can't give command while control logic is running. Push stop button first.";
+                default:
+                    _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);
+                    return $"Left: {_wheel.CurrentSpeedLeft},  Right: {_wheel.CurrentSpeedRight}.";
+            }
         }
     }
 }

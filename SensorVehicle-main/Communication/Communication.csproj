@@ -148,9 +148,17 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExampleLogic\ExampleLogic.csproj">
+      <Project>{1EAEB633-A71E-4BF2-B0CD-49CA30DB936A}</Project>
+      <Name>ExampleLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{133c3616-686a-4a33-ae6b-66f38d31221b}</Project>
       <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StudentLogic\StudentLogic.csproj">
+      <Project>{8199E791-329E-4B10-91B0-1C10F3F9186C}</Project>
+      <Name>StudentLogic</Name>
     </ProjectReference>
     <ProjectReference Include="..\VehicleEquipment\VehicleEquipment.csproj">
       <Project>{2af70898-0237-4b67-9ece-950e8ebd8d53}</Project>

@@ -6,8 +6,10 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Networking.Sockets;
 using Communication.ExternalCommunication.Handler;
 using Communication.ExternalCommunication.Handler.Constants;
+using ExampleLogic;
 using Helpers;
 using Newtonsoft.Json;
+using StudentLogic;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -25,9 +27,9 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 
         public Error Error { get; }
 
-        public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders)
+        public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders, ExampleLogicService exampleLogicService, StudentLogicService studentLogicService)
         {
-            _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders);
+            _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders, exampleLogicService, studentLogicService);
             _wheel = wheel;
             Error = new Error();
             PortNumber = "51915";
