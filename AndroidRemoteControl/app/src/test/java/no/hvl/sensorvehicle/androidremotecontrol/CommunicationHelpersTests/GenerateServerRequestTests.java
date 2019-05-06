@@ -27,10 +27,4 @@ public class GenerateServerRequestTests {
         assertEquals("{ \"REQUEST_TYPE\": \"Data\", \"COMPONENT\": \"Ultrasound Wheel\" }",
                 GenerateServerRequest.getSensorData("Ultrasound", "Wheel"));
     }
-
-    @Test
-    public void exitMessage_isCorrect() {
-        assertEquals("{ \"REQUEST_TYPE\": \"Exit\" }",
-                GenerateServerRequest.exitMessage());
-    }
 }

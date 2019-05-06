@@ -51,12 +51,9 @@ namespace Communication.ExternalCommunication.Handler
                             response.Add(component, GetComponentData(component));
                         }
                         break;
-                    case RequestType.Exit:
-                        response.Add(Key.ExitConfirmation, "Client exiting confirmed ...");
-                        break;
                     default:
                         response.Add(Key.Error, $"UNSUPPORTED REQUEST TYPE --> {request[Key.RequestType]}\n" +
-                                                $"Examples of valid Request types are: {RequestType.Command} {RequestType.Data} {RequestType.Exit}");
+                                                $"Examples of valid Request types are: {RequestType.Command} {RequestType.Data}");
                         break;
                 }
             }

@@ -18,9 +18,6 @@ public class ParseServerRequest {
         try {
             JSONObject jObj = new JSONObject(jsonStringFromServer);
 
-            if(jObj.has(Key.ExitConfirmation)){
-                jsonMessage += "EXIT CONFIRMATION:\n" + jObj.getString(Key.ExitConfirmation) + "\n\n";
-            }
             if(jObj.has(ComponentType.Wheel)) {
                 jsonMessage += "WHEEL:\n" + jObj.getString(ComponentType.Wheel) + "\n\n";
             }
@@ -52,9 +49,6 @@ public class ParseServerRequest {
         try {
             JSONObject jObj = new JSONObject(jsonStringFromServer);
 
-            if(jObj.has(Key.ExitConfirmation)){
-                messages.put(Key.ExitConfirmation, jObj.getString(Key.ExitConfirmation));
-            }
             if(jObj.has(ComponentType.Wheel)) {
                 messages.put(ComponentType.Wheel, jObj.getString(ComponentType.Wheel));
             }

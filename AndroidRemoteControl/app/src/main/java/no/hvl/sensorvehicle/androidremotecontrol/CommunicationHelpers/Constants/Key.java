@@ -4,7 +4,6 @@ public class Key{
     public final static String RequestType = "REQUEST_TYPE";
     public final static String Component = "COMPONENT";
 
-    public final static String ExitConfirmation = "EXIT_CONFIRMATION";
     public final static String Error = "ERROR";
 
     public final static String Left = "LEFT";
