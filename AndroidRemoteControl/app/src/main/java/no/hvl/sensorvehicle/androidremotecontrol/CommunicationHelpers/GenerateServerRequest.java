@@ -18,6 +18,14 @@ public class GenerateServerRequest {
         return "{ " + request(RequestType.Data) + ", " + component(components) + " }";
     }
 
+    public static String stopControlLogic(){
+        return "{ " + request(RequestType.Command) + ", " + component(ComponentType.StopControlLogic) + " }";
+    }
+
+    public static String restartControlLogic(){
+        return "{ " + request(RequestType.Command) + ", " + component(ComponentType.RestartControlLogic) + " }";
+    }
+
     private static String request(String Command){
         return "\"" + Key.RequestType + "\": \"" + Command + "\"";
     }

@@ -30,6 +30,12 @@ public class ParseServerRequest {
             if(jObj.has(ComponentType.Encoder)) {
                 jsonMessage += "ENCODER:\n" + jObj.getString(ComponentType.Encoder) + "\n\n";
             }
+            if(jObj.has(ComponentType.StopControlLogic)) {
+                jsonMessage += "STOP CONTROL LOGIC:\n" + jObj.getString(ComponentType.StopControlLogic) + "\n\n";
+            }
+            if(jObj.has(ComponentType.RestartControlLogic)) {
+                jsonMessage += "RESTART CONTROL LOGIC:\n" + jObj.getString(ComponentType.RestartControlLogic) + "\n\n";
+            }
             if(jObj.has(Key.Error)){
                 jsonMessage += "AN ERROR OCCURRED:\n" + jObj.getString(Key.Error) + "\n\n";
             }
@@ -60,6 +66,12 @@ public class ParseServerRequest {
             }
             if(jObj.has(ComponentType.Encoder)) {
                 messages.put(ComponentType.Encoder, jObj.getString(ComponentType.Encoder));
+            }
+            if(jObj.has(ComponentType.StopControlLogic)) {
+                messages.put(ComponentType.StopControlLogic, jObj.getString(ComponentType.StopControlLogic));
+            }
+            if(jObj.has(ComponentType.RestartControlLogic)) {
+                messages.put(ComponentType.RestartControlLogic, jObj.getString(ComponentType.RestartControlLogic));
             }
             if(jObj.has(Key.Error)){
                 messages.put(Key.Error, jObj.getString(Key.Error));

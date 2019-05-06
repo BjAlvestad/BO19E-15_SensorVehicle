@@ -123,6 +123,7 @@
     <Compile Include="ExternalCommunication\Handler\Constants\Component.cs" />
     <Compile Include="ExternalCommunication\Handler\Constants\Key.cs" />
     <Compile Include="ExternalCommunication\Handler\Constants\RequestType.cs" />
+    <Compile Include="ExternalCommunication\Handler\LastActiveLogicType.cs" />
     <Compile Include="ExternalCommunication\Handler\RequestHandler.cs" />
     <Compile Include="ExternalCommunication\StreamSocketServer\ISocketServer.cs" />
     <Compile Include="ExternalCommunication\StreamSocketServer\SocketServer.cs" />

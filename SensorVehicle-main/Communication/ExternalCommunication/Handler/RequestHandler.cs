@@ -12,12 +12,14 @@ namespace Communication.ExternalCommunication.Handler
 {
     public class RequestHandler
     {
-        private IUltrasonic _ultrasonic;
-        private ILidarDistance _lidar;
-        private IWheel _wheel;
-        private IEncoders _encoders;
-        private ExampleLogicService _exampleLogic;
-        private StudentLogicService _studentLogicService;
+        private readonly IUltrasonic _ultrasonic;
+        private readonly ILidarDistance _lidar;
+        private readonly IWheel _wheel;
+        private readonly IEncoders _encoders;
+        private readonly ExampleLogicService _exampleLogic;
+        private readonly StudentLogicService _studentLogicService;
+
+        private LastActiveLogicType _lastActiveLogic;
 
         public RequestHandler(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders, ExampleLogicService exampleLogicService, StudentLogicService studentLogicService)
         {
@@ -27,6 +29,8 @@ namespace Communication.ExternalCommunication.Handler
             _encoders = encoders;
             _exampleLogic = exampleLogicService;
             _studentLogicService = studentLogicService;
+
+            _lastActiveLogic = LastActiveLogicType.None;
         }
 
         public Dictionary<string, string> HandleRequest(Dictionary<string, string> request)
@@ -89,6 +93,10 @@ namespace Communication.ExternalCommunication.Handler
             {
                 case Component.Wheel:
                     return HandleWheelCommand(request);
+                case Component.StopControlLogic:
+                    return StopAnyActiveControlLogic();
+                case Component.RestartControlLogic:
+                    return RestartPreviousControlLogic();
                 default:
                     return $"THIS COMPONENT DOES NOT SUPPORT COMMAND REQUESTS --> {request["COMPONENT"]}.";
             }
@@ -102,27 +110,61 @@ namespace Communication.ExternalCommunication.Handler
                                     $"{Key.Left}, {Key.Right}");
             }
 
+            if (_exampleLogic.ActiveExampleLogic.RunExampleLogic || _studentLogicService.ActiveStudentLogic.RunStudentLogic)
+            {
+                return "Can't give command while control logic is running. Stop control logic first.";
+            }
+
             int requestedLeftSpeed = Int32.Parse(request[Key.Left]);
             int requestedRightSpeed = Int32.Parse(request[Key.Right]);
 
-            bool requestStop = requestedLeftSpeed == 0 && requestedRightSpeed == 0;
+            _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);
+            return $"Left: {_wheel.CurrentSpeedLeft},  Right: {_wheel.CurrentSpeedRight}.";
+        }
 
-            switch (requestStop)
+        private string StopAnyActiveControlLogic()
+        {
+            if (_exampleLogic.ActiveExampleLogic.RunExampleLogic)
             {
-                case true when _exampleLogic.ActiveExampleLogic.RunExampleLogic:
-                    _exampleLogic.ActiveExampleLogic.RunExampleLogic = false;
-                    _wheel.SetSpeed(0, 0, false);
-                    return $"Stopped demo logic: \'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
-                case true when _studentLogicService.ActiveStudentLogic.RunStudentLogic:
-                    _studentLogicService.ActiveStudentLogic.RunStudentLogic = false;
-                    _wheel.SetSpeed(0, 0, false);
-                    return $"Stopped student logic: \'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
-                case false when _exampleLogic.ActiveExampleLogic.RunExampleLogic || _studentLogicService.ActiveStudentLogic.RunStudentLogic:
-                    return "Can't give command while control logic is running. Push stop button first.";
-                default:
-                    _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);
-                    return $"Left: {_wheel.CurrentSpeedLeft},  Right: {_wheel.CurrentSpeedRight}.";
+                _exampleLogic.ActiveExampleLogic.RunExampleLogic = false;
+                _lastActiveLogic = LastActiveLogicType.Demo;
+                return $"Stopped demo logic: \'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
             }
+            if(_studentLogicService.ActiveStudentLogic.RunStudentLogic)
+            {
+                _studentLogicService.ActiveStudentLogic.RunStudentLogic = false;
+                _lastActiveLogic = LastActiveLogicType.Student;
+                return $"Stopped student logic: \'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
+            }
+
+            _wheel.SetSpeed(0, 0, false);
+            return "There are no running control logics that can be stopped.\nStopped wheels instead.";
+        }
+
+        private string RestartPreviousControlLogic()
+        {
+            if (_exampleLogic.ActiveExampleLogic.RunExampleLogic)
+            {
+                return $"The following demo logic is already running: \n\'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
+            }
+            if (_studentLogicService.ActiveStudentLogic.RunStudentLogic)
+            {
+                return $"The following student logic is already running: \n\'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
+            }
+
+            switch (_lastActiveLogic)
+            {
+                case LastActiveLogicType.None:
+                    return $"No previous control logic available to start";
+                case LastActiveLogicType.Demo:
+                    _exampleLogic.ActiveExampleLogic.RunExampleLogic = true;
+                    return $"Started demo logic: \n\'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
+                case LastActiveLogicType.Student:
+                    _studentLogicService.ActiveStudentLogic.RunStudentLogic = true;
+                    return $"Started student logic: \n\'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }            
         }
     }
 }

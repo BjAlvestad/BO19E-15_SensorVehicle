@@ -158,6 +158,10 @@ public class MoveActivity extends AppCompatActivity {
     }
 
     public void onClickedStop(View view) {
-        ConnectionHandler.sendMessage (GenerateServerRequest.setPower (0, 0), getApplicationContext());
+        ConnectionHandler.sendMessage(GenerateServerRequest.stopControlLogic(), getApplicationContext());
+    }
+
+    public void onClickRestartControlLogic(View view) {
+        ConnectionHandler.sendMessage(GenerateServerRequest.restartControlLogic(), getApplicationContext());
     }
 }
