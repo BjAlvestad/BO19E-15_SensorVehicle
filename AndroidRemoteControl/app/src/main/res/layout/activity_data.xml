@@ -20,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -27,6 +28,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/button_getSensorData"
         app:layout_constraintStart_toStartOf="parent">
+
         <CheckBox
             android:id="@+id/checkBox_wheels"
             android:layout_width="wrap_content"
@@ -34,6 +36,7 @@
             android:checked="true"
             android:onClick="onClick_ComponentCheckBox"
             android:text="Wheels" />
+
         <CheckBox
             android:id="@+id/checkBox_ultrasound"
             android:layout_width="wrap_content"
@@ -41,12 +44,14 @@
             android:checked="true"
             android:onClick="onClick_ComponentCheckBox"
             android:text="Ultrasound" />
+
         <CheckBox
             android:id="@+id/checkBox_lidar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick_ComponentCheckBox"
             android:text="Lidar" />
+
         <CheckBox
             android:id="@+id/checkBox_encoder"
             android:layout_width="wrap_content"
@@ -54,4 +59,31 @@
             android:onClick="onClick_ComponentCheckBox"
             android:text="Encoder" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_restartControlLogic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
+        android:onClick="onClickRestartControlLogic"
+        android:text="Restart control logic"
+        app:layout_constraintBottom_toTopOf="@+id/button_stopControlLogic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout" />
+
+    <Button
+        android:id="@+id/button_stopControlLogic"
+        android:layout_width="196dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="28dp"
+        android:onClick="onClickedStop"
+        android:text="Stop control logic"
+        app:layout_constraintBottom_toTopOf="@+id/button_getSensorData"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.806"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout" />
 </android.support.constraint.ConstraintLayout>

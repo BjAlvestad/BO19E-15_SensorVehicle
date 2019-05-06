@@ -69,4 +69,12 @@ public class DataActivity extends AppCompatActivity {
 
         return componentsString;
     }
+
+    public void onClickedStop(View view) {
+        ConnectionHandler.sendMessage(GenerateServerRequest.stopControlLogic(), getApplicationContext());
+    }
+
+    public void onClickRestartControlLogic(View view) {
+        ConnectionHandler.sendMessage(GenerateServerRequest.restartControlLogic(), getApplicationContext());
+    }
 }
