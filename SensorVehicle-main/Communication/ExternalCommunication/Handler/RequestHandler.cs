@@ -112,15 +112,15 @@ namespace Communication.ExternalCommunication.Handler
 
             switch (requestStop)
             {
-                case true when _exampleLogic.ActiveExampleLogic != null && _exampleLogic.ActiveExampleLogic.RunExampleLogic:
+                case true when _exampleLogic.ActiveExampleLogic.RunExampleLogic:
                     _exampleLogic.ActiveExampleLogic.RunExampleLogic = false;
                     _wheel.SetSpeed(0, 0, false);
                     return $"Stopped demo logic: \'{_exampleLogic.ActiveExampleLogic.Details.Title}\'";
-                case true when _studentLogicService.ActiveStudentLogic != null && _studentLogicService.ActiveStudentLogic.RunStudentLogic:
+                case true when _studentLogicService.ActiveStudentLogic.RunStudentLogic:
                     _studentLogicService.ActiveStudentLogic.RunStudentLogic = false;
                     _wheel.SetSpeed(0, 0, false);
                     return $"Stopped student logic: \'{_studentLogicService.ActiveStudentLogic.Details.Title}\'";
-                case false when (_exampleLogic.ActiveExampleLogic != null && _exampleLogic.ActiveExampleLogic.RunExampleLogic) || (_studentLogicService.ActiveStudentLogic != null && _studentLogicService.ActiveStudentLogic.RunStudentLogic):
+                case false when _exampleLogic.ActiveExampleLogic.RunExampleLogic || _studentLogicService.ActiveStudentLogic.RunStudentLogic:
                     return "Can't give command while control logic is running. Push stop button first.";
                 default:
                     _wheel.SetSpeed(requestedLeftSpeed, requestedRightSpeed);

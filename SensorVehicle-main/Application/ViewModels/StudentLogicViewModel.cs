@@ -64,7 +64,7 @@ namespace Application.ViewModels
 
         public void SetDefaultSelection()
         {
-            Selected = _studentLogicService.ActiveStudentLogic ?? StudentLogics.FirstOrDefault();
+            Selected = _studentLogicService.ActiveStudentLogic;
         }
     }
 }
