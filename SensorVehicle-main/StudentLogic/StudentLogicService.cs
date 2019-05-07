@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using Helpers;
 
 using StudentLogic.CodeSnippetExamples;
@@ -39,6 +40,8 @@ namespace StudentLogic
                 new Student3A(wheels, encoders, lidar, ultrasonic),
                 new Student3B(wheels, encoders, lidar, ultrasonic)
             };
+
+            ActiveStudentLogic = StudentLogics.FirstOrDefault();
         }
     }
 }

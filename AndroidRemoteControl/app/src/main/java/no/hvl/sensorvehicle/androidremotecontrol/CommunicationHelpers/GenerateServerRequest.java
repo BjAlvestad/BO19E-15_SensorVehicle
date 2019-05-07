@@ -8,7 +8,6 @@ import no.hvl.sensorvehicle.androidremotecontrol.CommunicationHelpers.Constants.
 // Set wheel speed:     { "REQUEST_TYPE": "Command", "COMPONENT": "Wheel", "LEFT": "0", "RIGHT": "0" }
 // Request Ultrasound distance:     { "REQUEST_TYPE": "Data", "COMPONENT": "Ultrasound" }
 // Request Wheel and Ultrasound:     { "REQUEST_TYPE": "Data", "COMPONENT": "Wheel Ultrasound" }
-// Send exit message to server:     { "REQUEST_TYPE": "Exit" }
 public class GenerateServerRequest {
 
     public static String setPower(int left, int right){
@@ -19,8 +18,12 @@ public class GenerateServerRequest {
         return "{ " + request(RequestType.Data) + ", " + component(components) + " }";
     }
 
-    public static String exitMessage(){
-        return "{ " + request(RequestType.Exit) + " }";
+    public static String stopControlLogic(){
+        return "{ " + request(RequestType.Command) + ", " + component(ComponentType.StopControlLogic) + " }";
+    }
+
+    public static String restartControlLogic(){
+        return "{ " + request(RequestType.Command) + ", " + component(ComponentType.RestartControlLogic) + " }";
     }
 
     private static String request(String Command){

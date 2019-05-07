@@ -6,8 +6,10 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Networking.Sockets;
 using Communication.ExternalCommunication.Handler;
 using Communication.ExternalCommunication.Handler.Constants;
+using ExampleLogic;
 using Helpers;
 using Newtonsoft.Json;
+using StudentLogic;
 using VehicleEquipment.DistanceMeasurement.Lidar;
 using VehicleEquipment.DistanceMeasurement.Ultrasound;
 using VehicleEquipment.Locomotion.Encoder;
@@ -21,13 +23,12 @@ namespace Communication.ExternalCommunication.StreamSocketServer
         private readonly RequestHandler _requestHandler;
         private readonly IWheel _wheel;
         private StreamSocketListener _streamSocketListener;
-        private bool _clientConnectionOpen;
 
         public Error Error { get; }
 
-        public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders)
+        public SocketServer(IWheel wheel, IUltrasonic ultrasonic, ILidarDistance lidar, IEncoders encoders, ExampleLogicService exampleLogicService, StudentLogicService studentLogicService)
         {
-            _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders);
+            _requestHandler = new RequestHandler(wheel, ultrasonic, lidar, encoders, exampleLogicService, studentLogicService);
             _wheel = wheel;
             Error = new Error();
             PortNumber = "51915";
@@ -91,7 +92,6 @@ namespace Communication.ExternalCommunication.StreamSocketServer
 
         private async void StopServer()
         {
-            NumberOfClientsConnected = 0;
             if (_streamSocketListener == null) return;
 
             _streamSocketListener.ConnectionReceived -= StreamSocketListener_ConnectionReceived;
@@ -103,24 +103,21 @@ namespace Communication.ExternalCommunication.StreamSocketServer
         // Set wheel speed:     { "REQUEST_TYPE": "Command", "COMPONENT": "Wheel", "LEFT": "0", "RIGHT": "0" }
         // Request Ultrasound distance:     { "REQUEST_TYPE": "Data", "COMPONENT": "Ultrasound" }
         // Request Wheel and Ultrasound:     { "REQUEST_TYPE": "Data", "COMPONENT": "Wheel Ultrasound" }
-        // Send exit message to server:     { "REQUEST_TYPE": "Exit" }
         private async void StreamSocketListener_ConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
             // TODO: Prevent multiple people connecting to the vehicle (for control) at the same time
             try
             {
-                Debug.WriteLine($"server received a connection");
-                _clientConnectionOpen = true;
+                Debug.WriteLine($"server received a connection from {args.Socket.Information.RemoteServiceName}", "TcpSocketServer");
                 NumberOfClientsConnected += 1;
 
                 using (var streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
                 using (Stream outputStream = args.Socket.OutputStream.AsStreamForWrite())
                 using (var streamWriter = new StreamWriter(outputStream))
                 {
-                    while (_clientConnectionOpen)
+                    string request;
+                    while ((request = await streamReader.ReadLineAsync()) != null)
                     {
-                        Debug.WriteLine("server is awaiting request.");
-                        string request = await streamReader.ReadLineAsync();
                         Debug.WriteLine($"server received the request: \"{request}\"", "TcpSocketServer");
 
                         Dictionary<string, string> responseKeyValuePair;
@@ -129,10 +126,10 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                             Dictionary<string, string> requestKeyValuePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
                             responseKeyValuePair = _requestHandler.HandleRequest(requestKeyValuePair);
                         }
-                        catch (Exception e) when (e is JsonReaderException || e is ArgumentNullException)
+                        catch (JsonReaderException jre)
                         {
                             Error.Message = GetJsonReaderErrorMessage(request);
-                            Error.DetailedMessage = e.ToString();
+                            Error.DetailedMessage = jre.ToString();
                             Error.Unacknowledged = true;
 
                             responseKeyValuePair = new Dictionary<string, string> {{Key.Error, Error.Message}};
@@ -143,11 +140,9 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                         await streamWriter.WriteLineAsync(response);
                         await streamWriter.FlushAsync();
                         Debug.WriteLine($"server sent back the response: \"{response}\"", "TcpSocketServer");
-
-                        if (responseKeyValuePair.ContainsKey(Key.ExitConfirmation)) _clientConnectionOpen = false;
                     }
 
-                    Debug.WriteLine("Server received exit message...");
+                    Debug.WriteLine("client exited...", "TcpSocketServer");
                 }
             }
             catch (IOException ioe)
@@ -169,7 +164,6 @@ namespace Communication.ExternalCommunication.StreamSocketServer
             finally
             {
                 NumberOfClientsConnected -= 1;
-                _clientConnectionOpen = false;
                 _wheel.SetSpeed(0 ,0, false);
             }
         }

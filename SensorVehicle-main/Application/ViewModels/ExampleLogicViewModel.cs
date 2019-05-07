@@ -69,7 +69,7 @@ namespace Application.ViewModels
 
         public void SetDefaultSelection()
         {
-            Selected = _exampleLogicService.ActiveExampleLogic ?? ExampleLogics.FirstOrDefault();
+            Selected = _exampleLogicService.ActiveExampleLogic;
         }
     }
 }

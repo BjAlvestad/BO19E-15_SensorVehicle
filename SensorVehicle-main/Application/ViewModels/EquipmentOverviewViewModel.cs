@@ -40,8 +40,8 @@ namespace Application.ViewModels
 
         public void StopWheels()
         {
-            if (ExampleLogic.ActiveExampleLogic != null) ExampleLogic.ActiveExampleLogic.RunExampleLogic = false;
-            if (StudentLogic.ActiveStudentLogic != null) StudentLogic.ActiveStudentLogic.RunStudentLogic = false;
+            ExampleLogic.ActiveExampleLogic.RunExampleLogic = false;
+            StudentLogic.ActiveStudentLogic.RunStudentLogic = false;
 
             Wheel.SetSpeed(leftValue: 0, rightValue: 0, onlySendIfValuesChanged: false);
         }

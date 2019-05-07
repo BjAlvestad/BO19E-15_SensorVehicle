@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using ExampleLogic.AutonomyLogics;
 using ExampleLogic.ConceptLogics;
 using Helpers;
@@ -31,6 +32,8 @@ namespace ExampleLogic
                 new TurnToLargestDistance(wheels, lidar),
                 new DriveToLargestDistance(wheels, lidar, ultrasonic)
             };
+
+            ActiveExampleLogic = ExampleLogics.FirstOrDefault();
         }
     }
 }
