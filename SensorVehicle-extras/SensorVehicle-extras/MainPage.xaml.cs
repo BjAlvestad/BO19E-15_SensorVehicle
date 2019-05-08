@@ -55,6 +55,7 @@ namespace SensorVehicle_extras
        
         private async void WebcamTogg_Toggled(object sender, RoutedEventArgs e)
         {
+            WebcamTogg.IsEnabled = false;
             bool success = await SetUpStreaming();
             if (success)
             {
@@ -85,6 +86,7 @@ namespace SensorVehicle_extras
             {
                 ConnInfo.CameraMessage = "No camera found";
             }
+            WebcamTogg.IsEnabled = true;
         }
         private void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
         {
