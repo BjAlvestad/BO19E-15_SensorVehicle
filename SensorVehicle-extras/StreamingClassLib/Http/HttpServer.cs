@@ -3,6 +3,7 @@ using SensorVehicle_extras.Helper;
 using SensorVehicle_extras.Web.JavaScript;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -21,6 +22,14 @@ namespace SensorVehicle_extras.Web
         //Dependency objects
         private Camera _camera;
 
+        //TODO: Remove summary
+        /// <summary> 
+        /// Insied summary
+        /// </summary>
+        /// <remarks>
+        /// Inside remarks
+        /// </remarks>
+        /// <param name="camera"></param>
         public HttpServer(Camera camera)
         {
             _camera = camera;
@@ -53,7 +62,11 @@ namespace SensorVehicle_extras.Web
                 socket.OutputStream.Dispose();
                 socket.Dispose();
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Something went wrong while processing the request"); //TODO: change this
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         private async Task<HttpServerRequest> ReadRequest(StreamSocket socket)
