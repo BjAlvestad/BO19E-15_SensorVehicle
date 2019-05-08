@@ -101,9 +101,11 @@ namespace SensorVehicle_extras.Devices
                 });
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Unable to initialize camera..."); //TODO: Remove/edit this line
+                //TODO: Remove/edit this line
+                Debug.WriteLine("Unable to initialize camera...");
+                Debug.WriteLine("Melding: " + ex.Message);
                 return false;
             }
         }
