@@ -2,14 +2,15 @@
 
 #include <Wire.h>
 #include <Servo.h>
-#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/libraries/Wire/src/Wire.h"
+//#include "../../../../../../../../Program Files (x86)/Arduino/hardware/arduino/avr/libraries/Wire/src/Wire.h"
 
 /// Const
-const int pin_pwm_right = 6;
-const int pin_pwm_left = 5;
+const int pin_pwm_right = 7;
+const int pin_pwm_left = 6;
 const int pin_mode_1 = 11;
 const int pin_mode_2 = 10;
 const int pin_relay_sabertooth = 9;
+const int pin_mode_switch = 12;
 
 const int address = 0x20;
 const int size_of_byte_array = 23;
@@ -46,12 +47,14 @@ int speed_map(int data);
 
 void setup()
 {
-	Serial.begin(9600);
+	//Serial.begin(9600);
 	Wire.begin(address);
 
 	pinMode(pin_mode_1, INPUT_PULLUP);
 	pinMode(pin_mode_2, INPUT_PULLUP);
 	pinMode(pin_relay_sabertooth, OUTPUT);
+	pinMode(pin_mode_switch, INPUT_PULLUP);
+	pinMode(LED_BUILTIN, OUTPUT);
 
 	digitalWrite(pin_relay_sabertooth, LOW);
 
@@ -86,17 +89,18 @@ void loop()
 	wheels_right.writeMicroseconds(speed_right);
 	wheels_left.writeMicroseconds(speed_left);
 
+	/*String s = "Ld: = " + String(data_left) + "\t Rd: " + String(data_right) +
+		"\t L: " + String(speed_left) + "\t R: " + String(speed_right) +
+		"\t MODE: " + mode +
+		"\t SWITCH: " + digitalRead(pin_mode_switch);
+	Serial.println(s);
+	delay(1000);*/
 
-	//Serial.print("Left: ");
-	//Serial.print(wheels_left.readMicroseconds());
-	//Serial.print("  Right: ");
-	//Serial.println(wheels_right.readMicroseconds());
-	//delay(1000);
 }
 
 void receive_event(int x)
 {
-	Serial.println("Inne i receive-event");
+	//Serial.println("Inne i receive-event");
 	byte data[size_of_byte_array];
 
 	if (Wire.available())
@@ -151,12 +155,13 @@ int data_check(const int data)
 
 int mode_check(int data)
 {
-	/*Serial.print("mode_check - -  data:  ");
-	Serial.print(data);
-	Serial.print("    pin 1:  ");
-	Serial.print(digitalRead(pin_mode_1));
-	Serial.print("    pin 2:  ");
-	Serial.println(digitalRead(pin_mode_2));*/
+	if (digitalRead(pin_mode_switch))
+	{
+		digitalWrite(LED_BUILTIN, HIGH);
+		mode = 2;
+		return data / 2;
+	}
+	digitalWrite(LED_BUILTIN, LOW);
 
 	if (!digitalRead(pin_mode_1) && !digitalRead(pin_mode_2) )
 	{
@@ -189,17 +194,17 @@ void assemble_data_from_vehicle(byte vehicle_byte_array[])
 	int code = vehicle_byte_array[1];
 	const int number_of_longs = vehicle_byte_array[2];
 	const int empty_bytes = 3;
-	Serial.print("NumOfLongs: ");
-	Serial.println(number_of_longs);
+	//Serial.print("NumOfLongs: ");
+	//Serial.println(number_of_longs);
 	assemble_ints_from_byte_array(number_of_longs, empty_bytes, vehicle_byte_array);
 }
 
 void assemble_ints_from_byte_array(const long number_of_longs, const int start_index, byte array[])
 {
-	Serial.println("Ouside if");
+	//Serial.println("Ouside if");
 	if (size_of_byte_array >= (sizeof(long)*number_of_longs + start_index))
 	{
-		Serial.println("inside if");
+		//Serial.println("inside if");
 		const int bits_in_long = sizeof(long) * 8;
 		long longs[2];
 
