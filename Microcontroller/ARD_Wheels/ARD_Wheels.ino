@@ -48,7 +48,7 @@ int speed_map(int data);
 
 void setup()
 {
-	Serial.begin(9600);
+	//Serial.begin(9600);
 	Wire.begin(address);
 
 	pinMode(pin_mode_1, INPUT_PULLUP);
@@ -93,12 +93,12 @@ void loop()
 	wheels_right.writeMicroseconds(speed_right);
 	wheels_left.writeMicroseconds(speed_left);
 
-	String s = "Ld: = " + String(data_left) + "\t Rd: " + String(data_right) +
+	/*String s = "Ld: = " + String(data_left) + "\t Rd: " + String(data_right) +
 		"\t L: " + String(speed_left) + "\t R: " + String(speed_right) +
 		"\t MODE: " + mode +
 		"\t SWITCH: " + digitalRead(pin_mode_switch);
 	Serial.println(s);
-	delay(1000);
+	delay(1000);*/
 
 }
 
@@ -163,7 +163,7 @@ int mode_check(int data)
 	{
 		digitalWrite(LED_BUILTIN, HIGH);
 		mode = 2;
-		return data / 2;
+		return (2 * data) / 3;
 	}
 	digitalWrite(LED_BUILTIN, LOW);
 

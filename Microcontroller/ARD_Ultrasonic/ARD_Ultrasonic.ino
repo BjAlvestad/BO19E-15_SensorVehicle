@@ -7,17 +7,17 @@ const int pin_echo_left = 8;
 const int pin_trig_right = 7;
 const int pin_echo_right = 6;
 
-const int pin_trig_forward_left = 3;
-const int pin_echo_forward_left = 2;
+const int pin_trig_forward_left = 5;
+const int pin_echo_forward_left = 4;
 
-const int pin_trig_forward_right = 5;
-const int pin_echo_forward_right = 4;
+const int pin_trig_forward_right = 3;
+const int pin_echo_forward_right = 2;
 
 const int pin_new_message = 10;
 const int pin_mode_1 = 12;
 const int pin_mode_2 = 11;
-const int i2c_enable_pin = 14;  //A0
-const int pin_mode_switch = 13;
+const int i2c_enable_pin = 15;  //A1
+const int pin_mode_switch = 14;
 
 // Communication
 #include <Wire.h>
@@ -42,6 +42,8 @@ void check_distance(long distance);
 void set_mode(int i);
 
 const int pause = 30;
+const int safe_distance_reduce = 5;
+
 
 void setup() {
 
@@ -74,7 +76,8 @@ void setup() {
 	mode = 1;
 
 	pinMode(pin_mode_switch, INPUT_PULLUP);
-	//pinMode(LED_BUILTIN, OUTPUT);  sjekk om 13 er led builtin
+	pinMode(LED_BUILTIN, OUTPUT);
+	digitalWrite(LED_BUILTIN, HIGH);
 
 	pinMode(i2c_enable_pin, OUTPUT);
 	digitalWrite(i2c_enable_pin, HIGH);
@@ -165,7 +168,14 @@ void check_distance(const long distance)
 
 	if (digitalRead(pin_mode_switch) == HIGH)
 	{
-		reduced_safety = 10;
+		reduced_safety = safe_distance_reduce;
+		digitalWrite(LED_BUILTIN, HIGH);
+
+	}
+	else
+	{
+		digitalWrite(LED_BUILTIN, LOW);
+
 	}
 
 	if (distance < 15 - reduced_safety)
@@ -173,7 +183,7 @@ void check_distance(const long distance)
 		mode = 0;
 		set_mode(mode);
 	}
-	else if (distance < 20 - reduced_safety)
+	else if (distance < 20 - reduced_safety * (4/3))
 	{
 		if (mode < 1)
 		{
@@ -185,7 +195,7 @@ void check_distance(const long distance)
 			set_mode(mode);
 		}
 	}
-	else if (distance < 25 - reduced_safety)
+	else if (distance < 25 - reduced_safety *(5/3))
 	{
 		if (mode < 2)
 		{
