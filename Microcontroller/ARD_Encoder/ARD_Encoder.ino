@@ -1,14 +1,15 @@
 // Code for SensorVehicle v.1.0
 
 //PIN's definition
-#define ENCODER_PIN_A  3
-#define ENCODER_PIN_B  2
+#define ENCODER_PIN_A  5
+#define ENCODER_PIN_B  6
 #define I2C_ENABLE_PIN  14  //A0
 
 // Communication
 #include <Wire.h>
 const int size_of_byte_array = 23;
-const byte address = 0x30;   // 0x31 for right side
+const byte address = 0x31;   // 0x31 for right side
+
 
 void i2c_request();
 void send_byte_array(int message, int array_length, long longs_to_be_sent[]);

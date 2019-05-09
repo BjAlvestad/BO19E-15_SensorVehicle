@@ -11,6 +11,7 @@ const int pin_mode_1 = 11;
 const int pin_mode_2 = 10;
 const int pin_relay_sabertooth = 9;
 const int pin_mode_switch = 12;
+const int pin_I2C_enable = 14;
 
 const int address = 0x20;
 const int size_of_byte_array = 23;
@@ -47,7 +48,7 @@ int speed_map(int data);
 
 void setup()
 {
-	//Serial.begin(9600);
+	Serial.begin(9600);
 	Wire.begin(address);
 
 	pinMode(pin_mode_1, INPUT_PULLUP);
@@ -70,6 +71,9 @@ void setup()
 	data_right = data_standstill;
 	speed_left = pwm_standstill;
 	speed_right = pwm_standstill;
+
+	pinMode(pin_I2C_enable, OUTPUT);
+	digitalWrite(pin_I2C_enable, HIGH);
 }
 
 void loop()
@@ -89,12 +93,12 @@ void loop()
 	wheels_right.writeMicroseconds(speed_right);
 	wheels_left.writeMicroseconds(speed_left);
 
-	/*String s = "Ld: = " + String(data_left) + "\t Rd: " + String(data_right) +
+	String s = "Ld: = " + String(data_left) + "\t Rd: " + String(data_right) +
 		"\t L: " + String(speed_left) + "\t R: " + String(speed_right) +
 		"\t MODE: " + mode +
 		"\t SWITCH: " + digitalRead(pin_mode_switch);
 	Serial.println(s);
-	delay(1000);*/
+	delay(1000);
 
 }
 
