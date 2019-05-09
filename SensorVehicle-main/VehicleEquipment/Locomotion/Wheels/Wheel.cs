@@ -98,6 +98,7 @@ namespace VehicleEquipment.Locomotion.Wheels
                 CurrentSpeedRight = 999;
                 Error.Message = $"Error when setting wheel speed...\n{e.Message}";
                 Error.DetailedMessage = e.ToString();
+                Error.Unacknowledged = true;
             }
         }
 
