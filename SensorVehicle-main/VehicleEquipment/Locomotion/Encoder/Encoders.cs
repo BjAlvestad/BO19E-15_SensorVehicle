@@ -19,6 +19,8 @@ namespace VehicleEquipment.Locomotion.Encoder
             _powerPin = powerPin;
             CollectionInterval = 500;
             Error = new Error();
+
+            Power = true;
         }
 
         public bool Power

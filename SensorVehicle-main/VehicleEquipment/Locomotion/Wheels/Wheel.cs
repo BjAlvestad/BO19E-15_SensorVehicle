@@ -16,6 +16,7 @@ namespace VehicleEquipment.Locomotion.Wheels
             vehicleCommunication = comWithWheel;
             _powerPin = powerPin;
             Error = new Error();
+            Power = true;
         }
 
         public bool Power

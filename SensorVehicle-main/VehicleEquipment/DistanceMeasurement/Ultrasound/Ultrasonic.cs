@@ -23,6 +23,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
             Error = new Error();
 
             _newDataAvailablePin = ultrasoundInterruptPin;
+            DeisolateI2cCommunciation = true;
         }
 
         public bool DeisolateI2cCommunciation
