@@ -28,6 +28,8 @@ namespace VehicleEquipment.Locomotion.Wheels
                 {
                     if (!value)
                     {
+                        CurrentSpeedLeft = 0;
+                        CurrentSpeedRight = 0;
                         RaiseNotificationForSelective = false;
                     }
 
@@ -44,6 +46,17 @@ namespace VehicleEquipment.Locomotion.Wheels
         }
 
         public Error Error { get; }
+
+        private bool _raiseNotificationForSelective;
+        public override bool RaiseNotificationForSelective
+        {
+            get { return _raiseNotificationForSelective; }
+            set
+            {
+                SetProperty(ref _raiseNotificationForSelective, value);
+                RaiseNotificationForPropertiesNow();
+            }
+        }
 
         private int _currentSpeedLeft;
         public int CurrentSpeedLeft
@@ -103,8 +116,6 @@ namespace VehicleEquipment.Locomotion.Wheels
                 if (CurrentSpeedLeft != 0 || CurrentSpeedRight != 0)
                 {
                     Power = false;
-                    CurrentSpeedLeft = 0;
-                    CurrentSpeedRight = 0;
                 }
 
                 Error.Message = $"Error when setting wheel speed...\n{e.Message}";
@@ -119,6 +130,12 @@ namespace VehicleEquipment.Locomotion.Wheels
             if (value < -MaximumValidSpeed) return -MaximumValidSpeed;
 
             return value;
+        }
+
+        private void RaiseNotificationForPropertiesNow()
+        {
+            RaiseSyncedPropertyChanged(nameof(CurrentSpeedLeft));
+            RaiseSyncedPropertyChanged(nameof(CurrentSpeedRight));
         }
     }
 }
