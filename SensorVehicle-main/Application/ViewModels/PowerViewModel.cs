@@ -45,8 +45,7 @@ namespace Application.ViewModels
 
         public void RestartSystem()
         {
-            // Restarts the device within 5 seconds:
-            ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(5));
+            ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(0));
         }
 
         public void ShutDownSystem()

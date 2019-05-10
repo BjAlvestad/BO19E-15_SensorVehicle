@@ -155,8 +155,7 @@ namespace SensorVehicle_extras
             if (result == ContentDialogResult.Primary)
             {
                 //TODO: Remove these comments
-                // Restarts the device within 5 seconds:
-                //ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(5));
+                //ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(0));
             }
         }
         private async void DisplayShutDownDialog()
