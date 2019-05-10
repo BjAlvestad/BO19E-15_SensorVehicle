@@ -30,6 +30,12 @@ namespace VehicleEquipment.Locomotion.Encoder
             {
                 try
                 {
+                    if (!value)
+                    {
+                        RaiseNotificationForSelective = false;
+                        CollectContinously = false;
+                    }
+
                     _powerPin.PinHigh = value;
                 }
                 catch (Exception e)

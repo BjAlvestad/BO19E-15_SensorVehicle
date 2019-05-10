@@ -26,6 +26,11 @@ namespace VehicleEquipment.Locomotion.Wheels
             {
                 try
                 {
+                    if (!value)
+                    {
+                        RaiseNotificationForSelective = false;
+                    }
+
                     _powerPin.PinHigh = value;
                 }
                 catch (Exception e)

@@ -152,9 +152,17 @@
 
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
             <StackPanel  Grid.Row="0" Grid.Column="4">
-                <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}" />
-                <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
-                <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
+                <TextBlock Text="Motor:" FontSize="18" FontWeight="Bold" />
+                <ToggleSwitch OffContent="Powered off" OnContent="Powered on" IsOn="{x:Bind ViewModel.Wheel.Power, Mode=TwoWay}" />
+                <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <TextBlock Text="Encoder:" FontSize="18" FontWeight="Bold" Margin="0,10,0,0" />
+                <ToggleSwitch OffContent="Powered off" OnContent="Powered on" IsOn="{x:Bind ViewModel.Encoders.Power, Mode=TwoWay}" />
+                <StackPanel Visibility="{x:Bind ViewModel.Encoders.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
+                </StackPanel>
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from Wheel and Encoders)-->

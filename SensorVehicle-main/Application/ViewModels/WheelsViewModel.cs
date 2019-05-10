@@ -97,6 +97,7 @@ namespace Application.ViewModels
             base.OnNavigatedTo(e, viewModelState);
             LeftWheel = Wheel.CurrentSpeedLeft;
             RightWheel = Wheel.CurrentSpeedRight;
+            Wheel.PropertyChanged += Wheel_PropertyChanged;
             Wheel.Error.PropertyChanged += WheelError_PropertyChanged;
             Encoders.Error.PropertyChanged += EncoderError_PropertyChanged;
             RaisePropertyChanged(nameof(UnacknowledgedWheelOrEncoderError));
@@ -104,11 +105,22 @@ namespace Application.ViewModels
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
+            Wheel.PropertyChanged -= Wheel_PropertyChanged;
             Wheel.Error.PropertyChanged -= WheelError_PropertyChanged;
             Encoders.Error.PropertyChanged -= EncoderError_PropertyChanged;
             ApplyWheelSpeedContinously = false;
             _periodicRaisePropertyChangedToken?.Cancel();
             base.OnNavigatingFrom(e, viewModelState, suspending);
+        }
+
+        private void Wheel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Wheel.Power) when Wheel.Power == false:
+                    ApplyWheelSpeedContinously = false;
+                    break;
+            }
         }
 
         private void EncoderError_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
