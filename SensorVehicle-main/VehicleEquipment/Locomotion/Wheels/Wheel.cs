@@ -100,8 +100,13 @@ namespace VehicleEquipment.Locomotion.Wheels
             }
             catch (Exception e)
             {
-                CurrentSpeedLeft = 999;
-                CurrentSpeedRight = 999;
+                if (CurrentSpeedLeft != 0 || CurrentSpeedRight != 0)
+                {
+                    Power = false;
+                    CurrentSpeedLeft = 0;
+                    CurrentSpeedRight = 0;
+                }
+
                 Error.Message = $"Error when setting wheel speed...\n{e.Message}";
                 Error.DetailedMessage = e.ToString();
                 Error.Unacknowledged = true;
