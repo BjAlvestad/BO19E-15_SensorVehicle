@@ -186,6 +186,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
                     Error.Message = e.Message;
                     Error.DetailedMessage = e.ToString();
                     Error.Unacknowledged = true;
+                    RefreshUltrasonicContinously = false;
                 }
             }
         }
