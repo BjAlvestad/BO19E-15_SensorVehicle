@@ -99,7 +99,7 @@ namespace Application
                     wheelPowerPin = new MockGpioPin(20);
                     encoderPowerPin = new MockGpioPin(21);
 
-                    ultrasoundInterruptPin = new MockGpioPin(5);
+                    ultrasoundInterruptPin = new MockGpioPin(19);
                     break;
                 case RunningState.AgainstSimulator:
                     lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
@@ -113,7 +113,7 @@ namespace Application
                     wheelPowerPin = new SimulatedGpioPin(20, GpioPinDriveMode.Output);
                     encoderPowerPin = new SimulatedGpioPin(21, GpioPinDriveMode.Output);
 
-                    ultrasoundInterruptPin = new SimulatedGpioPin(5, GpioPinDriveMode.Input, false, (SimulatedVehicleCommunication)ultrasonicCommunication, 340);
+                    ultrasoundInterruptPin = new SimulatedGpioPin(19, GpioPinDriveMode.Input, false, (SimulatedVehicleCommunication)ultrasonicCommunication, 340);
                     break;
                 case RunningState.OnPhysicalCar:
                     lidarPacketReceiver = new LidarPacketReceiver();
@@ -127,7 +127,7 @@ namespace Application
                     wheelPowerPin = new PhysicalGpioPin(20, GpioPinDriveMode.Output);
                     encoderPowerPin = new PhysicalGpioPin(21, GpioPinDriveMode.Output);
 
-                    ultrasoundInterruptPin = new PhysicalGpioPin(5, GpioPinDriveMode.Input);
+                    ultrasoundInterruptPin = new PhysicalGpioPin(19, GpioPinDriveMode.Input);
                     // Other GPIOs: 13, 19, 26                    
                     break;
                 default:
