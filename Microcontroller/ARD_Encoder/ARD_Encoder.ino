@@ -65,7 +65,7 @@ void loop()
 void i2c_request() {
 	digitalWrite(LED_BUILTIN, HIGH);
 
-	long longs_to_be_sent[] = { -encoder0Pos / ticks_per_cm, millisecond };  // negative left side
+	long longs_to_be_sent[] = { - encoder0Pos / ticks_per_cm, millisecond };  
 	encoder0Pos = 0;
 	millisecond = 0;
 	const int array_length = sizeof(longs_to_be_sent) / sizeof(long);
