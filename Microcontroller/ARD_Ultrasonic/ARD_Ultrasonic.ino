@@ -1,17 +1,17 @@
 // Code for SensorVehicle v.1.0
 
 //PIN's definition
-const int pin_trig_left = 9;
-const int pin_echo_left = 8;
+const int pin_trig_left = 5;
+const int pin_echo_left = 4;
 
-const int pin_trig_right = 7;
-const int pin_echo_right = 6;
+const int pin_trig_right = 7; //
+const int pin_echo_right = 6; //
 
-const int pin_trig_forward_left = 5;
-const int pin_echo_forward_left = 4;
+const int pin_trig_forward_left = 3;
+const int pin_echo_forward_left = 2;
 
-const int pin_trig_forward_right = 3;
-const int pin_echo_forward_right = 2;
+const int pin_trig_forward_right =9; //
+const int pin_echo_forward_right =8; //
 
 const int pin_new_message = 10;
 const int pin_mode_1 = 12;
@@ -68,8 +68,6 @@ void setup() {
 	pinMode(pin_new_message, OUTPUT);
 	digitalWrite(pin_new_message, LOW);
 
-	//Serial.begin(9600);
-
 	Wire.begin(address);
 	Wire.onRequest(i2c_request);
 
@@ -87,6 +85,8 @@ void setup() {
 
 void loop() {
 	count = 0;
+
+	delay(4); // hack
 
 	distance_forward_right = ultrasonic(pin_trig_forward_right, pin_echo_forward_right);
 	check_distance(distance_forward_right);
@@ -127,7 +127,7 @@ void i2c_request() {
 
 	//Serial.println("I2C-Request");
 
-	long longs_to_be_sent[] = { distance_left, distance_forward_left, distance_right, distance_forward_right };
+	long longs_to_be_sent[] = { distance_left, distance_forward_right, distance_right, distance_forward_left  };
 	const int array_length = sizeof(longs_to_be_sent) / sizeof(long);
 	send_byte_array(0, array_length, longs_to_be_sent);
 
@@ -183,7 +183,7 @@ void check_distance(const long distance)
 		mode = 0;
 		set_mode(mode);
 	}
-	else if (distance < 20 - reduced_safety * (4/3))
+	else if (distance < 20 - reduced_safety)
 	{
 		if (mode < 1)
 		{
@@ -195,7 +195,7 @@ void check_distance(const long distance)
 			set_mode(mode);
 		}
 	}
-	else if (distance < 25 - reduced_safety *(5/3))
+	else if (distance < 25 - reduced_safety)
 	{
 		if (mode < 2)
 		{
