@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="c2522b25-2d26-45df-aa1d-e292ab25f4cf" Publisher="CN=BjAlv" Version="0.1.0.0" />
-  <mp:PhoneIdentity PhoneProductId="c2522b25-2d26-45df-aa1d-e292ab25f4cf" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="1519BenjaminOdlandSkare.HVLSensorVehicleSimulator" Publisher="CN=27886A19-CF30-435C-BB15-4AA24D1F169A" Version="0.1.1.0" />
+  <mp:PhoneIdentity PhoneProductId="8cbe6e0b-6686-4571-924a-c97f44cad7c1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>SimulatorUwpXaml</DisplayName>
-    <PublisherDisplayName>BjAlv</PublisherDisplayName>
+    <DisplayName>HVL SensorVehicle Simulator</DisplayName>
+    <PublisherDisplayName>Benjamin Odland Skare</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -16,7 +16,13 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SensorVehicleSimulator.App">
       <uap:VisualElements DisplayName="Sensor Vehicle Simulator" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="The simulator will receive wheel commands from the Sensor Vehicle Main App, and return simulated sensor data upon request." BackgroundColor="#464646">
+        <uap:DefaultTile Square310x310Logo="Assets\LargeTile.png" Wide310x150Logo="Assets\WideTile.png" Square71x71Logo="Assets\SmallTile.png">
+        </uap:DefaultTile>
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape" />
+        </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.protocol">
@@ -31,7 +37,4 @@
       </Extensions>
     </Application>
   </Applications>
-  <Capabilities>
-    <Capability Name="internetClient" />
-  </Capabilities>
 </Package>
