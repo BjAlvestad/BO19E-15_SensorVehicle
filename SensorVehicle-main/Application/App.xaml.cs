@@ -142,15 +142,7 @@ namespace Application
                 new InjectionConstructor(new Encoder(encoderLeftCommunication), new Encoder(encoderRightCommunication), encoderPowerPin));
             Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(),
                 new InjectionConstructor(wheelCommunication, wheelPowerPin));
-            // Socket Server container
-            Container.RegisterType<ISocketServer, SocketServer>(new ContainerControlledLifetimeManager(),
-                new InjectionConstructor(
-                    Container.Resolve(typeof(IWheel)),
-                    Container.Resolve(typeof(IUltrasonic)),
-                    Container.Resolve(typeof(ILidarDistance)),
-                    Container.Resolve(typeof(IEncoders)),
-                    Container.Resolve(typeof(ExampleLogicService)),
-                    Container.Resolve(typeof(StudentLogicService))));
+            Container.RegisterType<ISocketServer, SocketServer>(new ContainerControlledLifetimeManager());
         }
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)

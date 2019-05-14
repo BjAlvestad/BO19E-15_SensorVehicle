@@ -22,18 +22,12 @@ namespace Application.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly ExampleLogicService _exampleLogicService;
-        private readonly IWheel _wheel;
-        private readonly ILidarDistance _lidarDistance;
-        private readonly IUltrasonic _ultrasonic;
 
-        public ExampleLogicViewModel(INavigationService navigationServiceInstance, ExampleLogicService exampleLogicService, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
+        public ExampleLogicViewModel(INavigationService navigationServiceInstance, ExampleLogicService exampleLogicService)
         {
             _navigationService = navigationServiceInstance;
             _exampleLogicService = exampleLogicService;
             ExampleLogics = exampleLogicService.ExampleLogics;
-            _wheel = wheel;
-            _lidarDistance = lidarDistance;
-            _ultrasonic = ultrasonic;
         }
 
         private ExampleLogicBase _selected;

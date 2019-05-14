@@ -22,18 +22,12 @@ namespace Application.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly StudentLogicService _studentLogicService;
-        private readonly IWheel _wheel;
-        private readonly ILidarDistance _lidarDistance;
-        private readonly IUltrasonic _ultrasonic;
 
-        public StudentLogicViewModel(INavigationService navigationServiceInstance, StudentLogicService studentLogicServiceInstance, IWheel wheel, ILidarDistance lidarDistance, IUltrasonic ultrasonic)
+        public StudentLogicViewModel(INavigationService navigationServiceInstance, StudentLogicService studentLogicServiceInstance)
         {
             _navigationService = navigationServiceInstance;
             _studentLogicService = studentLogicServiceInstance;
             StudentLogics = studentLogicServiceInstance.StudentLogics;
-            _wheel = wheel;
-            _lidarDistance = lidarDistance;
-            _ultrasonic = ultrasonic;
         }
 
         private StudentLogicBase _selected;
