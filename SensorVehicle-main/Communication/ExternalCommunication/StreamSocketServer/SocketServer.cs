@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Networking.Sockets;
 using Communication.ExternalCommunication.Handler;
@@ -151,6 +152,14 @@ namespace Communication.ExternalCommunication.StreamSocketServer
                                 $"Note: Client connection closed, but Socket Server is still open for new connections.\n" +
                                 $"Reconnect and try again";
                 Error.DetailedMessage = ioe.ToString();
+                Error.Unacknowledged = true;
+            }
+            catch(COMException comE)
+            {
+                Error.Message = $"{comE.Message}\n\n" +
+                                $"Note: Client connection closed, but Socket Server is still open for new connections.\n" +
+                                $"Reconnect and try again";
+                Error.DetailedMessage = comE.ToString();
                 Error.Unacknowledged = true;
             }
             catch (Exception e)
