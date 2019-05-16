@@ -1,9 +1,10 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleEquipment.DistanceMeasurement.Lidar;
 
-namespace VehicleEquipment.DistanceMeasurement.Lidar
+namespace Communication.Vehicle
 {
     public class LidarPacketReceiver : ILidarPacketReceiver
     {

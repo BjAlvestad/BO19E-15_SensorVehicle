@@ -136,6 +136,7 @@
     <Compile Include="Simulator\SimulatedGpioPin.cs" />
     <Compile Include="Simulator\SimulatedVehicleCommunication.cs" />
     <Compile Include="Simulator\SimulatorAppServiceClient.cs" />
+    <Compile Include="Vehicle\LidarPacketReceiver.cs" />
     <Compile Include="Vehicle\PhysicalGpioPin.cs" />
     <Compile Include="Vehicle\VehicleCommunication.cs" />
     <EmbeddedResource Include="Properties\Communication.rd.xml" />
