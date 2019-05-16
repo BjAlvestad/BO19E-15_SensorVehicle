@@ -94,12 +94,12 @@ namespace Application
                     encoderRightCommunication = new MockVehicleCommunication(Device.EncoderRight);
                     wheelCommunication = new MockVehicleCommunication(Device.Wheel);
 
-                    lidarPowerPin = new MockGpioPin(12);
-                    ultrasoundI2cIsolationPin = new MockGpioPin(16);
-                    wheelPowerPin = new MockGpioPin(20);
-                    encoderPowerPin = new MockGpioPin(21);
+                    lidarPowerPin = new MockGpioPin(GpioNumber.LidarPower);
+                    ultrasoundI2cIsolationPin = new MockGpioPin(GpioNumber.UltrasoundPower);
+                    wheelPowerPin = new MockGpioPin(GpioNumber.WheelPower);
+                    encoderPowerPin = new MockGpioPin(GpioNumber.EncoderPower);
 
-                    ultrasoundInterruptPin = new MockGpioPin(19);
+                    ultrasoundInterruptPin = new MockGpioPin(GpioNumber.UltrasoundInterrupt);
                     break;
                 case RunningState.AgainstSimulator:
                     lidarPacketReceiver = new SimulatedLidarPacketReceiver(_simulatorAppServiceClient);
@@ -108,12 +108,12 @@ namespace Application
                     encoderRightCommunication = new SimulatedVehicleCommunication(Device.EncoderRight, _simulatorAppServiceClient);
                     wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
 
-                    lidarPowerPin = new SimulatedGpioPin(12, GpioPinDriveMode.Output);
-                    ultrasoundI2cIsolationPin = new SimulatedGpioPin(16, GpioPinDriveMode.Output);
-                    wheelPowerPin = new SimulatedGpioPin(20, GpioPinDriveMode.Output);
-                    encoderPowerPin = new SimulatedGpioPin(21, GpioPinDriveMode.Output);
+                    lidarPowerPin = new SimulatedGpioPin(GpioNumber.LidarPower, GpioPinDriveMode.Output);
+                    ultrasoundI2cIsolationPin = new SimulatedGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
+                    wheelPowerPin = new SimulatedGpioPin(GpioNumber.WheelPower, GpioPinDriveMode.Output);
+                    encoderPowerPin = new SimulatedGpioPin(GpioNumber.EncoderPower, GpioPinDriveMode.Output);
 
-                    ultrasoundInterruptPin = new SimulatedGpioPin(19, GpioPinDriveMode.Input, false, (SimulatedVehicleCommunication)ultrasonicCommunication, 340);
+                    ultrasoundInterruptPin = new SimulatedGpioPin(GpioNumber.UltrasoundInterrupt, GpioPinDriveMode.Input, false, (SimulatedVehicleCommunication)ultrasonicCommunication, 340);
                     break;
                 case RunningState.OnPhysicalCar:
                     lidarPacketReceiver = new LidarPacketReceiver();
@@ -122,13 +122,12 @@ namespace Application
                     encoderRightCommunication = new VehicleCommunication(Device.EncoderRight);
                     wheelCommunication = new VehicleCommunication(Device.Wheel);
 
-                    lidarPowerPin = new PhysicalGpioPin(12, GpioPinDriveMode.Output);
-                    ultrasoundI2cIsolationPin = new PhysicalGpioPin(16, GpioPinDriveMode.Output);
-                    wheelPowerPin = new PhysicalGpioPin(20, GpioPinDriveMode.Output);
-                    encoderPowerPin = new PhysicalGpioPin(21, GpioPinDriveMode.Output);
+                    lidarPowerPin = new PhysicalGpioPin(GpioNumber.LidarPower, GpioPinDriveMode.Output);
+                    ultrasoundI2cIsolationPin = new PhysicalGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
+                    wheelPowerPin = new PhysicalGpioPin(GpioNumber.WheelPower, GpioPinDriveMode.Output);
+                    encoderPowerPin = new PhysicalGpioPin(GpioNumber.EncoderPower, GpioPinDriveMode.Output);
 
-                    ultrasoundInterruptPin = new PhysicalGpioPin(19, GpioPinDriveMode.Input);
-                    // Other GPIOs: 13, 19, 26                    
+                    ultrasoundInterruptPin = new PhysicalGpioPin(GpioNumber.UltrasoundInterrupt, GpioPinDriveMode.Input);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

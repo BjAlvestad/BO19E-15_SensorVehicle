@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="Behaviors\NavigationViewHeaderBehavior.cs" />
     <Compile Include="Behaviors\NavigationViewHeaderMode.cs" />
+    <Compile Include="Constants\GpioNumber.cs" />
     <Compile Include="Converters\BooleanNegationToVisibilityConverter.cs" />
     <Compile Include="Converters\BooleanToColorConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
