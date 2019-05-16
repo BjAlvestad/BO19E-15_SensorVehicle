@@ -6,8 +6,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Style="{StaticResource PageStyle}"
     xmlns:prismMvvm="using:Prism.Windows.Mvvm"
+    xmlns:converters="using:Application.Converters"
+    xmlns:helpers="using:Application.Helpers"
     prismMvvm:ViewModelLocator.AutoWireViewModel="True" 
     mc:Ignorable="d">
+    <Page.Resources>
+        <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" EnumType="helpers:RunningState" />
+    </Page.Resources>
+
     <Grid
         x:Name="ContentArea"
         Margin="{StaticResource MediumLeftRightMargin}">
@@ -15,7 +21,15 @@
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
-            <TextBlock Text="{x:Bind ViewModel.SimulatorAvailabilityMessage, Mode=OneTime}" TextWrapping="Wrap" />
+            <StackPanel>
+                <TextBlock Text="{x:Bind ViewModel.SimulatorAvailabilityMessage, Mode=OneTime}" TextWrapping="Wrap" />
+                <StackPanel Visibility="{x:Bind ViewModel.ProgramRunningState, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=AgainstMockData, Mode=OneWay}">
+                    <Button Content="Click here to download simulator" FontSize="32" FontWeight="ExtraBold" Margin="0,50"
+                            Click="{x:Bind ViewModel.OpenSimulatorDownloadPage}" />
+                    <TextBlock Text="The button above will launch the Microsoft Store page from which the simulator may be installed." />
+                    <TextBlock Text="This application (SensorVehicle Main) must be restarted after the simulator has been installed." FontWeight="Bold" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

@@ -19,7 +19,7 @@ namespace Application.ViewModels
         {
             get
             {
-                switch (((App) PrismUnityApplication.Current).ProgramRunningState)
+                switch (ProgramRunningState)
                 {
                     case RunningState.AgainstMockData:
                         return "Running against mock data.\n" +
@@ -39,6 +39,14 @@ namespace Application.ViewModels
                         throw new ArgumentOutOfRangeException();
                 }
             }
+        }
+
+        // Launches https://www.microsoft.com/en-us/p/hvl-sensorvehicle-simulator/9nbs6gn8sqlg
+        public void OpenSimulatorDownloadPage()
+        {
+            Uri simulatorProductDetailsPageUri = new Uri("ms-windows-store://pdp/?ProductId=9nbs6gn8sqlg");
+
+            var success = Launcher.LaunchUriAsync(simulatorProductDetailsPageUri);
         }
     }
 }
