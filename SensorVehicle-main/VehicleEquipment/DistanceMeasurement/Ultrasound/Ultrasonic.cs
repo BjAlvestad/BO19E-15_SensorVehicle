@@ -8,7 +8,6 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 {
     public class Ultrasonic : ThreadSafeNotifyPropertyChanged, IUltrasonic
     {
-        public readonly int MinimumSensorRequestsInterval = 30;
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
         private readonly IGpioPin _newDataAvailablePin;
@@ -17,7 +16,6 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         {
             _vehicleCommunication = comWithUltrasonic;
             _power = powerPin;
-            PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
             Error = new Error();
 
@@ -65,17 +63,6 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         }
 
         public Error Error { get; }
-
-        private int _permissableDistanceAge;
-        public int PermissableDistanceAge //TODO: Consider name change. Suggestions:  DistanceExpirationLimit  SensorDataExpirationLimit  PermissableSensorDataAge    SensorDataRequestInterval  RequestNewSensorDataLimit
-        {
-            get => _permissableDistanceAge;
-            set
-            {
-                int newPermissableDistanceAge = (value > MinimumSensorRequestsInterval) ? value : MinimumSensorRequestsInterval;
-                SetProperty(ref _permissableDistanceAge, newPermissableDistanceAge);
-            }
-        }
 
         private DateTime _timeStamp;
         public DateTime TimeStamp

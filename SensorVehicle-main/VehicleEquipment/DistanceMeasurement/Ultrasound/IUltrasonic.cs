@@ -46,9 +46,6 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         /// </summary>
         DateTime TimeStamp { get; }
 
-        //TODO: Implement alternative to collect based on time interval insted of interrupt. Or remove this property.
-        int PermissableDistanceAge { get; set; }
-
         /// <summary>
         /// Selects if distance and time properties should raise notify property changed (so that they update automatically in GUI).
         /// </summary>
