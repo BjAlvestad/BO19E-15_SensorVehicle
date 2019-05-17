@@ -86,7 +86,7 @@ namespace Application
             IVehicleCommunication encoderRightCommunication;
             IVehicleCommunication wheelCommunication;
             IGpioPin lidarPowerPin;
-            IGpioPin ultrasoundI2cIsolationPin;
+            IGpioPin ultrasoundPowerPin;
             IGpioPin wheelPowerPin;
             IGpioPin encoderPowerPin;
             IGpioPin ultrasoundInterruptPin;
@@ -100,7 +100,7 @@ namespace Application
                     wheelCommunication = new MockVehicleCommunication(Device.Wheel);
 
                     lidarPowerPin = new MockGpioPin(GpioNumber.LidarPower);
-                    ultrasoundI2cIsolationPin = new MockGpioPin(GpioNumber.UltrasoundPower);
+                    ultrasoundPowerPin = new MockGpioPin(GpioNumber.UltrasoundPower);
                     wheelPowerPin = new MockGpioPin(GpioNumber.WheelPower);
                     encoderPowerPin = new MockGpioPin(GpioNumber.EncoderPower);
 
@@ -114,7 +114,7 @@ namespace Application
                     wheelCommunication = new SimulatedVehicleCommunication(Device.Wheel, _simulatorAppServiceClient);
 
                     lidarPowerPin = new SimulatedGpioPin(GpioNumber.LidarPower, GpioPinDriveMode.Output);
-                    ultrasoundI2cIsolationPin = new SimulatedGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
+                    ultrasoundPowerPin = new SimulatedGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
                     wheelPowerPin = new SimulatedGpioPin(GpioNumber.WheelPower, GpioPinDriveMode.Output);
                     encoderPowerPin = new SimulatedGpioPin(GpioNumber.EncoderPower, GpioPinDriveMode.Output);
 
@@ -128,7 +128,7 @@ namespace Application
                     wheelCommunication = new VehicleCommunication(Device.Wheel);
 
                     lidarPowerPin = new PhysicalGpioPin(GpioNumber.LidarPower, GpioPinDriveMode.Output);
-                    ultrasoundI2cIsolationPin = new PhysicalGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
+                    ultrasoundPowerPin = new PhysicalGpioPin(GpioNumber.UltrasoundPower, GpioPinDriveMode.Output);
                     wheelPowerPin = new PhysicalGpioPin(GpioNumber.WheelPower, GpioPinDriveMode.Output);
                     encoderPowerPin = new PhysicalGpioPin(GpioNumber.EncoderPower, GpioPinDriveMode.Output);
 
@@ -143,7 +143,7 @@ namespace Application
             Container.RegisterType<ILidarDistance, LidarDistance>(new ContainerControlledLifetimeManager(),
                 new InjectionConstructor(lidarPacketReceiver, lidarPowerPin, new VerticalAngle[] { VerticalAngle.Up1, VerticalAngle.Up3 }));
             Container.RegisterType<IUltrasonic, Ultrasonic>(new ContainerControlledLifetimeManager(),
-                new InjectionConstructor(ultrasonicCommunication, ultrasoundI2cIsolationPin, ultrasoundInterruptPin));
+                new InjectionConstructor(ultrasonicCommunication, ultrasoundPowerPin, ultrasoundInterruptPin));
             Container.RegisterType<IEncoders, Encoders>(new ContainerControlledLifetimeManager(),
                 new InjectionConstructor(new Encoder(encoderLeftCommunication), new Encoder(encoderRightCommunication), encoderPowerPin));
             Container.RegisterType<IWheel, Wheel>(new ContainerControlledLifetimeManager(),

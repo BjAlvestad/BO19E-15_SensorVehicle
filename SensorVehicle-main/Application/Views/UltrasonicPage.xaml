@@ -69,11 +69,11 @@
 
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
             <StackPanel Grid.Row="0" Grid.Column="4">
-                <ToggleSwitch Header="I2c isolation" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=TwoWay}" />
+                <ToggleSwitch Header="Power" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.Power, Mode=TwoWay}" />
                 <ToggleSwitch Header="Display data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                              Visibility="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Autocollect" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Ultrasonic.RefreshUltrasonicContinously, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" /> <!-- BUG: 'Autocollect' (and ) can remain on (but hidden) when 'Power' is switched off -->
+                              Visibility="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
 
             <!--ERROR MESSAGE box (displays error messages from )-->

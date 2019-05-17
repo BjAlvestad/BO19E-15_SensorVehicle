@@ -68,7 +68,7 @@
             </winui:NavigationViewItem>
 
             <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" helpers:NavHelper.NavigateTo="Ultrasonic"
-                                      Background="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      Background="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
                                       BorderBrush="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE957;"/>

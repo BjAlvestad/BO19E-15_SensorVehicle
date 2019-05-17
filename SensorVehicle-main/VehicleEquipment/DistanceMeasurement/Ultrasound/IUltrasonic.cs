@@ -10,7 +10,7 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         /// Allow/Block ultrasonic controller from communicating with the main program via I2c. <para />
         /// Note that this will not power the micro-controller off, since it is required for anti-collision protection, which is running internally between the wheel and encoder micro-controller.
         /// </summary>
-        bool DeisolateI2cCommunciation { get; set; }
+        bool Power { get; set; }
 
         /// <summary>
         /// Get distance to the Left (in meters). <para />

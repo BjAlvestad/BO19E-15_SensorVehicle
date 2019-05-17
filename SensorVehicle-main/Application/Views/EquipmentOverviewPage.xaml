@@ -50,7 +50,7 @@
                     <TextBlock x:Name="ULLastUpdateBlock" Text="{x:Bind ViewModel.Ultrasonic.TimeStamp, Mode=OneWay}" RelativePanel.Below="LastReadingTimeUlText" RelativePanel.AlignRightWith="LastReadingTimeUlText"/>
 
                     <ToggleSwitch OffContent="Off (Updates from Logic)" OnContent="Auto Collecting" IsOn="{x:Bind ViewModel.Ultrasonic.RefreshUltrasonicContinously, Mode=TwoWay}" RelativePanel.Below="ULLastUpdateBlock"
-                                  Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  Visibility="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   Margin="0,0,0,10"/>
                 </RelativePanel>
 
@@ -144,7 +144,7 @@
             <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
             <StackPanel Grid.Row="0" Grid.Column="4">
                 <ToggleSwitch Header="Ultrasonic" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Ultrasonic.RaiseNotificationForSelective, Mode=TwoWay}"
-                              Visibility="{x:Bind ViewModel.Ultrasonic.DeisolateI2cCommunciation, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                              Visibility="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Lidar" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Lidar.RaiseNotificationForSelective, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.Lidar.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <ToggleSwitch Header="Wheels" OffContent="Hiding data" OnContent="Displaying data" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}"

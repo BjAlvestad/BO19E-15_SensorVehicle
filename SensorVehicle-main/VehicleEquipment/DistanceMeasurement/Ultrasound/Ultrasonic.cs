@@ -11,24 +11,24 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
         public readonly int MinimumSensorRequestsInterval = 30;
         private static readonly object DistanceUpdateSyncLock = new object();
         private readonly IVehicleCommunication _vehicleCommunication;
-        private readonly IGpioPin _ultrasoundI2cIsolationPin;
         private readonly IGpioPin _newDataAvailablePin;
 
-        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioPin ultrasoundI2cIsolationPin, IGpioPin ultrasoundInterruptPin)
+        public Ultrasonic(IVehicleCommunication comWithUltrasonic, IGpioPin powerPin, IGpioPin ultrasoundInterruptPin)
         {
             _vehicleCommunication = comWithUltrasonic;
-            _ultrasoundI2cIsolationPin = ultrasoundI2cIsolationPin;
+            _power = powerPin;
             PermissableDistanceAge = 300;
             TimeStamp = DateTime.Now;
             Error = new Error();
 
             _newDataAvailablePin = ultrasoundInterruptPin;
-            DeisolateI2cCommunciation = true;
+            Power = true;
         }
 
-        public bool DeisolateI2cCommunciation
+        private readonly IGpioPin _power;
+        public bool Power
         {
-            get { return _ultrasoundI2cIsolationPin.PinHigh; }
+            get { return _power.PinHigh; }
             set
             {
                 if (value == false)
@@ -38,11 +38,11 @@ namespace VehicleEquipment.DistanceMeasurement.Ultrasound
 
                 try
                 {
-                    _ultrasoundI2cIsolationPin.PinHigh = value;
+                    _power.PinHigh = value;
                 }
                 catch (Exception e)
                 {
-                    Error.Message = $"An error occured when trying to {(value ? "de-isolate" : "isolate")} ultrasonics I2c communication\n{e.Message}";
+                    Error.Message = $"An error occured when trying to switch ultrasonic power {(value ? "on" : "off")}\n{e.Message}";
                     Error.DetailedMessage = e.ToString();
                     Error.Unacknowledged = true;
                 }

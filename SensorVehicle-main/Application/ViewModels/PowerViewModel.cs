@@ -33,7 +33,7 @@ namespace Application.ViewModels
             Lidar.Power = false;
             Wheel.Power = false;
             Encoders.Power = false;
-            Ultrasonic.DeisolateI2cCommunciation = false;
+            Ultrasonic.Power = false;
         }
 
         public Visibility VisibleIfRunningOnIoT => ((App) PrismUnityApplication.Current).ProgramRunningState == RunningState.OnPhysicalCar ? Visibility.Visible : Visibility.Collapsed;
