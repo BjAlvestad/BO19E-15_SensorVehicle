@@ -58,8 +58,7 @@
                         </ComboBox>
 
                         <TextBlock Text="Beam width:" />
-                        <ComboBox IsEditable="True" SelectedItem="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}" >
-                            <!--BUG: This combobox is editable. If user enters invalid data, it will cause exception. Use TextSubmitted event or some other alternative for robustness (see https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/combo-box) -->
+                        <ComboBox SelectedItem="{x:Bind ViewModel.Lidar.DefaultHalfBeamOpening, Mode=TwoWay}" >
                             <x:Int32>1</x:Int32>
                             <x:Int32>5</x:Int32>
                             <x:Int32>10</x:Int32>
