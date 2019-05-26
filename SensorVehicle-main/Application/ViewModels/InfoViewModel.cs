@@ -23,18 +23,23 @@ namespace Application.ViewModels
                 {
                     case RunningState.AgainstMockData:
                         return "Running against mock data.\n" +
-                               "If you wish to be able to actually test your code without the physical car, you can install our simulator.\n" +
-                               "Simulator can be found at the GitHub repository for BO19-15 Sensor Vehicle\n\n" +
+                               "If you wish to be able to actually test your code without the physical car, you can install our simulator.\n\n" +
                                $"Simulator availability status: {((App) PrismUnityApplication.Current).SimulatorAppAvailabilityStatus}.";
                     case RunningState.AgainstSimulator:
-                        return "The application is set up to run against simulator.\n" +
-                               "The simulator should have launched automatically. Do not close simulator before this app is closed.\n" +
+                        return "The application has automatically configured itself to communicate with the simulator (by use of 'AppService').\n" +
+                               "The simulator should have launched automatically.\n" +
                                "\n" +
-                               "Instead of connecting up against real micro-controllers, it will use simulated data from the simulator.\n" +
-                               "You can test run your logic as if you were on the physical car";
+                               "Instead of connecting up against real micro-controllers, it will use simulated data from the simulator app.\n" +
+                               "You can test-run your logic as if you were on the physical car.\n" +
+                               "\n" +
+                               "You can also manually manipulate the position/orientation of the car, and zoom-level of the map in the simulator:\n" +
+                               "\t- Left mouse button:\t Move car.\n" +
+                               "\t- Right mouse button:\t Rotate car.\n" +
+                               "\t- PageUp/PageDown:\t Zoom in/out\n" +
+                               "\t- Home:\t\t\t Reset zoom to default level.\n";
                     case RunningState.OnPhysicalCar:
-                        return "The code is currently running on the physical sensor car (IoT) device.\n" +
-                               "Application is connected up against real micro-controllers";
+                        return "The code is currently running on the physical Sensor Vehicle (an IoT) device.\n" +
+                               "The application has automatically configured itself to communicate with real micro-controllers via I2c.";
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
