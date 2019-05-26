@@ -17,7 +17,7 @@ namespace StudentLogic.CodeSnippetExamples
             Details = new StudentLogicDescription
             {
                 Title = "LIDAR - Steer to greatest distance",
-                Author = "BO19-E15",
+                Author = "BO19E-15",
 
                 Description = "Uses LIDAR to detect largest distance in front sector, and steers towards it (without gyro).\n" +
                               "NB: " +
@@ -35,6 +35,7 @@ namespace StudentLogic.CodeSnippetExamples
         #region Initialization_RunsOnceWhenControlLogicStarts
         public override void Initialize()
         {
+            _lidar.Power = true;
             _lidar.RunCollector = true;
             _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
             _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);

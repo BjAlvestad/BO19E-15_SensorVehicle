@@ -19,7 +19,7 @@ namespace ExampleLogic.AutonomyLogics
             Details = new ExampleLogicDetails
             {
                 Title = "Drive to largest distance",
-                Author = "BO19-E15",
+                Author = "BO19E-15",
                 DemoType = "AUTONOMY DEMO (simple)",
 
                 Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
@@ -38,8 +38,10 @@ namespace ExampleLogic.AutonomyLogics
         #region Initialization_RunsOnceWhenControlLogicStarts
         public override void Initialize()
         {
+            _ultrasonic.Power = true;
+            _lidar.Power = true;
             _lidar.RunCollector = true;
-            _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
+            _lidar.NumberOfCycles = 1;
             _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);
             _lidar.DefaultVerticalAngle = VerticalAngle.Up1;
             _lidar.MinRange = 0.5;

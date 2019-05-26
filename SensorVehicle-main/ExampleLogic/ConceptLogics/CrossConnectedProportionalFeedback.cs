@@ -15,7 +15,7 @@ namespace ExampleLogic.ConceptLogics
             Details = new ExampleLogicDetails()
             {
                 Title = "Cross-connected P-feedback",
-                Author = "BO19-E15",
+                Author = "BO19E-15",
                 DemoType = "P-feedback (limitation) demo",
 
                 Description = "Simple cross-connected feedback loop between distance sensor and wheel causes the vehicle to steer away from the closest wall.\n" +
@@ -34,7 +34,7 @@ namespace ExampleLogic.ConceptLogics
 
         public override void Initialize()
         {
-
+            _ultrasonic.Power = true;
         }
 
         public override void Run(CancellationToken cancellationToken)

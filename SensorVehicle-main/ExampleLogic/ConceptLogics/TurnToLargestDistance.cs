@@ -17,7 +17,7 @@ namespace ExampleLogic.ConceptLogics
             Details = new ExampleLogicDetails
             {
                 Title = "Turn towards greatest distance",
-                Author = "BO19-E15",
+                Author = "BO19E-15",
                 DemoType = "Sensor update time demo",
 
                 Description = "Uses LIDAR to detect largest distance, and turns towards it.\n" +
@@ -34,8 +34,9 @@ namespace ExampleLogic.ConceptLogics
 
         public override void Initialize()
         {
+            _lidar.Power = true;
             _lidar.RunCollector = true;
-            _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
+            _lidar.NumberOfCycles = 1;
             _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);
             _lidar.DefaultVerticalAngle = VerticalAngle.Up1;
             _lidar.MinRange = 0.5;
