@@ -20,7 +20,7 @@ namespace StudentLogic.Student1
                 Description = "This program is empty.\n" +
                               "Write your control logic in the looping Run() method.\n" +
                               "(And change Title, Author and Description).\n" +
-                              "All this is done in the Student1B.cs file."
+                              $"All this is done in the {nameof(Student1B)}.cs file."
             };
 
             _wheels = wheel;
@@ -44,9 +44,12 @@ namespace StudentLogic.Student1
         {
             // ** WRITE YOUR CONTROL LOGIC HERE **
             // The Run() method will loop until control logic is stopped (or exception occurs)
-            // If you write your own loops inside here, then remember to add '&& cancellationToken.IsCancellationRequested' to the loop check
+            // If you write your own loops inside here, then remember to add '&& !cancellationToken.IsCancellationRequested' to the loop check
 
-            throw new NotImplementedException();
+
+            // The 'throw new NotImplementedException(...)' line below must be removed before you can start the control logic.
+            throw new NotImplementedException($"You must write control logic in the Run() method of \'{nameof(Student1B)}\' first.\n" +
+                                              $"Remember to delete the \'throw new NotImplementedException(...)\' before attempting to run it.");
         }
     }
 }
