@@ -12,10 +12,6 @@ namespace Communication.Simulator
         private AppServiceConnection _connection;
         public event Action<ValueSet> OnMessageReceived;
 
-        // Todo: convert to dependency injection
-        public static SimulatorAppServiceClient Instance { get; } = new SimulatorAppServiceClient();
-        public bool IsConnected => _connection != null;
-
         private async Task<AppServiceConnection> CachedConnection()
         {
             if (_connection != null) return _connection;
@@ -25,18 +21,13 @@ namespace Communication.Simulator
             return _connection;
         }
 
-        public async Task Open()
-        {
-            await CachedConnection();
-        }
-
         private async Task<AppServiceConnection> MakeConnection()
         {
             var listing = await AppServiceCatalog.FindAppServiceProvidersAsync(AppServiceName);
 
             if (listing.Count == 0)
             {
-                throw new Exception("Unable to find app service '" + AppServiceName + "'");
+                throw new Exception("Unable to find the simulators app service '" + AppServiceName + "'");
             }
 
             var packageName = listing[0].PackageFamilyName;
@@ -51,7 +42,7 @@ namespace Communication.Simulator
 
             if (status != AppServiceConnectionStatus.Success)
             {
-                throw new Exception("Could not connect to MessageRelay, status: " + status);
+                throw new Exception("Could not connect to simulator.\nAppService connection status: " + status);
             }
 
             return connection;
@@ -100,7 +91,9 @@ namespace Communication.Simulator
                 return;
             }
 
-            throw new Exception("Error sending " + result.Status);
+            throw new Exception("Error when sending message to simulator.\n" +
+                                $"AppService response status: {result.Status}.\n" +
+                                "Is the simulator app running?");
         }
 
         public async Task<ValueSet> RequestDataAsync(ValueSet keyValuePair)
@@ -111,8 +104,10 @@ namespace Communication.Simulator
             {
                 return result.Message;
             }
-
-            throw new Exception("Error sending " + result.Status);
+            
+            throw new Exception("Error when sending request to simulator.\n" +
+                                $"AppService response status: {result.Status}.\n" +
+                                (result.Status == AppServiceResponseStatus.Failure ? "Is the simulator app running?" : ""));
         }
     }
 }
