@@ -96,7 +96,7 @@
             DetailsTemplate="{StaticResource DetailsTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
             BorderBrush="Transparent"
-            MasterHeader="Demo Logics"
+            MasterHeader="Example Logics"
             MasterPaneWidth="250"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
             BackButtonBehavior="Automatic"
