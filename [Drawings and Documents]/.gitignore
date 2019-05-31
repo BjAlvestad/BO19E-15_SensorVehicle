@@ -1,0 +1,4 @@
+## Ignore misc backups etc. generated for drawings and models
+
+# Multisim backup files
+*.ms14 (Security copy)
