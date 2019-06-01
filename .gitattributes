@@ -4,6 +4,12 @@
 * text=auto
 
 ###############################################################################
+# Set behaviour for GitHub linguist
+###############################################################################
+[Drawings and Documents]/* linguist-documentation
+[Drawings and Documents]/.gitignore linguist-documentation=false
+
+###############################################################################
 # Set default behavior for command prompt diff.
 #
 # This is need for earlier builds of msysgit that does not have it on by
