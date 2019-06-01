@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
@@ -94,7 +93,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 if (value)
                 {
                     _collectorCancelToken = new CancellationTokenSource();
-                    PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
+                    PeriodicUpdateDistancesAsync(_collectorCancelToken.Token);
                 }
                 else
                 {
@@ -292,11 +291,11 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             }
         }
 
-        private async Task PeriodicUpdateDistancesAsync(TimeSpan timeToWaitAfterUpdate, CancellationToken cancellationToken)
+        private async void PeriodicUpdateDistancesAsync(CancellationToken cancellationToken)
         {
             try
             {
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     _collectionCycleStopwatch.Start();
                     Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)Config.NumberOfCycles);
@@ -314,14 +313,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     _aftHasBeenCalculated = false;
 
                     LastUpdate = DateTime.Now;
-
-                    await Task.Delay(timeToWaitAfterUpdate, cancellationToken);
-                    //TODO: Verify if this is an ok way to do it. Fire-and-Forget seems to be discouraged. However this code has been suggested for situations like this.
-                    // https://stackoverflow.com/questions/30462079/run-async-method-regularly-with-specified-interval
-                    // https://blogs.msdn.microsoft.com/benwilli/2016/06/30/asynchronous-infinite-loops-instead-of-timers/
                 }
             }
-            catch (OperationCanceledException oce)
+            catch (OperationCanceledException)
             {
                 // This is not an error, but an expected exception when collector is stopped (cancelled)
                 Debug.WriteLine("Lidar collector was stopped (cancelled).");
