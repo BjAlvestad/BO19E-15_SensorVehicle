@@ -21,24 +21,12 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         private CancellationTokenSource _collectorCancelToken;
         private Stopwatch _collectionCycleStopwatch = new Stopwatch();
 
-        public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
         public LidarDistance(ILidarPacketReceiver packetReceiver, IGpioPin powerPin, params VerticalAngle[] verticalAngles)
         {
             _packetReceiver = packetReceiver;
             _powerPin = powerPin;
-
-            DefaultHalfBeamOpening = 15;
-            DefaultCalculationType = CalculationType.Max; //TEMP
-            DefaultVerticalAngle = verticalAngles[0];
-
-            MinRange = 1.0;  // According to page 10 of VLP-16 user manual: 'points with distances less than one meter should be ignored'. But other sources claim smaller distances can be used.
-            MaxRange = 100.0;  // According to page 3 of VLP-16 user manual: 'range from 1m to 100m'.
-
-            NumberOfCycles = 3;
-
-            ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
-            ActiveVerticalAngles.AddFromArray(verticalAngles);
+            Config = new LidarDistanceConfiguration(verticalAngles);
 
             Error = new Error();
         }
@@ -70,22 +58,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public Error Error { get; }
 
+        public LidarDistanceConfiguration Config { get; }
+
         public ReadOnlyDictionary<VerticalAngle, List<HorizontalPoint>> Distances { get; private set; }
-
-        private double _minRange;
-        public double MinRange
-        {
-            get { return _minRange; }
-            set { SetProperty(ref _minRange, value);  }
-        }
-
-        //TODO: MaxRange is currently not in use. To be put in use or removed.
-        private double _maxRange;
-        public double MaxRange
-        {
-            get { return _maxRange; }
-            set { SetProperty(ref _maxRange, value); }
-        }
 
         private DateTime _lastUpdate;
         public DateTime LastUpdate
@@ -110,38 +85,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public bool IsCollectorRunning { get; private set; }
         
-        private CalculationType _defaultCalculationType;
-        public CalculationType DefaultCalculationType
-        {
-            get { return _defaultCalculationType; }
-            set { SetProperty(ref _defaultCalculationType, value); }
-        }
-
-        private VerticalAngle _defaultVerticalAngle;
-        public VerticalAngle DefaultVerticalAngle
-        {
-            get { return _defaultVerticalAngle; }
-            set { SetProperty(ref _defaultVerticalAngle, value); }
-        }
-
-        private int _defaultHalfBeamOpening;
-        public int DefaultHalfBeamOpening
-        {
-            get { return _defaultHalfBeamOpening; }
-            set { SetProperty(ref _defaultHalfBeamOpening, value); }
-        }
-
-        private int _numberOfCycles;
-        public int NumberOfCycles
-        {
-            get { return _numberOfCycles; }
-            set
-            {
-                int valueToSet = value > 0 ? value : 1;
-                SetProperty(ref _numberOfCycles, valueToSet);
-            }
-        }
-
         private bool _runCollector;
         public bool RunCollector
         {
@@ -165,10 +108,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             get
             {
                 if (_largestDistanceHasBeenCalculated) return _largestDistance;
-                if(Distances == null || !Distances.ContainsKey(DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
+                if(Distances == null || !Distances.ContainsKey(Config.DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
 
                 _largestDistanceHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _largestDistance, Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First());
+                SetPropertyRaiseSelectively(ref _largestDistance, Distances[Config.DefaultVerticalAngle].OrderByDescending(i => i.Distance).First());
                 return _largestDistance;
             }
         }
@@ -184,7 +127,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _fwdHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _fwd, GetDistance((360 - DefaultHalfBeamOpening), (0 + DefaultHalfBeamOpening)));
+                SetPropertyRaiseSelectively(ref _fwd, GetDistance((360 - Config.DefaultHalfBeamOpening), (0 + Config.DefaultHalfBeamOpening)));
                 return _fwd;
             }
         }
@@ -200,7 +143,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _leftHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _left, GetDistance(270 - DefaultHalfBeamOpening, 270 + DefaultHalfBeamOpening));
+                SetPropertyRaiseSelectively(ref _left, GetDistance(270 - Config.DefaultHalfBeamOpening, 270 + Config.DefaultHalfBeamOpening));
                 return _left;
             }
         }
@@ -216,7 +159,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 }
 
                 _rightHasBeenCalculated = true;
-                SetPropertyRaiseSelectively(ref _right, GetDistance(90 - DefaultHalfBeamOpening, 90 + DefaultHalfBeamOpening));
+                SetPropertyRaiseSelectively(ref _right, GetDistance(90 - Config.DefaultHalfBeamOpening, 90 + Config.DefaultHalfBeamOpening));
                 return _right;
             }
         }
@@ -231,7 +174,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                     return _aft;
                 }
 
-                _aft = GetDistance(180 - DefaultHalfBeamOpening, 180 + DefaultHalfBeamOpening);
+                _aft = GetDistance(180 - Config.DefaultHalfBeamOpening, 180 + Config.DefaultHalfBeamOpening);
                 _aftHasBeenCalculated = true;
                 return _aft;
             }
@@ -239,23 +182,23 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
         public HorizontalPoint LargestDistanceInRange(float fromAngle, float toAngle)
         {
-            if(Distances == null || !Distances.ContainsKey(DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
+            if(Distances == null || !Distances.ContainsKey(Config.DefaultVerticalAngle)) return new HorizontalPoint(float.NaN, float.NaN);
 
             bool angleSpansZero = fromAngle > toAngle;
             if (angleSpansZero)
             {
-                return Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle < toAngle || i.Angle > fromAngle));
+                return Distances[Config.DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle < toAngle || i.Angle > fromAngle));
             }
             else
             {
-                return Distances[DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle > fromAngle && i.Angle < toAngle));
+                return Distances[Config.DefaultVerticalAngle].OrderByDescending(i => i.Distance).First(i => (i.Angle > fromAngle && i.Angle < toAngle));
             }
             //TODO: Check what happens if there is no available distance in range
         }
 
         public float GetDistance(float fromAngle, float toAngle)
         {
-            return GetDistance(fromAngle, toAngle, DefaultVerticalAngle, DefaultCalculationType);
+            return GetDistance(fromAngle, toAngle, Config.DefaultVerticalAngle, Config.DefaultCalculationType);
         }    
         
         public float GetDistance(float fromAngle, float toAngle, VerticalAngle verticalAngle, CalculationType calculationType)
@@ -367,18 +310,18 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             IsCollectorRunning = false;
         }
 
-        public async Task PeriodicUpdateDistancesAsync(TimeSpan timeToWaitAfterUpdate, CancellationToken cancellationToken)
+        private async Task PeriodicUpdateDistancesAsync(TimeSpan timeToWaitAfterUpdate, CancellationToken cancellationToken)
         {
             try
             {
                 while (true)
                 {
                     _collectionCycleStopwatch.Start();
-                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)NumberOfCycles);
+                    Queue<byte[]> lidarPackets = await _packetReceiver.GetQueueOfDataPacketsAsync((byte)Config.NumberOfCycles);
                     LastCollectionDuration = _collectionCycleStopwatch.ElapsedMilliseconds;
 
                     _collectionCycleStopwatch.Restart();
-                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, ActiveVerticalAngles, (float)MinRange);
+                    Distances = LidarPacketInterpreter.InterpretData(lidarPackets, Config.ActiveVerticalAngles, (float)Config.MinRange);
                     LastDataInterpretationDuration = _collectionCycleStopwatch.ElapsedMilliseconds;
                     _collectionCycleStopwatch.Reset();
 

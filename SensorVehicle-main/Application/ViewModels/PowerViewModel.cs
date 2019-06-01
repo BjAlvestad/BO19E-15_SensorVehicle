@@ -15,9 +15,9 @@ namespace Application.ViewModels
 {
     public class PowerViewModel : ViewModelBase
     {
-        public PowerViewModel(ILidarDistance lidarDistance, IWheel wheel, IEncoders encoders, IUltrasonic ultrasonic)
+        public PowerViewModel(ILidarDistance lidar, IWheel wheel, IEncoders encoders, IUltrasonic ultrasonic)
         {
-            Lidar = lidarDistance;
+            Lidar = lidar;
             Wheel = wheel;
             Encoders = encoders;
             Ultrasonic = ultrasonic;

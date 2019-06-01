@@ -28,13 +28,14 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         Error Error { get; }
 
         /// <summary>
+        /// Contains misc. configuration options for LidarDistance like minimum value to accept, number of cycles to collect etc.
+        /// </summary>
+        LidarDistanceConfiguration Config { get; }
+
+        /// <summary>
         /// Start/Stop collecting Lidar Data. This must be <see langword="true"/> for the lidar distances to update.
         /// </summary>
         bool RunCollector { get; set; }
-
-        //TODO: Refactor into LidarDistanceConfiguration class
-        double MinRange { get; set; }
-        double MaxRange { get; set; }
 
         //TODO: Consider integrating into RunCollector
         void StartCollector();
@@ -68,13 +69,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         /// Internaly it uses <see cref="GetDistance"/>, with from/to angle with <see cref="DefaultHalfBeamOpening"/> as -/+ offset from 180 degrees, and using <see cref="DefaultVerticalAngle"/>, <see cref="DefaultCalculationType"/>. 
         /// </summary>
         float Aft { get; }
-
-        //TODO: Refactor into LidarDistanceConfiguration class
-        int DefaultHalfBeamOpening { get; set; }
-        CalculationType DefaultCalculationType { get; set; }
-        VerticalAngle DefaultVerticalAngle { get; set; }
-        ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
-        int NumberOfCycles { get; set; }
 
         /// <summary>
         /// Collection of interpreted directions from Lidar.  <para />
