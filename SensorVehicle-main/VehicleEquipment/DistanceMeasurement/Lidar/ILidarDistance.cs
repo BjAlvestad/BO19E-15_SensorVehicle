@@ -37,10 +37,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         /// </summary>
         bool RunCollector { get; set; }
 
-        //TODO: Consider integrating into RunCollector
-        void StartCollector();
-        void StopCollector();
-
         /// <summary>
         /// Gets the point with largest distance (in the currently selected <see cref="DefaultVerticalAngle"/>)
         /// </summary>

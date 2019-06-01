@@ -83,22 +83,26 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
             private set { SetPropertyRaiseSelectively(ref _lastDataInterpretationDuration, value); }
         }
 
-        public bool IsCollectorRunning { get; private set; }
-        
         private bool _runCollector;
         public bool RunCollector
         {
             get { return _runCollector; }
             set
             {
-                SetProperty(ref _runCollector, value);
-                //TODO: Change logic to start thread directly, and then remove the no longer needed 'IsCollectorRunning', 'StartCollector()', 'StopCollector()'
-                if(value) StartCollector();
+                if(RunCollector == value) return;
+
+                if (value)
+                {
+                    _collectorCancelToken = new CancellationTokenSource();
+                    PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
+                }
                 else
                 {
-                    StopCollector();
+                    _collectorCancelToken?.Cancel();
                     RaiseNotificationForSelective = false;
                 }
+
+                SetProperty(ref _runCollector, value);
             }
         }
 
@@ -286,28 +290,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
                 default:
                     throw new ArgumentOutOfRangeException(nameof(calculationType), calculationType, null);
             }
-        }
-
-        public void StartCollector()
-        {
-            if (IsCollectorRunning)
-            {
-                return;
-            }
-            IsCollectorRunning = true;
-            _collectorCancelToken = new CancellationTokenSource();
-            PeriodicUpdateDistancesAsync(TimeSpan.FromMilliseconds(10), _collectorCancelToken.Token);
-        }
-
-        public void StopCollector()
-        {
-            if (!IsCollectorRunning || _collectorCancelToken.IsCancellationRequested)
-            {
-                IsCollectorRunning = false;
-                return;
-            }
-            _collectorCancelToken.Cancel();
-            IsCollectorRunning = false;
         }
 
         private async Task PeriodicUpdateDistancesAsync(TimeSpan timeToWaitAfterUpdate, CancellationToken cancellationToken)
