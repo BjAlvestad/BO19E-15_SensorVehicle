@@ -88,9 +88,19 @@ namespace SensorVehicle_extras
             }
             WebcamTogg.IsEnabled = true;
         }
-        private void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void BtnLaunchApp_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            DisplayLaunchDialog();            
+            if (WebcamTogg.IsOn)
+            {
+                BeginExtendedExecution();
+            }
+            else
+            {
+                EndExtendedExecution();
+            }
+            //TODO: See if it is possible to explicit exit the app, to improve performance
+            Uri _mainAppUri = new Uri("hvl-sensorvehicle-mainapp:");
+            var success = await Launcher.LaunchUriAsync(_mainAppUri);
         }
 
         private async Task<bool> SetUpStreaming()
@@ -188,33 +198,7 @@ namespace SensorVehicle_extras
             ContentDialogResult result = await noCameraFoundDialog.ShowAsync();
             //ConnInfo.IsStreaming = false;
         }
-        private async void DisplayLaunchDialog()
-        {
-            ContentDialog launchMainAppDialog = new ContentDialog
-            {
-                Title = "Are you sure you want to launch the main app?",
-                Content = "If the webcam is started, this app will run in the background. If not, this app will be closed.",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "Cancel"
-            };
-
-            ContentDialogResult result = await launchMainAppDialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary)
-            {
-                if (WebcamTogg.IsOn)
-                {
-                    BeginExtendedExecution();                    
-                }
-                else
-                {
-                    EndExtendedExecution();
-                }
-                //TODO: See if it is possible to explicit exit the app, to improve performance
-                Uri _mainAppUri = new Uri("hvl-sensorvehicle-mainapp:");
-                var success = await Launcher.LaunchUriAsync(_mainAppUri);
-            }
-        }
+        
 
         private async void BeginExtendedExecution()
         {
