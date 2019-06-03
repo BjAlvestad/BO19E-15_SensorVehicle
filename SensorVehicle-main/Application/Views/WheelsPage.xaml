@@ -33,14 +33,14 @@
                 <RelativePanel
                     Visibility="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button x:Name="StopWheelButton" Content="Stop wheels" FontSize="39" Click="{x:Bind ViewModel.StopWheels}" RelativePanel.AlignTopWithPanel="True"/>
+                    <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"
+                            RelativePanel.Below="StopWheelButton" RelativePanel.AlignLeftWith="StopWheelButton"/>
 
-                    <StackPanel Orientation="Horizontal" x:Name="SliderPanel" RelativePanel.Below="StopWheelButton" RelativePanel.AlignLeftWith="StopWheelButton">
-                        <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"/>
-                        <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"/>
-                    </StackPanel>
+                    <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"
+                            RelativePanel.Below="StopWheelButton" RelativePanel.AlignRightWith="StopWheelButton"/>
 
-                    <StackPanel RelativePanel.Below="StopWheelButton" RelativePanel.RightOf="SliderPanel">
-                        <ToggleSwitch Header="Auto-apply speed toggle" Margin="0,10" OffContent="Manual" OnContent="Automatic" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                    <StackPanel RelativePanel.Below="StopWheelButton" RelativePanel.AlignHorizontalCenterWith="StopWheelButton">
+                        <ToggleSwitch Header="Auto-apply speed" Width="130" Margin="0,10" OffContent="Manual" OnContent="Automatic" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
                         <Button Content="Apply new speed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"
                                 Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
                         <StackPanel Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
