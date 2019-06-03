@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.Foundation.Collections;
 
 namespace SimulatorUwpXaml.SensorVehicleApp_interface
@@ -40,15 +41,29 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
         {
             get
             {
-                //TODO: Fix so that it actually reports distance traveled, instead of current speed.
-                if (_leftWheel)
+                int distance;
+                try
                 {
-                    return _vehicle.SpeedLeftWheel;
+                    if (_leftWheel)
+                    {
+                        distance = (int)Math.Truncate(_vehicle.CmTraveledLeftWheel);
+                        _vehicle.CmTraveledLeftWheel = _vehicle.CmTraveledLeftWheel - distance;
+                    }
+                    else
+                    {
+                        distance = (int)Math.Truncate(_vehicle.CmTraveledRightWheel);
+                        _vehicle.CmTraveledRightWheel = _vehicle.CmTraveledRightWheel - distance;
+                    }
                 }
-                else
+                catch (OverflowException)
                 {
-                    return _vehicle.SpeedRightWheel;
+                    distance = 0;
+                    _vehicle.CmTraveledLeftWheel = 0;
+                    _vehicle.CmTraveledRightWheel = 0;
+                    Debug.WriteLine("Overflow occured for simulated encoder when CmSinceLastRequest property getter was called.");
                 }
+
+                return distance;
             }
         }
 

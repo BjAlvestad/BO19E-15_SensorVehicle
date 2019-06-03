@@ -25,8 +25,8 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             _encoderLeft = new SimulatedEncoderSensor(vehicle, leftWeelNotRight: true);
             _encoderRight = new SimulatedEncoderSensor(vehicle, leftWeelNotRight: false);
 
-            float ultrasoundOffsetFwd = vehicle.Texture.Width * vehicle.Scale / 2 / 100;
-            float ultrasoundOffsetSide = vehicle.Texture.Height * vehicle.Scale / 2 / 100;
+            float ultrasoundOffsetFwd = vehicle.Texture.Width * vehicle.TextureScale / 2 / 100;
+            float ultrasoundOffsetSide = vehicle.Texture.Height * vehicle.TextureScale / 2 / 100;
             _ultrasound = new SimulatedUltrasoundSensor(distances, ultrasoundOffsetFwd, ultrasoundOffsetSide);
 
             _lidar = new SimulatedLidarPacketTransmitter(distances);

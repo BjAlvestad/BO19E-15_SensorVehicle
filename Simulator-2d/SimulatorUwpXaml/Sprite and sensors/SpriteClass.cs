@@ -10,9 +10,9 @@ namespace SimulatorUwpXaml
 {
     public class SpriteClass
     {
-        public SpriteClass (GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale)
+        public SpriteClass (GraphicsDevice graphicsDevice, Texture2D spriteTexture, float textureScale)
         {
-            this.Scale = scale;
+            this.TextureScale = textureScale;
             if (Texture == null)
             {
                 Texture = spriteTexture;
@@ -21,7 +21,7 @@ namespace SimulatorUwpXaml
 
         public Texture2D Texture { get; }
 
-        public float Scale { get; set; }
+        public float TextureScale { get; set; }
 
         public Vector2 Position { get; set; }
 
@@ -55,7 +55,7 @@ namespace SimulatorUwpXaml
 
         public void Draw (SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, this.Angle, new Vector2(Texture.Width/2, Texture.Height/2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, Position, null, Color.White, this.Angle, new Vector2(Texture.Width/2, Texture.Height/2), new Vector2(TextureScale, TextureScale), SpriteEffects.None, 0f);
         }
     }
 }

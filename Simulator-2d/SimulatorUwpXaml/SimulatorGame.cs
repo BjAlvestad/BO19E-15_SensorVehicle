@@ -61,7 +61,7 @@ namespace SimulatorUwpXaml
             _simulatorMap = new SimulatorMap(Content, mapName: "RealMapFinite.tmx", scale: Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
             Texture2D carTexture = Content.Load<Texture2D>("SpriteImages/SensorVehicleTop_300x300");
-            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPIWithoutRounding(0.1f * GlobalScale));
+            _vehicle = new VehicleSprite(GraphicsDevice, carTexture, Screen.ScaleToHighDPIWithoutRounding(0.1f * GlobalScale), Screen.ScaleToHighDPI(1.0f * GlobalScale));
 
             _vehicle.Position = _simulatorMap.VehicleStartPosition;
             _vehicle.Angle = 4.712f;

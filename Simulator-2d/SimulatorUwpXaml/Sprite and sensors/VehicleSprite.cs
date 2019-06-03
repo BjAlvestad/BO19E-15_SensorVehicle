@@ -10,10 +10,15 @@ namespace SimulatorUwpXaml
         private int _speedLeftWheel;
         private int _speedRightWheel;
         private float _angle;
+        private float _mapScale;
 
-        public VehicleSprite(GraphicsDevice graphicsDevice, Texture2D spriteTexture, float scale) : base(graphicsDevice, spriteTexture, scale)
+        public float CmTraveledLeftWheel { get; set; }
+        public float CmTraveledRightWheel { get; set; }
+
+        public VehicleSprite(GraphicsDevice graphicsDevice, Texture2D spriteTexture, float textureScale, float mapScale) : base(graphicsDevice, spriteTexture, textureScale)
         {
             CarPhysicsRegressionType = RegressionType.SymmetricalSigmoidalPl4;
+            _mapScale = mapScale;
         }
 
         public RegressionType CarPhysicsRegressionType { get; set; }
@@ -80,8 +85,20 @@ namespace SimulatorUwpXaml
             const int speedScale = 68;
             float linearSpeed = speedScale / TimePerMeter(averagePower) * Math.Sign(averagePower);
 
-            Angle += (float)(elapsedTimeSinceLastUpdate * angularVelocity);  // theta = omega * tid
-            Position += new Vector2(elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Cos(Angle), elapsedTimeSinceLastUpdate * linearSpeed * (float)Math.Sin(Angle));
+            float angularDisplacement = elapsedTimeSinceLastUpdate * angularVelocity;  // theta = omega * tid
+            Angle += angularDisplacement;  
+
+            float linearDisplacement = elapsedTimeSinceLastUpdate * linearSpeed;
+            Position += new Vector2(linearDisplacement * (float)Math.Cos(Angle), linearDisplacement * (float)Math.Sin(Angle));
+
+            // Linear displacement gives a smaller distance than what the lidar measurement indicates, however the distance is the same as number of world-pixels.
+            // Lidar seems to measure correct distance (according to drawing - we have decided that one pixel should equal 1 cm)
+            // Suspect the issue is impreciceness in the mapScaling, but since Lidar
+            const float angularScaling = 0.5f;  // TODO: check cm on encoder on real car
+            CmTraveledLeftWheel += linearDisplacement / _mapScale   
+                                   + (_speedLeftWheel - averagePower) * angularScaling * elapsedTimeSinceLastUpdate;
+            CmTraveledRightWheel += linearDisplacement/ _mapScale 
+                                    + (_speedRightWheel - averagePower) * angularScaling * elapsedTimeSinceLastUpdate;
         }
 
         #region VehiclePhysics

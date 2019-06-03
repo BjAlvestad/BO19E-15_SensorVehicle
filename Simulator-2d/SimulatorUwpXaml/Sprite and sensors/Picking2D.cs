@@ -56,7 +56,7 @@ namespace SimulatorUwpXaml
 
         public static bool IsMouseIntersectingSprite(SpriteClass sprite)   // TEMP: Public for debugging purposes. Can be set to private once program is complete.
         {
-            return (MouseLocationInWorld() - sprite.Position).Length() < sprite.Texture.Height * sprite.Scale;
+            return (MouseLocationInWorld() - sprite.Position).Length() < sprite.Texture.Height * sprite.TextureScale;
         }
 
         public static Vector2 MouseLocation()
