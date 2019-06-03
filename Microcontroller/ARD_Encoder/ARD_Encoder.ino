@@ -17,8 +17,8 @@ void send_byte_array(int message, int array_length, long longs_to_be_sent[]);
 #define ENCODER_PIN_A  3
 #define ENCODER_PIN_B  2
 volatile int encoder0Pos = 0;
-volatile boolean past_a = false;
-volatile boolean past_b = false;
+volatile boolean last_a = false;
+volatile boolean last_b = false;
 
 void do_encoder_a();
 void do_encoder_b();
@@ -28,6 +28,7 @@ const double ticks_per_cm = 18.38;
 // ca 34 cm circumference 
 // 625 / 34 = 18,38
 
+int sign = 1; // -1 right side
 
 // Timer
 #include <TimerOne.h>
@@ -39,33 +40,37 @@ void setup()
 	pinMode(ENCODER_PIN_A, INPUT_PULLUP);
 	pinMode(ENCODER_PIN_B, INPUT_PULLUP);
 
-	past_a = boolean(digitalRead(ENCODER_PIN_A));
-	past_b = boolean(digitalRead(ENCODER_PIN_B));
-
-	attachInterrupt(0, do_encoder_a, RISING);
+	attachInterrupt(0, do_encoder_a, CHANGE);
 	attachInterrupt(1, do_encoder_b, CHANGE);
-
-	Wire.begin(address);
-	Wire.onRequest(i2c_request);
 
 	Timer1.initialize(1000);
 	Timer1.attachInterrupt(increase_counter);
 
 	pinMode(LED_BUILTIN, OUTPUT);
 
+	Wire.begin(address);
+	Wire.onRequest(i2c_request);
 	pinMode(I2C_ENABLE_PIN, OUTPUT);
 	digitalWrite(I2C_ENABLE_PIN, HIGH);
 }
 
 void loop()
 {
-
 }
 
 void i2c_request() {
 	digitalWrite(LED_BUILTIN, HIGH);
+	/*Serial.print(" pos:  ");
 
-	long longs_to_be_sent[] = { - encoder0Pos / ticks_per_cm, millisecond };  
+	Serial.print(encoder0Pos);
+	Serial.print(" tick_per_cm:  ");
+
+	Serial.print(ticks_per_cm);
+	Serial.print("   ");
+
+	Serial.println(((-1 * encoder0Pos) / ticks_per_cm));*/
+
+	long longs_to_be_sent[] = { (sign * encoder0Pos) / ticks_per_cm, millisecond };
 	encoder0Pos = 0;
 	millisecond = 0;
 	const int array_length = sizeof(longs_to_be_sent) / sizeof(long);
@@ -101,10 +106,17 @@ void increase_counter()
 
 void do_encoder_a()
 {
-	past_b ? encoder0Pos-- : encoder0Pos++;
+	if (digitalRead(ENCODER_PIN_A) != last_a) {
+		last_a = !last_a;
+
+		if (last_a && !last_b) encoder0Pos += 1;
+	}
 }
 
 void do_encoder_b()
 {
-	past_b =! past_b;
+	if (digitalRead(ENCODER_PIN_B) != last_b) {
+		last_b = !last_b;
+		if (last_b && !last_a) encoder0Pos -= 1;
+	}
 }
