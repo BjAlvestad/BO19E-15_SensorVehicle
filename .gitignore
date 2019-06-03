@@ -1,0 +1,5 @@
+# Ignore uncommitted files that remain linger when switching to gh-pages
+AndroidRemoteControl/
+SensorVehicle-extras/
+SensorVehicle-main/
+Simulator-2d/
