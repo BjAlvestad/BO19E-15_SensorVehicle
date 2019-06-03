@@ -82,7 +82,7 @@ namespace SimulatorUwpXaml
             int speedOuter = Math.Max(SpeedLeftWheel, SpeedRightWheel);
             float angularVelocity = CalculateAngularVelocity(speedInner, speedOuter, averagePower);
 
-            const int speedScale = 68;
+            const int speedScale = 88;
             float linearSpeed = speedScale / TimePerMeter(averagePower) * Math.Sign(averagePower);
 
             float angularDisplacement = elapsedTimeSinceLastUpdate * angularVelocity;  // theta = omega * tid
