@@ -130,32 +130,13 @@ namespace SensorVehicle_extras
             bool success = await Camera.Initialize(videoSetting);
             return success;
         }
-
-        private async void DisplayExitAppDialog()
-        {
-            ContentDialog exitAppDialog = new ContentDialog
-            {
-                Title = "Are you sure you want to exit?",
-                Content = "This app will be exited and SensorVehicle Main App will be launced",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "Cancel"
-            };
-
-            ContentDialogResult result = await exitAppDialog.ShowAsync();
-
-            // Delete the file if the user clicked the primary button.
-            /// Otherwise, do nothing.
-            if (result == ContentDialogResult.Primary)
-            {
-                CoreApplication.Exit();
-            }
-        }
+        
         private async void DisplayRestartSysDialog()
         {
             ContentDialog restartSysDialog = new ContentDialog
             {
                 Title = "Are you sure you want to restart the system?",
-                Content = "The system will restart within 5 seconds",
+                Content = "The system will restart",
                 PrimaryButtonText = "Yes",
                 CloseButtonText = "Cancel"
             };
