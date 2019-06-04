@@ -145,8 +145,7 @@ namespace SensorVehicle_extras
 
             if (result == ContentDialogResult.Primary)
             {
-                //TODO: Remove these comments
-                //ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(0));
+                ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(0));
             }
         }
         private async void DisplayShutDownDialog()
@@ -163,8 +162,7 @@ namespace SensorVehicle_extras
 
             if (result == ContentDialogResult.Primary)
             {
-                //TODO: Remove these comments
-                //ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
+                ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
             }
         }
         private async void DisplayNoCamFound()
