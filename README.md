@@ -50,12 +50,12 @@ git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle-Simplified.git
 
 ## Usage
 ![Control logic example](%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png) 
-
-
-<img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="267" height="216" title="SensorVehicle1">
 The above example shows how one can make the car drive towards the largest distance reported by the LiDAR.
 
-<img src="%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png" width="256" height="256">
+
+
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162" title="SensorVehicle1"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162" title="SensorVehicle1"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="200" height="162" title="SensorVehicle1">
+These pictures show the development iterations of the sensor vehicle
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
@@ -83,16 +83,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Acknowledgements
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
 
 
 
