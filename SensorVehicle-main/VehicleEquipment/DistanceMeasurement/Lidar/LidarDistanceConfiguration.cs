@@ -1,17 +1,12 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Helpers;
+﻿using Helpers;
 
 namespace VehicleEquipment.DistanceMeasurement.Lidar
 {
     public class LidarDistanceConfiguration : ThreadSafeNotifyPropertyChanged
     {
+        /// <summary>
+        /// The vertical angles that is in use from the lidar. (Only angles added to this list will be calculated).
+        /// </summary>
         public ExclusiveSynchronizedObservableCollection<VerticalAngle> ActiveVerticalAngles { get; }
 
         public LidarDistanceConfiguration(VerticalAngle[] verticalAngles)
@@ -30,14 +25,21 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         }
 
         private double _minRange;
+        /// <summary>
+        /// Minimum range for lidar. Distances below this range will be discarded. <para />
+        /// The manual states 1 meter as minimum range. When testing the Lidar measures accurately down to 0.5 meters. Distances below 0.5 seems to be discarded by the lidar itself.
+        /// </summary>
         public double MinRange
         {
             get { return _minRange; }
             set { SetProperty(ref _minRange, value); }
         }
 
-        //TODO: MaxRange is currently not in use. To be put in use or removed.
         private double _maxRange;
+        /// <summary>
+        /// Maximum range for lidar. Currently not used in code, but may later be implemented for ignoring distances above selected value. <para />
+        /// The manual states that 100 meters is maximum range.
+        /// </summary>
         public double MaxRange
         {
             get { return _maxRange; }
@@ -45,6 +47,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         }
 
         private CalculationType _defaultCalculationType;
+        /// <summary>
+        /// Calculation that is used by default when returning a single distance over a range (e.g. Fwd or Left)
+        /// </summary>
         public CalculationType DefaultCalculationType
         {
             get { return _defaultCalculationType; }
@@ -52,6 +57,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         }
 
         private VerticalAngle _defaultVerticalAngle;
+        /// <summary>
+        /// The vertical angle to use distances from, when no vertical angle is explicitly specified
+        /// </summary>
         public VerticalAngle DefaultVerticalAngle
         {
             get { return _defaultVerticalAngle; }
@@ -59,6 +67,9 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         }
 
         private int _defaultHalfBeamOpening;
+        /// <summary>
+        /// Specifies the width over which the Fwd, Left, Right and Aft distances are measured (e.g. 15 will cause Fwd to measure from 345 to 15 degrees)
+        /// </summary>
         public int DefaultHalfBeamOpening
         {
             get { return _defaultHalfBeamOpening; }
@@ -66,6 +77,10 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         }
 
         private int _numberOfCycles;
+        /// <summary>
+        /// The number of lidar revolutions to collect distances over before they become accessible for use <para />
+        /// Higher number of cycles gives better resolution, but also longer delay between each update.
+        /// </summary>
         public int NumberOfCycles
         {
             get { return _numberOfCycles; }
