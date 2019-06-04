@@ -160,12 +160,12 @@ void check_distance(const long distance)
 		digitalWrite(LED_BUILTIN, LOW);
 	}
 
-	if (distance < 15 - reduced_safety)
+	if (distance < 14 - reduced_safety)
 	{
 		mode = 0;
 		set_mode(mode);
 	}
-	else if (distance < 20 - reduced_safety)
+	else if (distance < 17 - reduced_safety)
 	{
 		if (mode < 1)
 		{
@@ -177,7 +177,7 @@ void check_distance(const long distance)
 			set_mode(mode);
 		}
 	}
-	else if (distance < 25 - reduced_safety)
+	else if (distance < 20 - reduced_safety)
 	{
 		if (mode < 2)
 		{

@@ -160,13 +160,13 @@ int mode_check(int data)
 	else if (!digitalRead(pin_mode_1) && digitalRead(pin_mode_2))
 	{
 		mode = 1;
-		data = data / 3;
+		data = data / 2;
 		return data;
 	}
 	else if (digitalRead(pin_mode_1) && !digitalRead(pin_mode_2))
 	{
 		mode = 2;
-		data = data / 2;
+		data = (2 * data) / 3 ;
 		return data;
 	}
 	else if (digitalRead(pin_mode_1) && digitalRead(pin_mode_2))
