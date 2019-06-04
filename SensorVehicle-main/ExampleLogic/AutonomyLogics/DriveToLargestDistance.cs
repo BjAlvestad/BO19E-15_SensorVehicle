@@ -13,7 +13,7 @@ namespace ExampleLogic.AutonomyLogics
         private ILidarDistance _lidar;
         private IUltrasonic _ultrasonic;
 
-        #region Description
+        #region Constructor and Description
         public DriveToLargestDistance(IWheel wheel, ILidarDistance lidar, IUltrasonic ultrasonic) : base(wheel)
         {
             Details = new ExampleLogicDetails
@@ -24,7 +24,9 @@ namespace ExampleLogic.AutonomyLogics
 
                 Description = "Uses LIDAR to detect largest distance, and drives towards it.\n" +
                               "It also uses Ultrasound to keep distance from wall.\n" +
-                              "Will turn away from any obstructions in front."
+                              "Will turn away from any obstructions in front.\n\n" +
+                              "If lidar and collector is not running, it will be started automatically.\n" +
+                              "Please note that this takes several seconds, and therefore it may take some time before the vehicle starts driving."
             };
 
             _wheels = wheel;
@@ -52,7 +54,7 @@ namespace ExampleLogic.AutonomyLogics
 
         private const float clearanceLimitFwd = 0.5f; // Med 0.5 kjører den ikke over tråskådler. Men det gjør den med 0.3. Juster UL sensorer oppover.
         private const float sideClearanceLimitLow = 0.7f;
-        private const float sideClearanceLimitLowLow = 0.2f;
+        private const float sideClearanceLimitLowLow = 0.3f;
         private const int BaseSpeed = 100;
         private int _speedLeft;
         private int _speedRight;
@@ -80,7 +82,7 @@ namespace ExampleLogic.AutonomyLogics
                 if (_ultrasonic.Fwd < clearanceLimitFwd)
                 {
                     Debug.WriteLine("Emergency steer Fwd started.", "ControlLogic");
-                    EmergencySteerFromObstacleInFront(1f, 50, cancellationToken);
+                    EmergencySteerFromObstacleInFront(1.3f, 50, cancellationToken);
                     Debug.WriteLine("Emergency steer Fwd completed.", "ControlLogic");
                 }
                 else
@@ -103,10 +105,21 @@ namespace ExampleLogic.AutonomyLogics
 
                 Thread.Sleep(50);
 
-                if (startedRotationAt - DateTime.Now > TimeSpan.FromSeconds(5))
+                if (DateTime.Now - startedRotationAt > TimeSpan.FromSeconds(5))
                 {
-                    _wheels.Stop();
-                    Thread.Sleep(2000);
+                    Debug.WriteLine($"Inside started rotation. where rotationPowerPrecentage is {rotationPowerPercentage}");
+                    if (rotationPowerPercentage < 100)
+                    {
+                        rotationPowerPercentage += 10;
+                        Debug.WriteLine($"Increased power by 10. Is now {rotationPowerPercentage}");
+                    }
+                    else
+                    {
+                        _wheels.Stop();
+                        Thread.Sleep(5000);
+                    }
+
+                    startedRotationAt = DateTime.Now;
                 }
             }
 
