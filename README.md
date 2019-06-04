@@ -49,7 +49,12 @@ git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle-Simplified.git
 * Open SensorVehicle-main.sln and navigate to one of the StudentXX.cs-files
 
 ## Usage
-![Bilde](%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png)
+![Control logic example](%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png) 
+
+
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.jpg" width="256" height="256" title="SensorVehicle1">
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png" width="256" height="256">
+The above example shows how one can make the car drive towards the largest distance reported by the LiDAR.
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
