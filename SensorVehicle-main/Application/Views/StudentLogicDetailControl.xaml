@@ -41,7 +41,7 @@
                 <TextBlock Text="{x:Bind MasterMenuItem.Details.Description, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
             </StackPanel>
             <!--STUDENT LOGIC Start/Stop-->
-            <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunStudentLogic, Mode=TwoWay}"/>
+            <ToggleSwitch Header="Start/Stop logic" OnContent="Running" OffContent="Stopped" IsOn="{x:Bind MasterMenuItem.RunStudentLogic, Mode=TwoWay}" Margin="0,10,0,0" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

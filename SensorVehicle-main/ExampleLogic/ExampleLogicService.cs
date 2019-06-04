@@ -28,9 +28,9 @@ namespace ExampleLogic
             {
                 // Child classes instatiated in the ExampleLogics collection will automatically appear in the GUI
                 // Pass the sensors to be used as arguments (the ones specified in the constructor of the child class).
-                new CrossConnectedProportionalFeedback(wheels, ultrasonic),
+                new DriveToLargestDistance(wheels, lidar, ultrasonic),
                 new TurnToLargestDistance(wheels, lidar),
-                new DriveToLargestDistance(wheels, lidar, ultrasonic)
+                new CrossConnectedProportionalFeedback(wheels, ultrasonic)
             };
 
             ActiveExampleLogic = ExampleLogics.FirstOrDefault();
