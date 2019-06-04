@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Net.NetworkInformation;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Application.Views;
@@ -40,8 +38,6 @@ namespace Application
     [Windows.UI.Xaml.Data.Bindable]
     public sealed partial class App : PrismUnityApplication
     {
-        public readonly SynchronizationContext UiSyncContext;
-
         private readonly Uri _simulatorUri = new Uri("hvl-sensorvehicle-simulator:");  // Launch arguments may be put behind the colon
 
         // The public properties can be accessed from elsewhere in code using: ((App) PrismUnityApplication.Current).DesiredPropertyNameHere
@@ -53,7 +49,6 @@ namespace Application
         public App()
         {
             InitializeComponent();
-            UiSyncContext = SynchronizationContext.Current;
 
             CheckRunningState();
         }
@@ -133,8 +128,6 @@ namespace Application
                     encoderPowerPin = new PhysicalGpioPin(GpioNumber.EncoderPower, GpioPinDriveMode.Output);
 
                     ultrasoundInterruptPin = new PhysicalGpioPin(GpioNumber.UltrasoundInterrupt, GpioPinDriveMode.Input);
-
-                    NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -211,31 +204,6 @@ namespace Application
         {
             var success = await Launcher.LaunchUriAsync(_simulatorUri);
             return success;
-        }
-
-        private bool tempDialogBoxHasOpened = false; // TEMP hack to prevent multiple dialog boxes from opening
-        private async void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-        {
-            if(tempDialogBoxHasOpened) return;
-            tempDialogBoxHasOpened = true;
-
-            ContentDialogResult result;
-            UiSyncContext.Post(async (_) =>
-            {
-                ContentDialog networkAddressChangedDialog = new ContentDialog
-                {
-                    Title = "Network address changed",
-                    Content = "A network address change has been detected.\n" +
-                              "If communication with vehicle has been lost, restart vehicle or reconnect manually.\n\n" +
-                              "(Automatic reconnect function may be added in the App.xaml.cs file in the NetworkChange_NetworkAddressChanged)",
-                    CloseButtonText = "Ok",
-                };
-                result = await networkAddressChangedDialog.ShowAsync();
-                tempDialogBoxHasOpened = false;
-            }, null);
-
-            //TODO: Verify if this box will pop up when IP-address/connectivity-loss occurs. If so - implement automatic reconnect to last known network upon loss of IP-address.
-            // This is to try and fix intermittent issue where SensorVehicle looses IP address from HVLGuest network.
         }
     }
 }
