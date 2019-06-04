@@ -49,7 +49,7 @@ git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle-Simplified.git
 * Open SensorVehicle-main.sln and navigate to one of the StudentXX.cs-files
 
 ## Usage
-
+![Bilde](%5BDrawings%20and%20Documents%5D/Pictures/DriveTowardsLargestDistance.png)
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
