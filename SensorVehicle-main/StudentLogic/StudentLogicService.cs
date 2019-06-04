@@ -32,13 +32,17 @@ namespace StudentLogic
             {
                 // Child classes instatiated in the StudentLogics collection will automatically appear in the GUI
                 // Pass the sensors to be used as arguments (the ones specified in the constructor of the child class).
-                new SteerBlindlyToLargestDistance(wheels, lidar),
+               
                 new Student1A(wheels, encoders, lidar, ultrasonic),
                 new Student1B(wheels, encoders, lidar, ultrasonic),
                 new Student2A(wheels, encoders, lidar, ultrasonic),
                 new Student2B(wheels, encoders, lidar, ultrasonic),
                 new Student3A(wheels, encoders, lidar, ultrasonic),
-                new Student3B(wheels, encoders, lidar, ultrasonic)
+                new Student3B(wheels, encoders, lidar, ultrasonic),
+                new SteerBlindlyToLargestDistance(wheels, lidar),
+                new ForeverLoop(wheels),
+                new Distance(wheels, encoders),
+                new WallAndBack(wheels, encoders, ultrasonic)
             };
 
             ActiveStudentLogic = StudentLogics.FirstOrDefault();
