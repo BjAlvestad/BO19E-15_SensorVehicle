@@ -49,13 +49,21 @@ git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle-Simplified.git
 * Open SensorVehicle-main.sln and navigate to one of the StudentXX.cs-files
 
 ## Usage
-![Control logic example](%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png) 
+![Control logic example](%5BDrawings%20and%20Documents%5D/Pictures/DriveToLargestDistance.png)
 The above example shows how one can make the car drive towards the largest distance reported by the LiDAR.
+
+To write your own control logic, navigate to the files in the picture below.
+The different StudentXX.cs-files contains instruction where to write the control logic.
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/StudentLogicCS.png" width="251" height="197" title="SensorVehicle1">
+
 
 
 
 <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162" title="SensorVehicle1"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162" title="SensorVehicle1"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="200" height="162" title="SensorVehicle1">
-These pictures show the development iterations of the sensor vehicle
+The different version of the car that was made are shown in the pictures above.
+The first version was made to get the different hardware components to work.
+The second version was made fully functional. The complete software was made by using this version of the sensor vehicle.
+The third and final version was made even more solid than the second version. The brackets were 3D-printed and the sheet were cut with laser cutter.
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
