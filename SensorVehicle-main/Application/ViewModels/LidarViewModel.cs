@@ -45,22 +45,22 @@ namespace Application.ViewModels
 
         public void AddSelectedVerticalAngleToActive()
         {
-            Lidar.ActiveVerticalAngles.Add(SelectedVerticalAngle);
+            Lidar.Config.ActiveVerticalAngles.Add(SelectedVerticalAngle);
         }
 
         public void RemoveSelectedVerticalAngleFromActive()
         {
-            if (Lidar.ActiveVerticalAngles.Count > 1 && SelectedActiveVerticalAngle != Lidar.DefaultVerticalAngle)
+            if (Lidar.Config.ActiveVerticalAngles.Count > 1 && SelectedActiveVerticalAngle != Lidar.Config.DefaultVerticalAngle)
             {
                 VerticalAngle angleToRemove = SelectedActiveVerticalAngle;
-                SelectedActiveVerticalAngle = Lidar.DefaultVerticalAngle;
-                Lidar.ActiveVerticalAngles.Remove(angleToRemove);
+                SelectedActiveVerticalAngle = Lidar.Config.DefaultVerticalAngle;
+                Lidar.Config.ActiveVerticalAngles.Remove(angleToRemove);
             }
         }
 
         public void SetAsDefaultAngle()
         {
-            Lidar.DefaultVerticalAngle = SelectedActiveVerticalAngle;
+            Lidar.Config.DefaultVerticalAngle = SelectedActiveVerticalAngle;
         }
 
         public int CenterForAnglesInRange { get; set; }
@@ -142,7 +142,7 @@ namespace Application.ViewModels
                 if (toAngle > 360) fromAngle -= 360;
 
                 SelectedAngleRange = $"From {fromAngle} to {toAngle}";
-                HorizontalPointsInRange = await Task.Run(() => Lidar.GetHorizontalPointsInRange(fromAngle, toAngle, Lidar.DefaultVerticalAngle));
+                HorizontalPointsInRange = await Task.Run(() => Lidar.GetHorizontalPointsInRange(fromAngle, toAngle, Lidar.Config.DefaultVerticalAngle));
             }
         }
 

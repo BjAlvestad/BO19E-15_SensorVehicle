@@ -37,11 +37,11 @@ namespace StudentLogic.CodeSnippetExamples
         {
             _lidar.Power = true;
             _lidar.RunCollector = true;
-            _lidar.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
-            _lidar.ActiveVerticalAngles.Add(VerticalAngle.Up1);
-            _lidar.DefaultVerticalAngle = VerticalAngle.Up1;
-            _lidar.MinRange = 0.5;
-            _lidar.DefaultCalculationType = CalculationType.Min;
+            _lidar.Config.NumberOfCycles = 1;  // Code in Initialize seems to not take effect
+            _lidar.Config.ActiveVerticalAngles.Add(VerticalAngle.Up1);
+            _lidar.Config.DefaultVerticalAngle = VerticalAngle.Up1;
+            _lidar.Config.MinRange = 0.5;
+            _lidar.Config.DefaultCalculationType = CalculationType.Min;
         }
         #endregion
 
