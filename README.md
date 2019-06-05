@@ -38,7 +38,8 @@ Our goal was to make a learining tool for automation/electrical engineering stud
 * Starting point for webcam streaming [HttpWebcamLiveStream](https://github.com/SaschaIoT/HttpWebcamLiveStream/tree/master/HttpWebcamLiveStream)
 
 **<u>Android app for remote control (Java - Android Studio)</u>**
-**<u>Code for microcontrollers (C++, Visual Micro)</u>**
+
+**<u>Code for microcontrollers (C++ - Visual Micro)</u>**
 
   
 
