@@ -54,11 +54,8 @@ The above example shows how one can make the car drive towards the largest dista
 
 To write your own control logic, navigate to the files in the picture below.
 The different StudentXX.cs-files contains instruction where to write the control logic.
-<img src="%5BDrawings%20and%20Documents%5D/Pictures/StudentLogicCS.png" width="251" height="197"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/StudentLogicPage.png" width="473" height="177">
-An overview of the different control logics from the shown .cs-files are shown in the student logic page.
-
-
-
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/StudentLogicCS.png" width="251" height="197"> <img src="%5BDrawings%20and%20Documents%5D/Pictures/StudentLogicPage.png" width="473" height="177"> <br>
+An overview of the different control logics from the shown .cs-files are shown in the student logic page. <br><br><br>
 <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="200" height="162">
 The different version of the car that was made are shown in the pictures above.
 The first version was made to get the different hardware components to work.
