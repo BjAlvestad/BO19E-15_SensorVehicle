@@ -59,7 +59,7 @@ The different StudentXX.cs-files contains instruction where to write the control
 An overview of the different control logics from the shown .cs-files are shown in the student logic page. <br><br>
 
 
-<img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.PNG" width="200" height="162">
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.PNG" width="200" height="162"> <br><br>
 The different version of the car that was made are shown in the pictures above.
 The first version was made to get the different hardware components to work.
 The second version was made fully functional. The complete software was made by using this version of the sensor vehicle.
