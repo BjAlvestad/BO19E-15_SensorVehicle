@@ -37,6 +37,9 @@ Our goal was to make a learining tool for automation/electrical engineering stud
 
 * Starting point for webcam streaming [HttpWebcamLiveStream](https://github.com/SaschaIoT/HttpWebcamLiveStream/tree/master/HttpWebcamLiveStream)
 
+**<u>Android app for remote control(Java - Android Studio)</u>**
+**<u></u>**
+
   
 
 ## Getting Started
@@ -71,7 +74,7 @@ The third and final version was made even more solid than the second version. Th
 
 
 
-_For more information about the development process and a detailed user manual, see [Bachelor thesis document](https://github.com/BjAlvestad/BO19E-15_SensorVehicle/blob/ReadMeTestBranch/%5BDrawings%20and%20Documents%5D/Bachelor%20Thesis%20(text%20in%20Norwegian)/BO19E-15%20Bacheloroppgave.pdf) (Norwegian)
+For more information about the development process and a detailed user manual, see [Bachelor thesis document](https://github.com/BjAlvestad/BO19E-15_SensorVehicle/blob/ReadMeTestBranch/%5BDrawings%20and%20Documents%5D/Bachelor%20Thesis%20(text%20in%20Norwegian)/BO19E-15%20Bacheloroppgave.pdf) (Norwegian)
 
 
 
