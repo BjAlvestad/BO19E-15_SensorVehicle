@@ -59,7 +59,7 @@ An overview of the different control logics from the shown .cs-files are shown i
 
 
 
-<img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162" title="SensorVehicle1">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162" title="SensorVehicle1">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="200" height="162" title="SensorVehicle1">
+<img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype1.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/Prototype2.png" width="200" height="162">    <img src="%5BDrawings%20and%20Documents%5D/Pictures/SensorVehicle.png" width="200" height="162">
 The different version of the car that was made are shown in the pictures above.
 The first version was made to get the different hardware components to work.
 The second version was made fully functional. The complete software was made by using this version of the sensor vehicle.
