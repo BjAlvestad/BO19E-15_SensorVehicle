@@ -40,12 +40,16 @@ Our goal was to make a learining tool for automation/electrical engineering stud
   
 
 ## Getting Started
-To fully use HVL SensorVehicle Main and write your own control logic you need to:
-* Clone this repository
+To fully use HVL SensorVehicle Main and write your own control logic you need to: <br>
+* **<u>For writing your own control logic:</u>**
 ```sh
 git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle-Simplified.git
 ```
-* Install HVL SensorVehicle Simulator from https://www.microsoft.com/en-us/p/hvl-sensorvehicle-simulator/9nbs6gn8sqlg?activetab=pivot:overviewtab
+* **<u>For access to the entire software:</u>**
+```sh
+git clone https://github.com/BjAlvestad/BO19E-15_SensorVehicle.git
+```
+* Install HVL SensorVehicle Simulator from [Microsoft Store](https://www.microsoft.com/en-us/p/hvl-sensorvehicle-simulator/9nbs6gn8sqlg?activetab=pivot:overviewtab)
 * Open SensorVehicle-main.sln and navigate to one of the StudentXX.cs-files
 
 ## Usage
