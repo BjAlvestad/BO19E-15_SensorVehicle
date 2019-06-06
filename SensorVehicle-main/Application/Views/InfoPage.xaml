@@ -27,7 +27,7 @@
                     <Button Content="Click here to download simulator" FontSize="32" FontWeight="ExtraBold" Margin="0,50"
                             Click="{x:Bind ViewModel.OpenSimulatorDownloadPage}" />
                     <TextBlock Text="The button above will launch the Microsoft Store page from which the simulator may be installed." />
-                    <TextBlock Text="This application (SensorVehicle Main) must be restarted after the simulator has been installed." FontWeight="Bold" />
+                    <TextBlock Text="This application (SensorVehicle Main) must be restarted after the simulator has been installed." FontWeight="Bold" Foreground="Red" FontSize="16" />
                 </StackPanel>
             </StackPanel>
         </Grid>
