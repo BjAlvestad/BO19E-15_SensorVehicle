@@ -49,7 +49,7 @@ namespace StudentLogic.CodeSnippetExamples
 
         public override void Run(CancellationToken cancellationToken)
         {
-            ThrowExceptionIfCollectorIsStopped();
+            ThrowExceptionIfLidarCollectorIsStoppedOrSensorError();
 
             float angleToLargestDistance = _lidar.LargestDistanceInRange(260, 100).Angle;
 
@@ -77,13 +77,34 @@ namespace StudentLogic.CodeSnippetExamples
 
         #endregion
 
-        private void ThrowExceptionIfCollectorIsStopped()
+        private void ThrowExceptionIfLidarCollectorIsStoppedOrSensorError()
         {
-            if (_lidar.RunCollector == false)
+            string errorMessage = "";
+
+            if (_lidar.Error.Unacknowledged)
             {
-                throw new Exception(
-                    "LIDAR collector stopped unexpectedly!\n" +
-                    "Check LIDAR page, and rectify error before starting this control logic again.");
+                if (errorMessage != "") errorMessage += "\n\n";
+
+                errorMessage += "Lidar has an unacknowledged error.\n" +
+                                "See Lidar page for details.";
+            }
+            else if (_lidar.RunCollector == false)
+            {
+                errorMessage += "Lidar collector stopped unexpectedly!\n" +
+                                "This control logic can't function without the lidar.";
+            }
+
+            if (_wheels.Error.Unacknowledged)
+            {
+                if (errorMessage != "") errorMessage += "\n\n";
+
+                errorMessage += "Wheels has an unacknowledged error.\n" +
+                                "See Wheels page for details.";
+            }
+
+            if (errorMessage != "")
+            {
+                throw new Exception(errorMessage);
             }
         }
     }
