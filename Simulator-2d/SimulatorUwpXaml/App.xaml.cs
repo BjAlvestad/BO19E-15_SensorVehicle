@@ -92,7 +92,7 @@ namespace SimulatorUwpXaml
 
             if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
             {
-                //TODO: Load state from previously suspended application
+                // Load state from previously suspended application
             }
 
             // Place the frame in the current Window
@@ -121,10 +121,8 @@ namespace SimulatorUwpXaml
         if (args.Kind == ActivationKind.Protocol)
         {
             ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
-            // TODO: Handle URI activation
             // The received URI is eventArgs.Uri.AbsoluteUri
 
-            //TODO: The code below is copied from OnLaunched(). If this is not significantly changed by the completion of the software, the common code should be extracted.
             // By default we want to fill the entire core window.
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
             Frame rootFrame = Window.Current.Content as Frame;
@@ -137,7 +135,7 @@ namespace SimulatorUwpXaml
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    // Load state from previously suspended application
                 }
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -152,7 +150,7 @@ namespace SimulatorUwpXaml
             // Ensure the current window is active
             Window.Current.Activate();
 
-            //TODO: For additional tips see reply on https://social.msdn.microsoft.com/Forums/sqlserver/en-US/a857bd53-abd9-40ad-9c89-b23d512abebe/uwpapp-hangscrashes-when-launched-by-uri?forum=wpdevelop
+            // For additional tips see reply on https://social.msdn.microsoft.com/Forums/sqlserver/en-US/a857bd53-abd9-40ad-9c89-b23d512abebe/uwpapp-hangscrashes-when-launched-by-uri?forum=wpdevelop
         }
     }
 
@@ -182,7 +180,7 @@ namespace SimulatorUwpXaml
     private void OnSuspending(object sender, SuspendingEventArgs e)
     {
         var deferral = e.SuspendingOperation.GetDeferral();
-        //TODO: Save application state and stop any background activity
+        // Save application state and stop any background activity
         deferral.Complete();
     }
 }

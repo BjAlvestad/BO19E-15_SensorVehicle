@@ -50,7 +50,6 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
 
         private int GetUltrasoundDistanceFromLidarData(int mountingAngle, float sensorOffset)
         {
-            //TODO: Check how real ultrasound sensors behave, and modify close/long-RangeHalfBeam, and closeRangeMaxDistance to make i as close as possible to real sensor. Also consider adding a midRange if necessary.
             const int closeRangeHalfBeam = 15;
             const float closeRangeMaxDistance = 1.00f;
             const int longRangeHalfBeam = 5;

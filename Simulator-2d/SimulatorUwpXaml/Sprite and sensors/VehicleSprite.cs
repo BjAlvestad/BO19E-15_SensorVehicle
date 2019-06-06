@@ -132,7 +132,6 @@ namespace SimulatorUwpXaml
 
         private double TimeForFullRotationWithMovement(int speedDifferance)
         {
-            //TODO: improve formula with more measurements from the car - must be done in large space
             switch (CarPhysicsRegressionType)
             {
                 case RegressionType.SymmetricalSigmoidalPl4:

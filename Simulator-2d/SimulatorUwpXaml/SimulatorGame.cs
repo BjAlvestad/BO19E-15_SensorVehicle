@@ -71,8 +71,6 @@ namespace SimulatorUwpXaml
             HUDViewModel = new HudViewModel(_lidar, _vehicle, _camera, _picking2D);
 
             ((App) Application.Current).AppServiceProvider.InstantiateSimulatedEquipment(_vehicle, _lidar);
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -81,7 +79,7 @@ namespace SimulatorUwpXaml
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>

@@ -41,9 +41,6 @@ namespace SimulatorUwpXaml.SensorVehicleApp_interface
             _simulatorAppServiceConnection = appService.AppServiceConnection;
             _simulatorAppServiceConnection.RequestReceived += OnAppServiceRequestReceived;
             _simulatorAppServiceConnection.ServiceClosed += AppServiceConnection_ServiceClosed;
-
-            //TODO: Finn en m[te [ sende fra SimulatedVehicleCommunication klassen (Mottak er mulighens ikke noe problem da vi kan subscribe en metode fra her)
-            //_simulatorAppServiceConnection.SendMessageAsync(new ValueSet {{"Melding", "Hvordan faa sendt direkte fra min klasse?"}});
         }
 
         public async void SendToSimulator(Device device, object dataToSend)
