@@ -32,7 +32,7 @@ namespace Communication.Simulator
             valuesToSend.Add("NUM_OF_INTS", data.Length);
             valuesToSend.Add("DATA", data);
 
-            _simulatorCommunication.SendMessageAsync(valuesToSend);  //BUG: Since this async task is not awaited, it will swallow any exception. E.g. a failed write for setting wheel speed will never throw exception in Wheel classes TryCatch block.
+            _simulatorCommunication.SendMessageAsync(valuesToSend);  //BUG: (ref. issue #4) Since this async task is not awaited, it will swallow any exception. E.g. a failed write for setting wheel speed will never throw exception in Wheel classes TryCatch block.
         }
 
         public VehicleDataPacket Read()
@@ -41,7 +41,7 @@ namespace Communication.Simulator
             valuesToSend.Add("ADDRESS", (int)_simulatedDevice);
             valuesToSend.Add("REQUEST", "");
 
-            ValueSet dataReceived = Task.Run(() => _simulatorCommunication.RequestDataAsync(valuesToSend)).GetAwaiter().GetResult(); //TODO: This is a temporary hack that blocks the async method. WARNING MAY CAUSE ISSUES!. See if Read() can be rewritten to be async.  See Figure 7 "The Thread Pool Hack" on https://msdn.microsoft.com/en-us/magazine/mt238404.aspx
+            ValueSet dataReceived = Task.Run(() => _simulatorCommunication.RequestDataAsync(valuesToSend)).GetAwaiter().GetResult(); //TODO: (ref. issue #4) This is a temporary hack that blocks the async method. WARNING MAY CAUSE ISSUES!. See if Read() can be rewritten to be async.  See Figure 7 "The Thread Pool Hack" on https://msdn.microsoft.com/en-us/magazine/mt238404.aspx
 
             NewDataReceived?.Invoke(this, EventArgs.Empty);
 

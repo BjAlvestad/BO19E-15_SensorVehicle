@@ -31,7 +31,7 @@ namespace Communication.Simulator
         {
             ValueSet valuesToSend = new ValueSet {{"LIDAR", ""}};
 
-            ValueSet dataReceived = Task.Run(() => _simulatorCommunication.RequestDataAsync(valuesToSend)).GetAwaiter().GetResult(); //TODO: This is a temporary hack that blocks the async method. WARNING MAY CAUSE ISSUES!. See if Read() can be rewritten to be async.  See Figure 7 "The Thread Pool Hack" on https://msdn.microsoft.com/en-us/magazine/mt238404.aspx
+            ValueSet dataReceived = Task.Run(() => _simulatorCommunication.RequestDataAsync(valuesToSend)).GetAwaiter().GetResult(); //TODO: (ref. issue #4) This is a temporary hack that blocks the async method. WARNING MAY CAUSE ISSUES!. See if Read() can be rewritten to be async.  See Figure 7 "The Thread Pool Hack" on https://msdn.microsoft.com/en-us/magazine/mt238404.aspx
 
             return dataReceived["DATA"] as float[];
         }
