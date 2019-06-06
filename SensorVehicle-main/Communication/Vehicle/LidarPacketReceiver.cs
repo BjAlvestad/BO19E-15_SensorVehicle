@@ -67,14 +67,14 @@ namespace Communication.Vehicle
 
         public byte[] GetDataPacket()
         {
-            byte[] dataPacket = Udp.Receive(ref _lidarIpEp);  //TODO: Change to async
+            byte[] dataPacket = Udp.Receive(ref _lidarIpEp);
 
             return (dataPacket.Length == DataPayloadSize) ? dataPacket : null;
         }
         
         public async Task<byte[]> GetDataPacketAsync()
         {
-            var receiveResult = await Udp.ReceiveAsync();  //TODO: Change to async
+            var receiveResult = await Udp.ReceiveAsync();
             
             return (receiveResult.Buffer.Length == DataPayloadSize) ? receiveResult.Buffer : null;
         }

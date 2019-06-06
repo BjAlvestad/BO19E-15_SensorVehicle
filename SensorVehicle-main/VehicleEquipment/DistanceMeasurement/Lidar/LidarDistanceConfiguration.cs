@@ -12,7 +12,7 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
         public LidarDistanceConfiguration(VerticalAngle[] verticalAngles)
         {
             DefaultHalfBeamOpening = 15;
-            DefaultCalculationType = CalculationType.Max; //TEMP
+            DefaultCalculationType = CalculationType.Max;
 
             ActiveVerticalAngles = new ExclusiveSynchronizedObservableCollection<VerticalAngle>();
             DefaultVerticalAngle = verticalAngles[0];

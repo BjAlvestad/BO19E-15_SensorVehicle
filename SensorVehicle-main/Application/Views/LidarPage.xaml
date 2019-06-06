@@ -70,7 +70,6 @@
 
                         <TextBlock Text="MinRange:" />
                         <ComboBox SelectedItem="{x:Bind ViewModel.Lidar.Config.MinRange, Mode=TwoWay}" >
-                            <!--TODO: Make combobox editable and robust. Fix issue where 0.7 gets displayed as long number (0.69.....) when combobox is editable -->
                             <!--Official minimum range is 1.0m (Ref. manual). See https://github.com/ros-drivers/velodyne/issues/61 for a discussion on alternative minimum ranges for VLP-16.-->
                             <x:Double>0.1</x:Double>
                             <x:Double>0.3</x:Double>

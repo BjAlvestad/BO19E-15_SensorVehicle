@@ -237,7 +237,6 @@ namespace VehicleEquipment.DistanceMeasurement.Lidar
 
             int startIndex = Distances[verticalAngle].FindIndex(point => point.Angle > fromAngle);
 
-            //TEMP: New logic (and list is first sorted in LidarPacketInterpreter). Check which is fastest. Old or this.
             if (angleSpansZero)
             {
                 if (startIndex != -1)

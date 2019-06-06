@@ -8,7 +8,7 @@ namespace Communication.Simulator
 {
     public class SimulatedLidarPacketReceiver : ILidarPacketReceiver
     {
-        private const int TimePerCycle = 200;  //TODO: Check exact time spent per cycle for real PacketReceiver, and correct TimePerCycle constant.
+        private const int TimePerCycle = 200;
         private SimulatorAppServiceClient _simulatorCommunication;
         private LidarFormatPacketGenerator _packetGenerator;
 

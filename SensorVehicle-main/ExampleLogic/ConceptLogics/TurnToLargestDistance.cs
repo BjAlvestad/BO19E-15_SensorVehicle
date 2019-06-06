@@ -51,7 +51,7 @@ namespace ExampleLogic.ConceptLogics
 
             float angleToLargestDistance = _lidar.LargestDistance.Angle;
 
-            if (float.IsNaN(angleToLargestDistance))  //TODO: Make LIDAR class throw exception when calling methods (or when accessing Distance) when power is off, or collector not running.
+            if (float.IsNaN(angleToLargestDistance))
             {
                 _wheels.Stop();
                 Debug.WriteLine("STOPPED WHEELS due to no LIDAR distance found!", "ControlLogic");

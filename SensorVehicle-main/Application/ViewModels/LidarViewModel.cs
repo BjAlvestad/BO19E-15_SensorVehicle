@@ -131,7 +131,6 @@ namespace Application.ViewModels
             if (AutoCalculateLargestDistance)
             {
                 HorizontalPoint point = Lidar.LargestDistance;
-                //TODO: check if running this on UI-thread causes freezing (on weaker hardware). If it does: wrap in Task.Run. If it doesn't, then check AutoCalcDirections, and HorizontalPoints, if they also run ok on UI thread.
             }
 
             if (CalculateHorizontalPoints)
