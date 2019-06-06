@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:genTemplate="http://schemas.microsoft.com/appx/developer/windowsTemplateStudio" xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10" IgnorableNamespaces="uap mp genTemplate iot">
-  <Identity Name="1519BenjaminOdlandSkare.HVLSensorVehicleMain" Publisher="CN=27886A19-CF30-435C-BB15-4AA24D1F169A" Version="0.1.6.0" />
+  <Identity Name="1519BenjaminOdlandSkare.HVLSensorVehicleMain" Publisher="CN=27886A19-CF30-435C-BB15-4AA24D1F169A" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="d52c819b-a13d-47a6-adb0-1572f3ced4af" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>HVL SensorVehicle Main</DisplayName>
