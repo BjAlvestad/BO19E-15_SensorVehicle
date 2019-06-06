@@ -91,10 +91,7 @@ namespace SimulatorUwpXaml
             float linearDisplacement = elapsedTimeSinceLastUpdate * linearSpeed;
             Position += new Vector2(linearDisplacement * (float)Math.Cos(Angle), linearDisplacement * (float)Math.Sin(Angle));
 
-            // Linear displacement gives a smaller distance than what the lidar measurement indicates, however the distance is the same as number of world-pixels.
-            // Lidar seems to measure correct distance (according to drawing - we have decided that one pixel should equal 1 cm)
-            // Suspect the issue is impreciceness in the mapScaling, but since Lidar
-            const float angularScaling = 0.5f;  // TODO: check cm on encoder on real car
+            const float angularScaling = 0.5f;
             CmTraveledLeftWheel += linearDisplacement / _mapScale   
                                    + (_speedLeftWheel - averagePower) * angularScaling * elapsedTimeSinceLastUpdate;
             CmTraveledRightWheel += linearDisplacement/ _mapScale 
