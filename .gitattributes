@@ -6,7 +6,7 @@
 ###############################################################################
 # Set behaviour for GitHub linguist
 ###############################################################################
-\[Drawings and Documents\]/* linguist-documentation
+\[Drawings and Documents\]/** linguist-documentation
 \[Drawings and Documents\]/.gitignore linguist-documentation=false
 
 ###############################################################################
